@@ -1,12 +1,14 @@
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #include <wayland-client.h>
 #include <wayland-egl.h>
 #include <EGL/egl.h>
 #include <GLES2/gl2.h>
 #include <unistd.h>
-#include "xdg-shell-protocol.h"
+#include "xdg-shell-client-protocol.h"
 
 struct client_state {
     /* Globals */
@@ -29,6 +31,17 @@ struct client_state {
 };
 
 static void
+xdg_surface_configure(void *data, struct xdg_surface *xdg_surface, uint32_t serial)
+{
+    struct client_state *state = data;
+    xdg_surface_ack_configure(xdg_surface, serial);
+}
+
+static const struct xdg_surface_listener xdg_surface_listener = {
+    .configure = xdg_surface_configure,
+};
+
+static void
 xdg_wm_base_ping(void *data, struct xdg_wm_base *xdg_wm_base, uint32_t serial)
 {
     xdg_wm_base_pong(xdg_wm_base, serial);
@@ -36,6 +49,26 @@ xdg_wm_base_ping(void *data, struct xdg_wm_base *xdg_wm_base, uint32_t serial)
 
 static const struct xdg_wm_base_listener xdg_wm_base_listener = {
     .ping = xdg_wm_base_ping,
+};
+
+static const struct wl_callback_listener wl_surface_frame_listener;
+
+static void draw(struct client_state *state);
+
+static void
+wl_surface_frame_done(void *data, struct wl_callback *callback, uint32_t time)
+{
+    struct client_state *state = data;
+
+	wl_callback_destroy(callback);
+    callback = wl_surface_frame(state->wl_surface);
+	wl_callback_add_listener(callback, &wl_surface_frame_listener, state);
+
+    draw(state);
+}
+
+static const struct wl_callback_listener wl_surface_frame_listener = {
+	.done = wl_surface_frame_done,
 };
 
 static void
@@ -110,20 +143,43 @@ create_window(struct client_state *state)
     eglMakeCurrent(state->egl_display, state->egl_surface, state->egl_surface, state->egl_context);
 }
 
-static void draw_blue(struct  client_state *state)
+static void print_fps()
 {
-    glClearColor(0.0, 0.0, 1.0, 1.0);
-    glClear(GL_COLOR_BUFFER_BIT);
-    glFlush();
-    eglSwapBuffers(state->egl_display, state->egl_surface);
+    static int frames = 0;
+    static struct timespec previous_time = { 0 }, current_time;
+    long elapsed_time;
+
+    ++frames;
+    clock_gettime(CLOCK_MONOTONIC, &current_time);
+    
+    elapsed_time = (current_time.tv_sec - previous_time.tv_sec) * 1e9 + (current_time.tv_nsec - previous_time.tv_nsec);
+
+    if (elapsed_time >= 1e9) {
+        printf("FPS: %d\n", frames);
+        frames = 0;
+        previous_time = current_time;
+    }
 }
 
-static void draw_red(struct  client_state *state)
+static void draw(struct client_state *state)
 {
-    glClearColor(1.0, 0.0, 0.0, 1.0);
+    static GLfloat color[4] = { 0.0, 1.0, 0.0, 1.0 };
+    static int inc = 0, dec = 1;
+
+    color[inc] += 0.01;
+    color[dec] -= 0.01;
+
+    if (color[dec] <= 0.0) {
+        dec = inc;
+        inc = (inc + 2) % 3;
+    }
+
+    glClearColor(color[0], color[1], color[2], color[3]);
     glClear(GL_COLOR_BUFFER_BIT);
     glFlush();
     eglSwapBuffers(state->egl_display, state->egl_surface);
+
+    print_fps();
 }
 
 int
@@ -138,19 +194,19 @@ main(int argc, char *arg[])
 
     state.wl_surface = wl_compositor_create_surface(state.compositor);
     state.xdg_surface = xdg_wm_base_get_xdg_surface(state.xdg_wm_base, state.wl_surface);
+    xdg_surface_add_listener(state.xdg_surface, &xdg_surface_listener, &state);
     state.xdg_toplevel = xdg_surface_get_toplevel(state.xdg_surface);
     xdg_toplevel_set_title(state.xdg_toplevel, "Hello, Wayland!");
 
+	struct wl_callback *callback = wl_surface_frame(state.wl_surface);
+	wl_callback_add_listener(callback, &wl_surface_frame_listener, &state);
+
     init_egl(&state);
     create_window(&state);
-    draw_blue(&state);
+    draw(&state);
 
-    sleep(2);
-
-    draw_red(&state);
-
-    while (wl_display_dispatch(state.wl_display)) {
-        /* This space deliberately left blank */
+    while (1) {
+        wl_display_dispatch(state.wl_display);
     }
     
     return 0;

@@ -1,16 +1,16 @@
 project('client', 'c')
 
 wayland_scanner = find_program('wayland-scanner')
-xdg_shell_protocol_c = custom_target(
+xdg_shell_client_protocol_c = custom_target(
     'xdg-shell-protocol.c',
     input: ['/usr/share/wayland-protocols/stable/xdg-shell/xdg-shell.xml'],
-    output: ['xdg-shell-protocol.c'],
+    output: ['xdg-shell-client-protocol.c'],
     command: [wayland_scanner, 'private-code', '@INPUT@', '@OUTPUT@']
 )
-xdg_shell_protocol_h = custom_target(
+xdg_shell_client_protocol_h = custom_target(
     'xdg-shell-protocol.h',
     input: ['/usr/share/wayland-protocols/stable/xdg-shell/xdg-shell.xml'],
-    output: ['xdg-shell-protocol.h'],
+    output: ['xdg-shell-client-protocol.h'],
     command: [wayland_scanner, 'client-header', '@INPUT@', '@OUTPUT@']
 )
 
@@ -28,6 +28,6 @@ client_deps = [
 
 executable(
     'client',
-    sources: ['client.c', xdg_shell_protocol_c, xdg_shell_protocol_h],
+    sources: ['client.c', xdg_shell_client_protocol_c, xdg_shell_client_protocol_h],
     dependencies: client_deps
 )
