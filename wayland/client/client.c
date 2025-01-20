@@ -30,11 +30,21 @@ struct client_state {
     EGLContext egl_context;
 };
 
+static const struct wl_callback_listener wl_surface_frame_listener;
+
+static void draw(struct client_state *state);
+
 static void
 xdg_surface_configure(void *data, struct xdg_surface *xdg_surface, uint32_t serial)
 {
     struct client_state *state = data;
+
     xdg_surface_ack_configure(xdg_surface, serial);
+
+    struct wl_callback *callback = wl_surface_frame(state->wl_surface);
+    wl_callback_add_listener(callback, &wl_surface_frame_listener, state);
+
+    draw(state);
 }
 
 static const struct xdg_surface_listener xdg_surface_listener = {
@@ -50,10 +60,6 @@ xdg_wm_base_ping(void *data, struct xdg_wm_base *xdg_wm_base, uint32_t serial)
 static const struct xdg_wm_base_listener xdg_wm_base_listener = {
     .ping = xdg_wm_base_ping,
 };
-
-static const struct wl_callback_listener wl_surface_frame_listener;
-
-static void draw(struct client_state *state);
 
 static void
 wl_surface_frame_done(void *data, struct wl_callback *callback, uint32_t time)
@@ -149,6 +155,11 @@ static void print_fps()
     static struct timespec previous_time = { 0 }, current_time;
     long elapsed_time;
 
+    if (previous_time.tv_sec == 0) {
+        clock_gettime(CLOCK_MONOTONIC, &previous_time);
+        return;
+    }
+
     ++frames;
     clock_gettime(CLOCK_MONOTONIC, &current_time);
     
@@ -197,16 +208,13 @@ main(int argc, char *arg[])
     xdg_surface_add_listener(state.xdg_surface, &xdg_surface_listener, &state);
     state.xdg_toplevel = xdg_surface_get_toplevel(state.xdg_surface);
     xdg_toplevel_set_title(state.xdg_toplevel, "Hello, Wayland!");
-
-	struct wl_callback *callback = wl_surface_frame(state.wl_surface);
-	wl_callback_add_listener(callback, &wl_surface_frame_listener, &state);
+    wl_surface_commit(state.wl_surface);
 
     init_egl(&state);
     create_window(&state);
-    draw(&state);
 
-    while (1) {
-        wl_display_dispatch(state.wl_display);
+    while (wl_display_dispatch(state.wl_display)) {
+        /* This space deliberately left blank */
     }
     
     return 0;
