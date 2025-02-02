@@ -28,6 +28,9 @@ struct client_state {
     EGLConfig egl_conf;
     EGLSurface egl_surface;
     EGLContext egl_context;
+
+    int width;
+    int height;
 };
 
 static const struct wl_callback_listener wl_surface_frame_listener;
@@ -143,7 +146,7 @@ init_egl(struct client_state *state)
 static void
 create_window(struct client_state *state)
 {
-    state->egl_window = wl_egl_window_create(state->wl_surface, 640, 480);
+    state->egl_window = wl_egl_window_create(state->wl_surface, state->width, state->height);
     state->egl_surface = eglCreateWindowSurface(state->egl_display, state->egl_conf, state->egl_window, NULL);
 
     eglMakeCurrent(state->egl_display, state->egl_surface, state->egl_surface, state->egl_context);
@@ -162,7 +165,7 @@ static void print_fps()
 
     ++frames;
     clock_gettime(CLOCK_MONOTONIC, &current_time);
-    
+
     elapsed_time = (current_time.tv_sec - previous_time.tv_sec) * 1e9 + (current_time.tv_nsec - previous_time.tv_nsec);
 
     if (elapsed_time >= 1e9) {
@@ -194,9 +197,16 @@ static void draw(struct client_state *state)
 }
 
 int
-main(int argc, char *arg[])
+main(int argc, char *argv[])
 {
-    struct client_state state = { 0 };
+    struct client_state state = { 0 , .width = 640, .height = 480 };
+
+    for (int i = 0; i < argc; ++i) {
+        if (strcmp(argv[i], "-w") == 0)
+            state.width = atoi(argv[i + 1]);
+        else if (strcmp(argv[i], "-h") == 0)
+            state.height = atoi(argv[i + 1]);
+    }
 
     state.wl_display = wl_display_connect(NULL);
     state.wl_registry = wl_display_get_registry(state.wl_display);
@@ -216,6 +226,6 @@ main(int argc, char *arg[])
     while (wl_display_dispatch(state.wl_display)) {
         /* This space deliberately left blank */
     }
-    
+
     return 0;
 }
