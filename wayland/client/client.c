@@ -1,4 +1,5 @@
 
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -6,6 +7,7 @@
 #include <wayland-client.h>
 #include <wayland-egl.h>
 #include <EGL/egl.h>
+#include <EGL/eglext.h>
 #include <GLES2/gl2.h>
 #include <unistd.h>
 #include "xdg-shell-client-protocol.h"
@@ -25,7 +27,7 @@ struct client_state {
     /* EGL */
     struct wl_egl_window *egl_window;
     EGLDisplay egl_display;
-    EGLConfig egl_conf;
+    EGLConfig egl_config;
     EGLSurface egl_surface;
     EGLContext egl_context;
 
@@ -105,11 +107,17 @@ static const struct wl_registry_listener wl_registry_listener = {
 };
 
 static void
+print_egl_extensions(EGLDisplay display)
+{
+    const char *extensions = eglQueryString(display, EGL_EXTENSIONS);
+    printf("EGL Extensions: %s\n", extensions);
+}
+
+static void
 init_egl(struct client_state *state)
 {
-    EGLint major, minor, count, n, size;
-    EGLConfig *configs;
-    int i;
+    EGLint major, minor;
+    
     EGLint config_attribs[] = {
         EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
         EGL_RED_SIZE, 8,
@@ -119,40 +127,50 @@ init_egl(struct client_state *state)
         EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT,
         EGL_NONE
     };
+    EGLConfig config;
+    EGLint n;
 
     static const EGLint context_attribs[] = {
-        EGL_CONTEXT_CLIENT_VERSION, 2,
+        EGL_CONTEXT_MAJOR_VERSION, 3,
         EGL_NONE
     };
 
-    state->egl_display = eglGetDisplay((EGLNativeDisplayType)state->wl_display);
+    print_egl_extensions(EGL_NO_DISPLAY);
+
+    state->egl_display = eglGetPlatformDisplay(EGL_PLATFORM_WAYLAND_KHR, state->wl_display, NULL);
 
     eglInitialize(state->egl_display, &major, &minor);
+    printf("EGL %d.%d\n", major, minor);
+    print_egl_extensions(state->egl_display);
 
-    eglGetConfigs(state->egl_display, NULL, 0, &count);
-    configs = calloc(count, sizeof *configs);
-    eglChooseConfig(state->egl_display, config_attribs, configs, count, &n);
+    eglChooseConfig(state->egl_display, config_attribs, &config, 1, &n);
 
-    for (i = 0; i < n; ++i) {
-        eglGetConfigAttrib(state->egl_display, configs[i], EGL_BUFFER_SIZE, &size);
-        eglGetConfigAttrib(state->egl_display, configs[i], EGL_RED_SIZE, &size);
-        state->egl_conf = configs[i];
-        break;
-    }
+    assert(n > 0);
+    state->egl_config = config;
 
-    state->egl_context = eglCreateContext(state->egl_display, state->egl_conf, EGL_NO_CONTEXT, context_attribs);
+    state->egl_context = eglCreateContext(state->egl_display, state->egl_config, EGL_NO_CONTEXT, context_attribs);
+}
+
+static void
+deinit_egl(struct client_state *state)
+{
+    eglMakeCurrent(state->egl_display, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
+    eglDestroyContext(state->egl_display, state->egl_context);
+    eglDestroySurface(state->egl_display, state->egl_surface);
+    eglTerminate(state->egl_display);
 }
 
 static void
 create_window(struct client_state *state)
 {
     state->egl_window = wl_egl_window_create(state->wl_surface, state->width, state->height);
-    state->egl_surface = eglCreateWindowSurface(state->egl_display, state->egl_conf, state->egl_window, NULL);
+    state->egl_surface = eglCreatePlatformWindowSurface(state->egl_display, state->egl_config, state->egl_window, NULL);
 
     eglMakeCurrent(state->egl_display, state->egl_surface, state->egl_surface, state->egl_context);
 }
 
-static void print_fps()
+static void
+print_fps()
 {
     static int frames = 0;
     static struct timespec previous_time = { 0 }, current_time;
@@ -175,7 +193,8 @@ static void print_fps()
     }
 }
 
-static void draw(struct client_state *state)
+static void
+draw(struct client_state *state)
 {
     static GLfloat color[4] = { 0.0, 1.0, 0.0, 1.0 };
     static int inc = 0, dec = 1;
@@ -226,6 +245,8 @@ main(int argc, char *argv[])
     while (wl_display_dispatch(state.wl_display)) {
         /* This space deliberately left blank */
     }
+
+    deinit_egl(&state);
 
     return 0;
 }
