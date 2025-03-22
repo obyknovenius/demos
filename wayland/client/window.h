@@ -1,24 +1,27 @@
 #pragma once
 
+#include <EGL/egl.h>
+
 #include "display.h"
 
-struct window {
-    struct wl_surface *wl_surface;
-    struct xdg_surface *xdg_surface;
-    struct xdg_toplevel *xdg_toplevel;
+class Window final {
+public:
+    Window(Display& display, int width, int height);
+    ~Window();
 
-    struct xdg_surface_listener xdg_surface_listener;
-    struct wl_callback_listener wl_surface_frame_listener;
+    auto configure(struct xdg_surface* xdg_surface, uint32_t serial) -> void;
+    auto frame_done(struct wl_callback* callback, uint32_t time) -> void;
 
-    struct wl_egl_window *wl_egl_window;
+private:
+    auto draw() -> void;
 
-    EGLDisplay egl_display;
-    EGLSurface egl_surface;
-    EGLContext egl_context;
+    struct wl_surface* m_wl_surface {};
+    struct xdg_surface* m_xdg_surface {};
+    struct xdg_toplevel* m_xdg_toplevel {};
+
+    struct wl_egl_window* m_wl_egl_window {};
+
+    EGLDisplay m_egl_display { EGL_NO_DISPLAY};
+    EGLSurface m_egl_surface { EGL_NO_SURFACE };
+    EGLContext m_egl_context { EGL_NO_CONTEXT };
 };
-
-struct window *
-create_window(struct display *display, int width, int height);
-
-void
-destroy_window(struct window *window);
