@@ -44,14 +44,19 @@ Display::Display()
 
     wl_display_roundtrip(m_wl_display);
 
+#ifndef NDEBUG
     print_egl_extensions(EGL_NO_DISPLAY);
+#endif
 
     m_egl_display = eglGetPlatformDisplay(EGL_PLATFORM_WAYLAND_KHR, m_wl_display, NULL);
 
     EGLint major, minor;
     eglInitialize(m_egl_display, &major, &minor);
+
+#ifndef NDEBUG
     std::cout << "EGL " << major << "." << minor << std::endl;
     print_egl_extensions(m_egl_display);
+#endif
 }
 
 Display::~Display()

@@ -7,7 +7,7 @@
 #include <optional>
 #include <wayland-client.h>
 #include <wayland-egl.h>
-#include <GLES2/gl2.h>
+#include <GLES3/gl3.h>
 #include "xdg-shell-client.h"
 
 static auto print_fps() -> void
@@ -55,6 +55,25 @@ struct xdg_surface_listener xdg_surface_listener = {
     .configure = configure,
 };
 
+const char* vertex_shader_source = R"(
+#version 300 es
+layout(location = 0) in vec3 aPos;
+void main()
+{
+    gl_Position = vec4(aPos, 1.0);
+}
+)";
+
+const char* fragment_shader_source = R"(
+#version 300 es
+precision mediump float;
+out vec4 FragColor;
+void main()
+{
+    FragColor = vec4(1.0, 0.5, 0.2, 1.0);
+}
+)";
+
 Window::Window(Display& display, int width, int height)
 {
     m_wl_surface = wl_compositor_create_surface(display.wl_compositor());
@@ -94,6 +113,67 @@ Window::Window(Display& display, int width, int height)
     m_egl_context = eglCreateContext(m_egl_display, egl_config, EGL_NO_CONTEXT, context_attribs);
 
     eglMakeCurrent(m_egl_display, m_egl_surface, m_egl_surface, m_egl_context);
+
+    glViewport(0, 0, width, height);
+
+    unsigned int vertex_shadrer = glCreateShader(GL_VERTEX_SHADER);
+    glShaderSource(vertex_shadrer, 1, &vertex_shader_source, NULL);
+    glCompileShader(vertex_shadrer);
+#ifndef NDEBUG
+    int success;
+    char info_log[512];
+    glGetShaderiv(vertex_shadrer, GL_COMPILE_STATUS, &success);
+    if (!success) {
+        glGetShaderInfoLog(vertex_shadrer, 512, NULL, info_log);
+        std::cerr << "Vertex shader compilation failed:\n" << info_log << std::endl;
+    }
+#endif
+
+    unsigned int fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
+    glShaderSource(fragment_shader, 1, &fragment_shader_source, NULL);
+    glCompileShader(fragment_shader);
+#ifndef NDEBUG
+    glGetShaderiv(fragment_shader, GL_COMPILE_STATUS, &success);
+    if (!success) {
+        glGetShaderInfoLog(fragment_shader, 512, NULL, info_log);
+        std::cerr << "Fragment shader compilation failed:\n" << info_log << std::endl;
+    }
+#endif
+
+    unsigned int shader_program = glCreateProgram();
+    glAttachShader(shader_program, vertex_shadrer);
+    glAttachShader(shader_program, fragment_shader);
+    glLinkProgram(shader_program);
+#ifndef NDEBUG
+    glGetProgramiv(shader_program, GL_LINK_STATUS, &success);
+    if (!success) {
+        glGetProgramInfoLog(shader_program, 512, NULL, info_log);
+        std::cerr << "Shader program linking failed:\n" << info_log << std::endl;
+    }
+#endif
+
+    glUseProgram(shader_program);
+
+    glDeleteShader(vertex_shadrer);
+    glDeleteShader(fragment_shader);
+
+    float vertices[] = {
+        -0.5f, -0.5f, 0.0f,
+         0.5f, -0.5f, 0.0f,
+         0.0f,  0.5f, 0.0f
+    };
+
+    unsigned int vao;
+    glGenVertexArrays(1, &vao);
+    glBindVertexArray(vao);
+
+    unsigned int vbo;
+    glGenBuffers(1, &vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), 0);
+    glEnableVertexAttribArray(0);
 }
 
 Window::~Window()
@@ -136,11 +216,13 @@ auto Window::draw() -> void
     glClearColor(color[0], color[1], color[2], color[3]);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    glFlush();
+    glDrawArrays(GL_TRIANGLES, 0, 3);
 
     eglSwapBuffers(m_egl_display, m_egl_surface);
 
+#ifndef NDEBUG
     print_fps();
+#endif
 }
 
 auto Window::frame_done(struct wl_callback* callback, uint32_t time) -> void
