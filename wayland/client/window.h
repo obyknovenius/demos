@@ -24,4 +24,9 @@ private:
     EGLDisplay m_egl_display { EGL_NO_DISPLAY};
     EGLSurface m_egl_surface { EGL_NO_SURFACE };
     EGLContext m_egl_context { EGL_NO_CONTEXT };
+
+    unsigned int m_shader_program;
+    unsigned int m_vao;
+    unsigned int m_vbo;
+    unsigned int m_ebo;
 };

@@ -140,44 +140,61 @@ Window::Window(Display& display, int width, int height)
     }
 #endif
 
-    unsigned int shader_program = glCreateProgram();
-    glAttachShader(shader_program, vertex_shadrer);
-    glAttachShader(shader_program, fragment_shader);
-    glLinkProgram(shader_program);
+    unsigned int m_shader_program = glCreateProgram();
+    glAttachShader(m_shader_program, vertex_shadrer);
+    glAttachShader(m_shader_program, fragment_shader);
+    glLinkProgram(m_shader_program);
 #ifndef NDEBUG
-    glGetProgramiv(shader_program, GL_LINK_STATUS, &success);
+    glGetProgramiv(m_shader_program, GL_LINK_STATUS, &success);
     if (!success) {
-        glGetProgramInfoLog(shader_program, 512, NULL, info_log);
+        glGetProgramInfoLog(m_shader_program, 512, NULL, info_log);
         std::cerr << "Shader program linking failed:\n" << info_log << std::endl;
     }
 #endif
 
-    glUseProgram(shader_program);
+    glUseProgram(m_shader_program);
 
     glDeleteShader(vertex_shadrer);
     glDeleteShader(fragment_shader);
 
     float vertices[] = {
-        -0.5f, -0.5f, 0.0f,
-         0.5f, -0.5f, 0.0f,
-         0.0f,  0.5f, 0.0f
+        0.5f,  0.5f, 0.0f,  // top right
+         0.5f, -0.5f, 0.0f,  // bottom right
+        -0.5f, -0.5f, 0.0f,  // bottom left
+        -0.5f,  0.5f, 0.0f   // top left 
     };
 
-    unsigned int vao;
-    glGenVertexArrays(1, &vao);
-    glBindVertexArray(vao);
+    unsigned int indicies[] = {
+        0, 1, 3, // first triangle
+        1, 2, 3  // second triangle
+    };
 
-    unsigned int vbo;
-    glGenBuffers(1, &vbo);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glGenVertexArrays(1, &m_vao);
+    glBindVertexArray(m_vao);
+
+    glGenBuffers(1, &m_vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+    glGenBuffers(1, &m_ebo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ebo);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indicies), indicies, GL_STATIC_DRAW);
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), 0);
     glEnableVertexAttribArray(0);
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    glBindVertexArray(0);
 }
 
 Window::~Window()
 {
+    glDeleteVertexArrays(1, &m_vao);
+    glDeleteBuffers(1, &m_vbo);
+    glDeleteBuffers(1, &m_ebo);
+    glDeleteProgram(m_shader_program);
+
     if (eglGetCurrentContext() == m_egl_context) {
         eglMakeCurrent(m_egl_display, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
     }
@@ -216,7 +233,10 @@ auto Window::draw() -> void
     glClearColor(color[0], color[1], color[2], color[3]);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    glDrawArrays(GL_TRIANGLES, 0, 3);
+    glUseProgram(m_shader_program);
+    glBindVertexArray(m_vao);
+
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
     eglSwapBuffers(m_egl_display, m_egl_surface);
 
