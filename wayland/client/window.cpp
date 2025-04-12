@@ -33,7 +33,7 @@ static auto print_fps() -> void
     }
 }
 
-static auto frame_done(void* data, struct wl_callback* callback, uint32_t time) -> void;
+static auto frame_done(void *data, struct wl_callback* callback, uint32_t time) -> void;
 
 struct wl_callback_listener wl_surface_frame_listener = {
     .done = frame_done,
@@ -58,19 +58,25 @@ struct xdg_surface_listener xdg_surface_listener = {
 const char* vertex_shader_source = R"(
 #version 300 es
 layout(location = 0) in vec3 aPos;
+layout(location = 1) in vec3 aColor;
+
+out vec3 ourColor;
+
 void main()
 {
     gl_Position = vec4(aPos, 1.0);
+    ourColor = aColor;
 }
 )";
 
 const char* fragment_shader_source = R"(
 #version 300 es
 precision mediump float;
+in vec3 ourColor;
 out vec4 FragColor;
 void main()
 {
-    FragColor = vec4(1.0, 0.5, 0.2, 1.0);
+    FragColor = vec4(ourColor, 1.0);
 }
 )";
 
@@ -100,7 +106,7 @@ Window::Window(Display& display, int width, int height)
     };
     EGLConfig egl_config;
     EGLint num_config;
-    
+
     eglChooseConfig(m_egl_display, config_attribs, &egl_config, 1, &num_config);
     assert(num_config > 0);
 
@@ -158,9 +164,10 @@ Window::Window(Display& display, int width, int height)
     glDeleteShader(fragment_shader);
 
     float vertices[] = {
-        -0.5f, -0.5f, 0.0f,
-         0.5f, -0.5f, 0.0f,
-         0.0f,  0.5f, 0.0f
+        // positioins
+        -0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, // bottom right
+         0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, // bottom left
+         0.0f,  0.5f, 0.0f, 0.0f, 0.0f, 1.0f  // top
     };
 
     unsigned int vao;
@@ -172,8 +179,13 @@ Window::Window(Display& display, int width, int height)
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), 0);
+    // position attribute
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), 0);
     glEnableVertexAttribArray(0);
+
+    // color attribute
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), reinterpret_cast<void *>(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
 }
 
 Window::~Window()
