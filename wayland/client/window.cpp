@@ -10,6 +10,9 @@
 #include <GLES3/gl3.h>
 #include "xdg-shell-client.h"
 
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
+
 static auto print_fps() -> void
 {
     using namespace std::chrono;
@@ -57,26 +60,32 @@ struct xdg_surface_listener xdg_surface_listener = {
 
 const char* vertex_shader_source = R"(
 #version 300 es
-layout(location = 0) in vec3 aPos;
-layout(location = 1) in vec3 aColor;
 
-out vec3 ourColor;
+layout (location = 0) in vec3 aPos;
+layout (location = 1) in vec2 aTexCoord;
+
+out vec2 TexCoord;
 
 void main()
 {
     gl_Position = vec4(aPos, 1.0);
-    ourColor = aColor;
+    TexCoord = aTexCoord;
 }
 )";
 
 const char* fragment_shader_source = R"(
 #version 300 es
 precision mediump float;
-in vec3 ourColor;
+
+in vec2 TexCoord;
+
 out vec4 FragColor;
+
+uniform sampler2D texture1;
+
 void main()
 {
-    FragColor = vec4(ourColor, 1.0);
+    FragColor = texture(texture1, TexCoord);
 }
 )";
 
@@ -146,50 +155,91 @@ Window::Window(Display& display, int width, int height)
     }
 #endif
 
-    unsigned int shader_program = glCreateProgram();
-    glAttachShader(shader_program, vertex_shadrer);
-    glAttachShader(shader_program, fragment_shader);
-    glLinkProgram(shader_program);
+    m_program = glCreateProgram();
+    glAttachShader(m_program, vertex_shadrer);
+    glAttachShader(m_program, fragment_shader);
+    glLinkProgram(m_program);
 #ifndef NDEBUG
-    glGetProgramiv(shader_program, GL_LINK_STATUS, &success);
+    glGetProgramiv(m_program, GL_LINK_STATUS, &success);
     if (!success) {
-        glGetProgramInfoLog(shader_program, 512, NULL, info_log);
+        glGetProgramInfoLog(m_program, 512, NULL, info_log);
         std::cerr << "Shader program linking failed:\n" << info_log << std::endl;
     }
 #endif
 
-    glUseProgram(shader_program);
+    glUseProgram(m_program);
 
     glDeleteShader(vertex_shadrer);
     glDeleteShader(fragment_shader);
 
     float vertices[] = {
-        // positioins
-        -0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, // bottom right
-         0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, // bottom left
-         0.0f,  0.5f, 0.0f, 0.0f, 0.0f, 1.0f  // top
+        // positioins       // texture coordinates
+         0.5f,  0.5f, 0.0f,  1.0f, 1.0f, // top right
+         0.5f, -0.5f, 0.0f,  1.0f, 0.0f, // bottom right
+        -0.5f, -0.5f, 0.0f,  0.0f, 0.0f, // bottom left
+        -0.5f,  0.5f, 0.0f,  0.0f, 1.0f  // top left
     };
 
-    unsigned int vao;
-    glGenVertexArrays(1, &vao);
-    glBindVertexArray(vao);
+    unsigned int indices[] = {
+        0, 1, 3, // first triangle
+        1, 2, 3  // second triangle
+    };
 
-    unsigned int vbo;
-    glGenBuffers(1, &vbo);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glGenVertexArrays(1, &m_vao);
+    glBindVertexArray(m_vao);
+
+    glGenBuffers(1, &m_vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
+    glGenBuffers(1, &m_ebo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ebo);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
     // position attribute
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), 0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), 0);
     glEnableVertexAttribArray(0);
 
-    // color attribute
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), reinterpret_cast<void *>(3 * sizeof(float)));
+    // texture coordinates attribute
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), reinterpret_cast<void*>(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
+
+    glGenTextures(1, &m_texture);
+    glBindTexture(GL_TEXTURE_2D, m_texture);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    int tex_width, tex_height, tex_channels;
+    unsigned char* data = stbi_load("../container.jpg", &tex_width, &tex_height, &tex_channels, 0);
+    if (data) {
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, tex_width, tex_height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+    } else {
+        std::cerr << "Texture loading failed" << std::endl;
+    }
+    stbi_image_free(data);
 }
 
 Window::~Window()
 {
+    glBindVertexArray(0);
+    glDeleteVertexArrays(1, &m_vao);
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glDeleteBuffers(1, &m_vbo);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    glDeleteBuffers(1, &m_ebo);
+
+    glBindTexture(GL_TEXTURE_2D, 0);
+    glDeleteTextures(1, &m_texture);
+
+    glUseProgram(0);
+    glDeleteProgram(m_program);
+
     if (eglGetCurrentContext() == m_egl_context) {
         eglMakeCurrent(m_egl_display, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
     }
@@ -228,7 +278,10 @@ auto Window::draw() -> void
     glClearColor(color[0], color[1], color[2], color[3]);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    glDrawArrays(GL_TRIANGLES, 0, 3);
+    glUseProgram(m_program);
+    glBindVertexArray(m_vao);
+    glBindTexture(GL_TEXTURE_2D, m_texture);
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
     eglSwapBuffers(m_egl_display, m_egl_surface);
 
