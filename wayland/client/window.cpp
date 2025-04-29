@@ -13,6 +13,10 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
+#include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
+#include "glm/gtc/type_ptr.hpp"
+
 static auto print_fps() -> void
 {
     using namespace std::chrono;
@@ -66,9 +70,11 @@ layout (location = 1) in vec2 aTexCoord;
 
 out vec2 TexCoord;
 
+uniform mat4 transform;
+
 void main()
 {
-    gl_Position = vec4(aPos, 1.0);
+    gl_Position = transform * vec4(aPos, 1.0);
     TexCoord = aTexCoord;
 }
 )";
@@ -278,7 +284,16 @@ auto Window::draw() -> void
     glClearColor(color[0], color[1], color[2], color[3]);
     glClear(GL_COLOR_BUFFER_BIT);
 
+    static float angle = 0.0f;
+    angle += 0.01f;
+    glm::mat4 transform = glm::mat4(1.0f);
+    transform = glm::rotate(transform, angle, glm::vec3(0.0f, 0.0f, 1.0f));
+
     glUseProgram(m_program);
+
+    unsigned int transform_loc = glGetUniformLocation(m_program, "transform");
+    glUniformMatrix4fv(transform_loc, 1, GL_FALSE, glm::value_ptr(transform));
+
     glBindVertexArray(m_vao);
     glBindTexture(GL_TEXTURE_2D, m_texture);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
