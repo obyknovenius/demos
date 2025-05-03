@@ -10,12 +10,12 @@
 #include <GLES3/gl3.h>
 #include "xdg-shell-client.h"
 
-#define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
-
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/type_ptr.hpp"
+
+#include "display.h"
+#include "layer.h"
 
 static auto print_fps() -> void
 {
@@ -180,10 +180,10 @@ Window::Window(Display& display, int width, int height)
 
     float vertices[] = {
         // positioins       // texture coordinates
-         0.5f,  0.5f, 0.0f,  1.0f, 1.0f, // top right
-         0.5f, -0.5f, 0.0f,  1.0f, 0.0f, // bottom right
-        -0.5f, -0.5f, 0.0f,  0.0f, 0.0f, // bottom left
-        -0.5f,  0.5f, 0.0f,  0.0f, 1.0f  // top left
+         1.0f,  1.0f, 0.0f,  1.0f, 1.0f, // top right
+         1.0f, -1.0f, 0.0f,  1.0f, 0.0f, // bottom right
+        -1.0f, -1.0f, 0.0f,  0.0f, 0.0f, // bottom left
+        -1.0f,  1.0f, 0.0f,  0.0f, 1.0f  // top left
     };
 
     unsigned int indices[] = {
@@ -210,27 +210,14 @@ Window::Window(Display& display, int width, int height)
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), reinterpret_cast<void*>(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
 
-    glGenTextures(1, &m_texture);
-    glBindTexture(GL_TEXTURE_2D, m_texture);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-    int tex_width, tex_height, tex_channels;
-    unsigned char* data = stbi_load("../container.jpg", &tex_width, &tex_height, &tex_channels, 0);
-    if (data) {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, tex_width, tex_height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-    } else {
-        std::cerr << "Texture loading failed" << std::endl;
-    }
-    stbi_image_free(data);
+    m_layer = new Layer(width, height);
 }
 
 Window::~Window()
 {
+    delete m_layer;
+    m_layer = nullptr;
+
     glBindVertexArray(0);
     glDeleteVertexArrays(1, &m_vao);
 
@@ -239,9 +226,6 @@ Window::~Window()
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     glDeleteBuffers(1, &m_ebo);
-
-    glBindTexture(GL_TEXTURE_2D, 0);
-    glDeleteTextures(1, &m_texture);
 
     glUseProgram(0);
     glDeleteProgram(m_program);
@@ -270,32 +254,37 @@ auto Window::configure(struct xdg_surface* xdg_surface, uint32_t serial) -> void
 
 auto Window::draw() -> void
 {
-    static GLfloat color[4] = { 0.0, 1.0, 0.0, 1.0 };
-    static int inc = 0, dec = 1;
+    if (m_animate) {
+        static GLfloat color[4] = { 0.0, 1.0, 0.0, 1.0 };
+        static int inc = 0, dec = 1;
 
-    color[inc] += 0.01;
-    color[dec] -= 0.01;
+        color[inc] += 0.01;
+        color[dec] -= 0.01;
 
-    if (color[dec] <= 0.0) {
-        dec = inc;
-        inc = (inc + 2) % 3;
+        if (color[dec] <= 0.0) {
+            dec = inc;
+            inc = (inc + 2) % 3;
+        }
+    
+        glClearColor(color[0], color[1], color[2], color[3]);
+        glClear(GL_COLOR_BUFFER_BIT);
     }
 
-    glClearColor(color[0], color[1], color[2], color[3]);
-    glClear(GL_COLOR_BUFFER_BIT);
-
-    static float angle = 0.0f;
-    angle += 0.01f;
     glm::mat4 transform = glm::mat4(1.0f);
-    transform = glm::rotate(transform, angle, glm::vec3(0.0f, 0.0f, 1.0f));
-
-    glUseProgram(m_program);
-
+    if (m_animate) {
+        static float angle = 0.0f;
+        angle += 0.01f;
+        transform = glm::rotate(transform, angle, glm::vec3(0.0f, 0.0f, 1.0f));
+    }
     unsigned int transform_loc = glGetUniformLocation(m_program, "transform");
     glUniformMatrix4fv(transform_loc, 1, GL_FALSE, glm::value_ptr(transform));
 
+    m_layer->draw();
+
     glBindVertexArray(m_vao);
-    glBindTexture(GL_TEXTURE_2D, m_texture);
+    glBindTexture(GL_TEXTURE_2D, m_layer->texture());
+
+    glUseProgram(m_program);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
     eglSwapBuffers(m_egl_display, m_egl_surface);
@@ -308,8 +297,11 @@ auto Window::draw() -> void
 auto Window::frame_done(struct wl_callback* callback, uint32_t time) -> void
 {
 	wl_callback_destroy(callback);
-    callback = wl_surface_frame(m_wl_surface);
-	wl_callback_add_listener(callback, &wl_surface_frame_listener, this);
 
-    draw();
+    if (m_animate) {
+        callback = wl_surface_frame(m_wl_surface);
+	    wl_callback_add_listener(callback, &wl_surface_frame_listener, this);
+
+        draw();
+    }
 }

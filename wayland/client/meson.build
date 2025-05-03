@@ -18,18 +18,21 @@ wayland_client_dep = dependency('wayland-client')
 wayland_egl_dep = dependency('wayland-egl')
 egl_dep = dependency('egl')
 gles2_dep = dependency('glesv2')
+cairo_dep = dependency('cairo')
 
 deps = [
     wayland_client_dep,
     wayland_egl_dep,
     egl_dep,
     gles2_dep,
+    cairo_dep,
 ]
 
 sources = [
     'client.cpp',
     'display.cpp',
     'window.cpp',
+    'layer.cpp',
     xdg_shell_client_c,
     xdg_shell_client_h,
 ]

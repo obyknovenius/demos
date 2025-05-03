@@ -2,7 +2,8 @@
 
 #include <EGL/egl.h>
 
-#include "display.h"
+class Display;
+class Layer;
 
 class Window final {
 public:
@@ -14,6 +15,8 @@ public:
 
 private:
     auto draw() -> void;
+
+    bool m_animate { false };
 
     struct wl_surface* m_wl_surface {};
     struct xdg_surface* m_xdg_surface {};
@@ -31,5 +34,5 @@ private:
     unsigned int m_vbo;
     unsigned int m_ebo;
 
-    unsigned int m_texture;
+    Layer* m_layer {};
 };
