@@ -1,5 +1,6 @@
 #pragma once
 
+#include <functional>
 #include <cairo/cairo.h>
 #include <GLES3/gl3.h>
 
@@ -12,8 +13,7 @@ public:
 
     auto draw() -> void;
 
-protected:
-    virtual auto draw(cairo_t* cr) -> void;
+    std::function<void(cairo_t*)> on_draw {};
 
 private:
     int m_width {};

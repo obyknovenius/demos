@@ -211,6 +211,10 @@ Window::Window(Display& display, int width, int height)
     glEnableVertexAttribArray(1);
 
     m_layer = new Layer(width, height);
+    m_layer->on_draw = [](cairo_t* cr) {
+        cairo_set_source_rgba(cr, 1.0, 0.0, 0.0, 1.0);
+        cairo_paint(cr);
+    };
 }
 
 Window::~Window()
