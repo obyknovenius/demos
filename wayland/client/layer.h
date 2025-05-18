@@ -6,18 +6,20 @@
 
 class Layer final {
 public:
-    Layer(int witdh, int height);
+    Layer(float x, float y, float witdh, float height);
     ~Layer();
 
-    auto texture() const -> GLuint { return m_texture; }
-
     auto draw() -> void;
+    auto composite() -> void;
 
     std::function<void(cairo_t*)> on_draw {};
 
 private:
     int m_width {};
     int m_height {};
+
+    unsigned int m_vao;
+    unsigned int m_vbo;
 
     GLuint m_texture {};
 };

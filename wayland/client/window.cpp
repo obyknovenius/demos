@@ -71,10 +71,11 @@ layout (location = 1) in vec2 aTexCoord;
 out vec2 TexCoord;
 
 uniform mat4 transform;
+uniform mat4 projection;
 
 void main()
 {
-    gl_Position = transform * vec4(aPos, 1.0);
+    gl_Position = projection * transform * vec4(aPos, 1.0);
     TexCoord = aTexCoord;
 }
 )";
@@ -178,41 +179,19 @@ Window::Window(Display& display, int width, int height)
     glDeleteShader(vertex_shadrer);
     glDeleteShader(fragment_shader);
 
-    float vertices[] = {
-        // positioins       // texture coordinates
-         1.0f,  1.0f, 0.0f,  1.0f, 1.0f, // top right
-         1.0f, -1.0f, 0.0f,  1.0f, 0.0f, // bottom right
-        -1.0f, -1.0f, 0.0f,  0.0f, 0.0f, // bottom left
-        -1.0f,  1.0f, 0.0f,  0.0f, 1.0f  // top left
-    };
+    glm::mat4 projection = glm::ortho(0.0f, static_cast<float>(width), static_cast<float>(height), 0.0f, -1.0f, 1.0f);
+    unsigned int projection_loc = glGetUniformLocation(m_program, "projection");
+    glUniformMatrix4fv(projection_loc, 1, GL_FALSE, glm::value_ptr(projection));
 
-    unsigned int indices[] = {
-        0, 1, 3, // first triangle
-        1, 2, 3  // second triangle
-    };
-
-    glGenVertexArrays(1, &m_vao);
-    glBindVertexArray(m_vao);
-
-    glGenBuffers(1, &m_vbo);
-    glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-    glGenBuffers(1, &m_ebo);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ebo);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-    // position attribute
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), 0);
-    glEnableVertexAttribArray(0);
-
-    // texture coordinates attribute
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), reinterpret_cast<void*>(3 * sizeof(float)));
-    glEnableVertexAttribArray(1);
-
-    m_layer = new Layer(width, height);
+    m_layer = new Layer(100.0f, 100.0f, 100.0f, 100.0f);
     m_layer->on_draw = [](cairo_t* cr) {
-        cairo_set_source_rgba(cr, 1.0, 0.0, 0.0, 1.0);
+        cairo_set_source_rgba(cr, 0.0, 1.0, 0.0, 0.5);
+        cairo_paint(cr);
+    };
+
+    m_layer2 = new Layer(400.0f, 300.0f, 100.0f, 100.0f);
+    m_layer2->on_draw = [](cairo_t* cr) {
+        cairo_set_source_rgba(cr, 0.0, 0.0, 1.0, 1.0);
         cairo_paint(cr);
     };
 }
@@ -222,14 +201,8 @@ Window::~Window()
     delete m_layer;
     m_layer = nullptr;
 
-    glBindVertexArray(0);
-    glDeleteVertexArrays(1, &m_vao);
-
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glDeleteBuffers(1, &m_vbo);
-
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-    glDeleteBuffers(1, &m_ebo);
+    delete m_layer2;
+    m_layer2 = nullptr;
 
     glUseProgram(0);
     glDeleteProgram(m_program);
@@ -271,8 +244,10 @@ auto Window::draw() -> void
         }
     
         glClearColor(color[0], color[1], color[2], color[3]);
-        glClear(GL_COLOR_BUFFER_BIT);
+    } else {
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     }
+    glClear(GL_COLOR_BUFFER_BIT);
 
     glm::mat4 transform = glm::mat4(1.0f);
     if (m_animate) {
@@ -283,13 +258,13 @@ auto Window::draw() -> void
     unsigned int transform_loc = glGetUniformLocation(m_program, "transform");
     glUniformMatrix4fv(transform_loc, 1, GL_FALSE, glm::value_ptr(transform));
 
-    m_layer->draw();
-
-    glBindVertexArray(m_vao);
-    glBindTexture(GL_TEXTURE_2D, m_layer->texture());
-
     glUseProgram(m_program);
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+    m_layer->draw();
+    m_layer->composite();
+
+    m_layer2->draw();
+    m_layer2->composite();
 
     eglSwapBuffers(m_egl_display, m_egl_surface);
 

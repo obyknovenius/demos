@@ -30,9 +30,6 @@ private:
 
     unsigned int m_program;
 
-    unsigned int m_vao;
-    unsigned int m_vbo;
-    unsigned int m_ebo;
-
     Layer* m_layer {};
+    Layer* m_layer2 {};
 };
