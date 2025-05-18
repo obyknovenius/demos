@@ -62,6 +62,9 @@ auto Layer::draw() -> void
     if (on_draw) {
         auto surface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, std::floor(m_width), std::ceil(m_height));
         auto cr = cairo_create(surface);
+
+        cairo_translate(cr, 0, m_height);
+        cairo_scale(cr, 1, -1);
         
         on_draw(cr);
         cairo_surface_flush(surface);

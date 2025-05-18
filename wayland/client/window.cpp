@@ -98,6 +98,9 @@ void main()
 
 Window::Window(Display& display, int width, int height)
 {
+    m_width = width;
+    m_height = height;
+
     m_wl_surface = wl_compositor_create_surface(display.wl_compositor());
 
     m_xdg_surface = xdg_wm_base_get_xdg_surface(display.xdg_wm_base(), m_wl_surface);
@@ -107,7 +110,7 @@ Window::Window(Display& display, int width, int height)
     xdg_toplevel_set_title(m_xdg_toplevel, "Hello, Wayland!");
     wl_surface_commit(m_wl_surface);
 
-    m_wl_egl_window = wl_egl_window_create(m_wl_surface, width, height);
+    m_wl_egl_window = wl_egl_window_create(m_wl_surface, m_width, m_height);
 
     m_egl_display = display.egl_display();
 
@@ -136,7 +139,7 @@ Window::Window(Display& display, int width, int height)
 
     eglMakeCurrent(m_egl_display, m_egl_surface, m_egl_surface, m_egl_context);
 
-    glViewport(0, 0, width, height);
+    glViewport(0, 0, m_width, m_height);
 
     unsigned int vertex_shadrer = glCreateShader(GL_VERTEX_SHADER);
     glShaderSource(vertex_shadrer, 1, &vertex_shader_source, NULL);
@@ -179,20 +182,13 @@ Window::Window(Display& display, int width, int height)
     glDeleteShader(vertex_shadrer);
     glDeleteShader(fragment_shader);
 
-    glm::mat4 projection = glm::ortho(0.0f, static_cast<float>(width), static_cast<float>(height), 0.0f, -1.0f, 1.0f);
+    glm::mat4 projection = glm::ortho(0.0f, static_cast<float>(m_width), static_cast<float>(m_height), 0.0f, -1.0f, 1.0f);
     unsigned int projection_loc = glGetUniformLocation(m_program, "projection");
     glUniformMatrix4fv(projection_loc, 1, GL_FALSE, glm::value_ptr(projection));
 
-    m_layer = new Layer(100.0f, 100.0f, 100.0f, 100.0f);
-    m_layer->on_draw = [](cairo_t* cr) {
-        cairo_set_source_rgba(cr, 0.0, 1.0, 0.0, 0.5);
-        cairo_paint(cr);
-    };
-
-    m_layer2 = new Layer(400.0f, 300.0f, 100.0f, 100.0f);
-    m_layer2->on_draw = [](cairo_t* cr) {
-        cairo_set_source_rgba(cr, 0.0, 0.0, 1.0, 1.0);
-        cairo_paint(cr);
+    m_layer = new Layer(0.0f, 0.0f, m_width, m_height);
+    m_layer->on_draw = [this](cairo_t* cr) {
+        this->draw(cr);
     };
 }
 
@@ -200,9 +196,6 @@ Window::~Window()
 {
     delete m_layer;
     m_layer = nullptr;
-
-    delete m_layer2;
-    m_layer2 = nullptr;
 
     glUseProgram(0);
     glDeleteProgram(m_program);
@@ -263,14 +256,47 @@ auto Window::draw() -> void
     m_layer->draw();
     m_layer->composite();
 
-    m_layer2->draw();
-    m_layer2->composite();
-
     eglSwapBuffers(m_egl_display, m_egl_surface);
 
 #ifndef NDEBUG
     print_fps();
 #endif
+}
+
+auto Window::draw(cairo_t* cr) -> void
+{
+    cairo_set_source_rgba(cr, 1.0, 1.0, 1.0, 1.0);
+    cairo_paint(cr);
+
+    cairo_set_source_rgba(cr, 0.0, 0.0, 0.0, 1.0);
+
+    cairo_rectangle(cr, 1.0, 1.0, m_width - 2.0, m_height - 2.0);
+    cairo_stroke(cr);
+    
+    draw_titlebar(cr);
+}
+
+auto Window::draw_titlebar(cairo_t* cr) -> void
+{
+    cairo_set_source_rgb(cr, 0.0, 0.0, 0.0);
+    for (int i = 0; i < 6; ++i) {
+        cairo_move_to(cr, 4, 9 + i * 4);
+        cairo_line_to(cr, m_width - 4, 9 + i * 4);
+        cairo_stroke(cr);
+    }
+
+    cairo_set_source_rgb(cr, 1.0, 1.0, 1.0);
+    cairo_rectangle(cr, 19.0, 8.0, 26.0, 22.0);
+    cairo_fill(cr);
+
+    cairo_set_source_rgb(cr, 0.0, 0.0, 0.0);
+    cairo_rectangle(cr, 22.0, 9.0, 20.0, 20.0);
+    cairo_stroke(cr);
+
+    cairo_set_source_rgb(cr, 0.0, 0.0, 0.0);
+    cairo_move_to(cr, 0, 36.0);
+    cairo_line_to(cr, m_width, 36.0);
+    cairo_stroke(cr);
 }
 
 auto Window::frame_done(struct wl_callback* callback, uint32_t time) -> void

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <EGL/egl.h>
+#include <cairo/cairo.h>
 
 class Display;
 class Layer;
@@ -16,7 +17,13 @@ public:
 private:
     auto draw() -> void;
 
+    auto draw(cairo_t* cr) -> void;
+    auto draw_titlebar(cairo_t* cr) -> void;
+
     bool m_animate { false };
+
+    int m_width {};
+    int m_height {};
 
     struct wl_surface* m_wl_surface {};
     struct xdg_surface* m_xdg_surface {};
@@ -31,5 +38,4 @@ private:
     unsigned int m_program;
 
     Layer* m_layer {};
-    Layer* m_layer2 {};
 };
