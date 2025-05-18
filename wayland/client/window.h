@@ -16,7 +16,7 @@ public:
 private:
     auto draw() -> void;
 
-    bool m_animate { true };
+    bool m_animate { false };
 
     struct wl_surface* m_wl_surface {};
     struct xdg_surface* m_xdg_surface {};

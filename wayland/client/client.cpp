@@ -1,5 +1,7 @@
 
 #include <string.h>
+#include <errno.h>
+#include <stdio.h>
 #include <wayland-client.h>
 #include "display.h"
 #include "window.h"
@@ -19,8 +21,13 @@ int main(int argc, char* argv[])
     Display display {};
     Window window { display, width, height };
 
-    while (wl_display_dispatch(display.wl_display())) {
-        /* This space deliberately left blank */
+    while (true) {
+        if (wl_display_dispatch(display.wl_display()) < 0) {
+            if (errno != EAGAIN) {
+                perror("wl_display_dispatch");
+                break;
+            }
+        }
     }
 
     return 0;
