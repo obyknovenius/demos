@@ -15,7 +15,10 @@
 #include "glm/gtc/type_ptr.hpp"
 
 #include "display.h"
+#include "label.h"
 #include "layer.h"
+#include "window_close_button.h"
+#include "window_maximize_button.h"
 
 static auto print_fps() -> void
 {
@@ -280,18 +283,33 @@ auto Window::draw_titlebar(cairo_t* cr) -> void
 {
     cairo_set_source_rgb(cr, 0.0, 0.0, 0.0);
     for (int i = 0; i < 6; ++i) {
-        cairo_move_to(cr, 4, 9 + i * 4);
+        cairo_move_to(cr, 4.0, 9.0 + i * 4);
         cairo_line_to(cr, m_width - 4, 9 + i * 4);
         cairo_stroke(cr);
     }
 
-    cairo_set_source_rgb(cr, 1.0, 1.0, 1.0);
-    cairo_rectangle(cr, 19.0, 8.0, 26.0, 22.0);
-    cairo_fill(cr);
+    cairo_save(cr);
+    WindowCloseButton close_button(16.0f, 8.0f);
+    cairo_translate(cr, close_button.x(), close_button.y());
+    close_button.draw(cr);
+    cairo_restore(cr);
 
-    cairo_set_source_rgb(cr, 0.0, 0.0, 0.0);
-    cairo_rectangle(cr, 22.0, 9.0, 20.0, 20.0);
-    cairo_stroke(cr);
+    cairo_save(cr);
+    WindowMaximizeButton maximize_button(0.0f, 8.0f);
+    maximize_button.set_x(m_width - maximize_button.width() - 16.0f);
+    cairo_translate(cr, maximize_button.x(), maximize_button.y());
+    maximize_button.draw(cr);
+    cairo_restore(cr);
+
+    cairo_save(cr);
+    Label label(0.0f, 0.0f, m_width, m_height);
+    label.set_text("Hello, Wayland!");
+    label.layout();
+    label.set_x(m_width / 2 - label.width() / 2);
+    label.set_y(4.0f);
+    cairo_translate(cr, label.x(), label.y());
+    label.draw(cr);
+    cairo_restore(cr);
 
     cairo_set_source_rgb(cr, 0.0, 0.0, 0.0);
     cairo_move_to(cr, 0, 36.0);

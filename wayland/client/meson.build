@@ -31,8 +31,13 @@ deps = [
 sources = [
     'client.cpp',
     'display.cpp',
-    'window.cpp',
+    'label.cpp',
     'layer.cpp',
+    'view.cpp',
+    'window_button.cpp',
+    'window_close_button.cpp',
+    'window_maximize_button.cpp',
+    'window.cpp',
     xdg_shell_client_c,
     xdg_shell_client_h,
 ]

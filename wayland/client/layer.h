@@ -6,7 +6,7 @@
 
 class Layer final {
 public:
-    Layer(float x, float y, float witdh, float height);
+    Layer(float x, float y, float width, float height);
     ~Layer();
 
     auto draw() -> void;
@@ -15,8 +15,10 @@ public:
     std::function<void(cairo_t*)> on_draw {};
 
 private:
-    int m_width {};
-    int m_height {};
+    float m_x {};
+    float m_y {};
+    float m_width {};
+    float m_height {};
 
     unsigned int m_vao;
     unsigned int m_vbo;
