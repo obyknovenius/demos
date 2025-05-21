@@ -15,8 +15,8 @@
 #include "glm/gtc/type_ptr.hpp"
 
 #include "display.h"
-#include "label.h"
 #include "layer.h"
+#include "text_view.h"
 #include "window_close_button.h"
 #include "window_maximize_button.h"
 
@@ -289,30 +289,26 @@ auto Window::draw_titlebar(cairo_t* cr) -> void
     }
 
     cairo_save(cr);
-    gfx::Rect close_button_frame { 16.0f, 8.0f, 22.0f, 22.0f };
-    draw_placeholder(cr, close_button_frame, -2.0f);
-    WindowCloseButton close_button { close_button_frame };
+    WindowCloseButton close_button { { 16.0f, 8.0f, 22.0f, 22.0f } };
+    draw_placeholder(cr, close_button.frame(), -2.0f);
     cairo_translate(cr, close_button.frame().x, close_button.frame().y);
     close_button.draw(cr);
     cairo_restore(cr);
 
     cairo_save(cr);
-    gfx::Rect maximize_button_frame { m_width - 22.0f - 16.0f, 8.0f, 22.0f, 22.0f };
-    draw_placeholder(cr, maximize_button_frame, -2.0f);
-    WindowMaximizeButton maximize_button { maximize_button_frame };
-    cairo_translate(cr, maximize_button_frame.x, maximize_button_frame.y);
+    WindowMaximizeButton maximize_button { { m_width - 22.0f - 16.0f, 8.0f, 22.0f, 22.0f } };
+    draw_placeholder(cr, maximize_button.frame(), -2.0f);
+    cairo_translate(cr, maximize_button.frame().x, maximize_button.frame().y);
     maximize_button.draw(cr);
     cairo_restore(cr);
 
     cairo_save(cr);
-    Label label {};
-    label.set_text("Hello, Wayland!");
-    auto label_intrinsic_size = *label.intrinsic_size();
-    gfx::Rect label_frame { m_width / 2 - label_intrinsic_size.width / 2, 4.0f, label_intrinsic_size.width, label_intrinsic_size.height };
-    label.set_frame(label_frame);
-    draw_placeholder(cr, label_frame, -16.0f);
-    cairo_translate(cr, label_frame.x, label_frame.y);
-    label.draw(cr);
+    TextView title_view { "Hello, Wayland!" };
+    auto title_view_intrinsic_size = *title_view.intrinsic_size();
+    title_view.set_frame({ m_width / 2 - title_view_intrinsic_size.width / 2, 4.0f, title_view_intrinsic_size.width, title_view_intrinsic_size.height });
+    draw_placeholder(cr, title_view.frame(), -16.0f);
+    cairo_translate(cr, title_view.frame().x, title_view.frame().y);
+    title_view.draw(cr);
     cairo_restore(cr);
 
     cairo_set_source_rgb(cr, 0.0, 0.0, 0.0);
@@ -324,12 +320,10 @@ auto Window::draw_titlebar(cairo_t* cr) -> void
 auto Window::draw_placeholder(cairo_t* cr, const gfx::Rect& rect, float dx) -> void
 {
     cairo_save(cr);
-
-    auto placeholder_rect = rect.inset_by(dx, 0.01f);
+    auto placeholder_rect = rect.inset_by(dx, 0.0f);
     cairo_rectangle(cr, placeholder_rect.x, placeholder_rect.y, placeholder_rect.width, placeholder_rect.height);
     cairo_set_source_rgb(cr, 1.0, 1.0, 1.0);
     cairo_fill(cr);
-
     cairo_restore(cr);
 }
 

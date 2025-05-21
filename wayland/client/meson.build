@@ -31,8 +31,8 @@ deps = [
 sources = [
     'client.cpp',
     'display.cpp',
-    'label.cpp',
     'layer.cpp',
+    'text_view.cpp',
     'view.cpp',
     'window_button.cpp',
     'window_close_button.cpp',

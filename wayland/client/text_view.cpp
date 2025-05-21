@@ -1,8 +1,8 @@
-#include "label.h"
+#include "text_view.h"
 
 #include <string>
 
-auto Label::intrinsic_size() -> std::optional<gfx::Size>
+auto TextView::intrinsic_size() -> std::optional<gfx::Size>
 {
     gfx::Size intrinsic_size {};
 
@@ -26,7 +26,7 @@ auto Label::intrinsic_size() -> std::optional<gfx::Size>
     return intrinsic_size;
 }
 
-auto Label::draw(cairo_t* cr) -> void
+auto TextView::draw(cairo_t* cr) -> void
 {
     cairo_rectangle(cr, 0.0, 0.0, m_frame.width, m_frame.height);
     cairo_set_source_rgb(cr, 1.0, 1.0, 1.0);

@@ -4,13 +4,19 @@
 
 #include <string>
 
-class Label final : public View {
+class TextView final : public View {
 public:
-        Label() : View {}
+    TextView() : View {}
     {
     }
 
-    explicit Label(const gfx::Rect& frame) : View { frame }
+    explicit TextView(const gfx::Rect& frame) : View { frame }
+    {
+    }
+
+    explicit TextView(const std::string& text, const gfx::Rect& frame = {} )
+        : View { frame }
+        , m_text { text }
     {
     }
 
