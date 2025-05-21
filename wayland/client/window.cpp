@@ -289,25 +289,29 @@ auto Window::draw_titlebar(cairo_t* cr) -> void
     }
 
     cairo_save(cr);
-    WindowCloseButton close_button(16.0f, 8.0f);
-    cairo_translate(cr, close_button.x(), close_button.y());
+    gfx::Rect close_button_frame { 16.0f, 8.0f, 22.0f, 22.0f };
+    draw_placeholder(cr, close_button_frame, -2.0f);
+    WindowCloseButton close_button { close_button_frame };
+    cairo_translate(cr, close_button.frame().x, close_button.frame().y);
     close_button.draw(cr);
     cairo_restore(cr);
 
     cairo_save(cr);
-    WindowMaximizeButton maximize_button(0.0f, 8.0f);
-    maximize_button.set_x(m_width - maximize_button.width() - 16.0f);
-    cairo_translate(cr, maximize_button.x(), maximize_button.y());
+    gfx::Rect maximize_button_frame { m_width - 22.0f - 16.0f, 8.0f, 22.0f, 22.0f };
+    draw_placeholder(cr, maximize_button_frame, -2.0f);
+    WindowMaximizeButton maximize_button { maximize_button_frame };
+    cairo_translate(cr, maximize_button_frame.x, maximize_button_frame.y);
     maximize_button.draw(cr);
     cairo_restore(cr);
 
     cairo_save(cr);
-    Label label(0.0f, 0.0f, m_width, m_height);
+    Label label {};
     label.set_text("Hello, Wayland!");
-    label.layout();
-    label.set_x(m_width / 2 - label.width() / 2);
-    label.set_y(4.0f);
-    cairo_translate(cr, label.x(), label.y());
+    auto label_intrinsic_size = *label.intrinsic_size();
+    gfx::Rect label_frame { m_width / 2 - label_intrinsic_size.width / 2, 4.0f, label_intrinsic_size.width, label_intrinsic_size.height };
+    label.set_frame(label_frame);
+    draw_placeholder(cr, label_frame, -16.0f);
+    cairo_translate(cr, label_frame.x, label_frame.y);
     label.draw(cr);
     cairo_restore(cr);
 
@@ -315,6 +319,18 @@ auto Window::draw_titlebar(cairo_t* cr) -> void
     cairo_move_to(cr, 0, 36.0);
     cairo_line_to(cr, m_width, 36.0);
     cairo_stroke(cr);
+}
+
+auto Window::draw_placeholder(cairo_t* cr, const gfx::Rect& rect, float dx) -> void
+{
+    cairo_save(cr);
+
+    auto placeholder_rect = rect.inset_by(dx, 0.01f);
+    cairo_rectangle(cr, placeholder_rect.x, placeholder_rect.y, placeholder_rect.width, placeholder_rect.height);
+    cairo_set_source_rgb(cr, 1.0, 1.0, 1.0);
+    cairo_fill(cr);
+
+    cairo_restore(cr);
 }
 
 auto Window::frame_done(struct wl_callback* callback, uint32_t time) -> void

@@ -4,7 +4,13 @@
 
 class WindowCloseButton final : public WindowButton {
 public:
-    WindowCloseButton(float x, float y) : WindowButton {x, y} {}
+    WindowCloseButton() : WindowButton {}
+    {
+    }
+
+    explicit WindowCloseButton(const gfx::Rect& frame) : WindowButton { frame }
+    {
+    }
 
     auto draw(cairo_t*) -> void override;
 };

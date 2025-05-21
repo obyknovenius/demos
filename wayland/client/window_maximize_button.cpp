@@ -3,9 +3,6 @@
 auto WindowMaximizeButton::draw(cairo_t* cr) -> void
 {
     WindowButton::draw(cr);
-
-    cairo_save(cr);
-    cairo_translate(cr, m_margin, 0.0f);
  
     auto line_width = 2.0f;
     cairo_rectangle(cr,
@@ -16,6 +13,4 @@ auto WindowMaximizeButton::draw(cairo_t* cr) -> void
     cairo_set_line_width(cr, line_width);
     cairo_set_source_rgb(cr, 0.0, 0.0, 0.0);
     cairo_stroke(cr);
-
-    cairo_restore(cr);
 }

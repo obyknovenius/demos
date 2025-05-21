@@ -3,12 +3,17 @@
 #include <EGL/egl.h>
 #include <cairo/cairo.h>
 
+namespace gfx {
+    struct Rect;
+}
+
 class Display;
 class Layer;
 
 class Window final {
 public:
     Window(Display& display, int width, int height);
+
     ~Window();
 
     auto configure(struct xdg_surface* xdg_surface, uint32_t serial) -> void;
@@ -19,6 +24,7 @@ private:
 
     auto draw(cairo_t* cr) -> void;
     auto draw_titlebar(cairo_t* cr) -> void;
+    auto draw_placeholder(cairo_t* cr, const gfx::Rect& rect, float dx) -> void;
 
     bool m_animate { false };
 

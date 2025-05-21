@@ -1,34 +1,28 @@
 #pragma once
 
 #include <cairo/cairo.h>
+#include <optional>
+
+#include "gfx/rect.h"
+#include "gfx/size.h"
 
 class View {
 public:
-    View(float x, float y, float width, float height)
-        : m_x { x }
-        , m_y { y }
-        , m_width { width }
-        , m_height { height }
-    {}
+    View() = default;
+
+    explicit View(const gfx::Rect& frame) : m_frame { frame }
+    {
+    }
+
     virtual ~View() = default;
 
-    auto x() const -> float { return m_x; }
-    auto set_x(float x) -> void { m_x = x; }
+    auto set_frame(const gfx::Rect& frame) -> void { m_frame = frame; }
+    auto frame() const -> gfx::Rect { return m_frame; }
 
-    auto y() const -> float { return m_y; }
-    auto set_y(float y) -> void { m_y = y; }
-
-    auto width() const -> float { return m_width; }
-    auto set_width(float width) -> void { m_width = width; }
-
-    auto height() const -> float { return m_height; }
-    auto set_height(float height) -> void { m_height = height; }
+    virtual auto intrinsic_size() -> std::optional<gfx::Size> { return std::nullopt; }
 
     virtual auto draw(cairo_t*) -> void {}
 
 protected:
-    float m_x {};
-    float m_y {};
-    float m_width {};
-    float m_height {};
+    gfx::Rect m_frame {};
 };

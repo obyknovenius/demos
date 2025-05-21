@@ -4,7 +4,13 @@
 
 class WindowMaximizeButton final : public WindowButton {
 public:
-    WindowMaximizeButton(float x, float y) : WindowButton {x, y} {}
+    WindowMaximizeButton() : WindowButton {}
+    {
+    }
+
+    explicit WindowMaximizeButton(const gfx::Rect& frame) : WindowButton { frame }
+    {
+    }
 
     auto draw(cairo_t*) -> void override;
 };

@@ -6,14 +6,18 @@
 
 class Label final : public View {
 public:
-    Label(float x, float y, float width, float height)
-        : View { x, y, width, height }
-    {}
+        Label() : View {}
+    {
+    }
+
+    explicit Label(const gfx::Rect& frame) : View { frame }
+    {
+    }
 
     auto text() -> std::string { return m_text; }
     auto set_text(const std::string& text) -> void { m_text = text; }
 
-    auto layout() -> void;
+    auto intrinsic_size() -> std::optional<gfx::Size> override;
 
     auto draw(cairo_t*) -> void override;
 

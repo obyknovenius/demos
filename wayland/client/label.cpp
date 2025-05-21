@@ -2,8 +2,10 @@
 
 #include <string>
 
-auto Label::layout() -> void
+auto Label::intrinsic_size() -> std::optional<gfx::Size>
 {
+    gfx::Size intrinsic_size {};
+
     cairo_surface_t* surface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, 0, 0);
     cairo_t* cr = cairo_create(surface);
 
@@ -12,19 +14,21 @@ auto Label::layout() -> void
 
     cairo_font_extents_t font_extents;
     cairo_font_extents(cr, &font_extents);
-    m_height = font_extents.ascent + font_extents.descent;
+    intrinsic_size.height = font_extents.ascent + font_extents.descent;
 
     cairo_text_extents_t text_extents;
     cairo_text_extents(cr, m_text.c_str(), &text_extents);
-    m_width = text_extents.width;
+    intrinsic_size.width = text_extents.width;
 
     cairo_destroy(cr);
     cairo_surface_destroy(surface);
+
+    return intrinsic_size;
 }
 
 auto Label::draw(cairo_t* cr) -> void
 {
-    cairo_rectangle(cr, 0.0, 0.0, m_width, m_height);
+    cairo_rectangle(cr, 0.0, 0.0, m_frame.width, m_frame.height);
     cairo_set_source_rgb(cr, 1.0, 1.0, 1.0);
     cairo_fill(cr);
 
