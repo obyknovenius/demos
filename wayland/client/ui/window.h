@@ -2,6 +2,7 @@
 
 #include <EGL/egl.h>
 #include <cairo/cairo.h>
+#include <memory>
 
 namespace gfx {
     struct Rect;
@@ -9,6 +10,7 @@ namespace gfx {
 
 class Display;
 class Layer;
+class TitleBar;
 
 class Window final {
 public:
@@ -44,4 +46,6 @@ private:
     unsigned int m_program;
 
     Layer* m_layer {};
+
+    std::shared_ptr<TitleBar> m_title_bar {};
 };

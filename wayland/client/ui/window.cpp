@@ -17,6 +17,7 @@
 #include "display.h"
 #include "layer.h"
 #include "text_view.h"
+#include "title_bar.h"
 #include "window_close_button.h"
 #include "window_maximize_button.h"
 
@@ -189,9 +190,20 @@ Window::Window(Display& display, int width, int height)
     unsigned int projection_loc = glGetUniformLocation(m_program, "projection");
     glUniformMatrix4fv(projection_loc, 1, GL_FALSE, glm::value_ptr(projection));
 
+    m_title_bar = std::make_shared<TitleBar>("Hello, Wayland!", gfx::Rect { 0.0f, 0.0f, static_cast<float>(m_width), 36.0f });
+    m_title_bar->layout();
+
     m_layer = new Layer(0.0f, 0.0f, m_width, m_height);
     m_layer->on_draw = [this](cairo_t* cr) {
-        this->draw(cr);
+        cairo_set_source_rgba(cr, 1.0, 1.0, 1.0, 1.0);
+        cairo_paint(cr);
+
+        cairo_set_source_rgba(cr, 0.0, 0.0, 0.0, 1.0);
+
+        cairo_rectangle(cr, 1.0, 1.0, m_width - 2.0, m_height - 2.0);
+        cairo_stroke(cr);
+
+        m_title_bar->draw(cr);
     };
 }
 
@@ -264,67 +276,6 @@ auto Window::draw() -> void
 #ifndef NDEBUG
     print_fps();
 #endif
-}
-
-auto Window::draw(cairo_t* cr) -> void
-{
-    cairo_set_source_rgba(cr, 1.0, 1.0, 1.0, 1.0);
-    cairo_paint(cr);
-
-    cairo_set_source_rgba(cr, 0.0, 0.0, 0.0, 1.0);
-
-    cairo_rectangle(cr, 1.0, 1.0, m_width - 2.0, m_height - 2.0);
-    cairo_stroke(cr);
-    
-    draw_titlebar(cr);
-}
-
-auto Window::draw_titlebar(cairo_t* cr) -> void
-{
-    cairo_set_source_rgb(cr, 0.0, 0.0, 0.0);
-    for (int i = 0; i < 6; ++i) {
-        cairo_move_to(cr, 4.0, 9.0 + i * 4);
-        cairo_line_to(cr, m_width - 4, 9 + i * 4);
-        cairo_stroke(cr);
-    }
-
-    cairo_save(cr);
-    WindowCloseButton close_button { { 16.0f, 8.0f, 22.0f, 22.0f } };
-    draw_placeholder(cr, close_button.frame(), -2.0f);
-    cairo_translate(cr, close_button.frame().x, close_button.frame().y);
-    close_button.draw(cr);
-    cairo_restore(cr);
-
-    cairo_save(cr);
-    WindowMaximizeButton maximize_button { { m_width - 22.0f - 16.0f, 8.0f, 22.0f, 22.0f } };
-    draw_placeholder(cr, maximize_button.frame(), -2.0f);
-    cairo_translate(cr, maximize_button.frame().x, maximize_button.frame().y);
-    maximize_button.draw(cr);
-    cairo_restore(cr);
-
-    cairo_save(cr);
-    TextView title_view { "Hello, Wayland!" };
-    auto title_view_intrinsic_size = *title_view.intrinsic_size();
-    title_view.set_frame({ m_width / 2 - title_view_intrinsic_size.width / 2, 4.0f, title_view_intrinsic_size.width, title_view_intrinsic_size.height });
-    draw_placeholder(cr, title_view.frame(), -16.0f);
-    cairo_translate(cr, title_view.frame().x, title_view.frame().y);
-    title_view.draw(cr);
-    cairo_restore(cr);
-
-    cairo_set_source_rgb(cr, 0.0, 0.0, 0.0);
-    cairo_move_to(cr, 0, 36.0);
-    cairo_line_to(cr, m_width, 36.0);
-    cairo_stroke(cr);
-}
-
-auto Window::draw_placeholder(cairo_t* cr, const gfx::Rect& rect, float dx) -> void
-{
-    cairo_save(cr);
-    auto placeholder_rect = rect.inset_by(dx, 0.0f);
-    cairo_rectangle(cr, placeholder_rect.x, placeholder_rect.y, placeholder_rect.width, placeholder_rect.height);
-    cairo_set_source_rgb(cr, 1.0, 1.0, 1.0);
-    cairo_fill(cr);
-    cairo_restore(cr);
 }
 
 auto Window::frame_done(struct wl_callback* callback, uint32_t time) -> void

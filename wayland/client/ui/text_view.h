@@ -6,15 +6,9 @@
 
 class TextView final : public View {
 public:
-    TextView() : View {}
-    {
-    }
+    explicit TextView(const gfx::Rect& frame) : View { frame } {}
 
-    explicit TextView(const gfx::Rect& frame) : View { frame }
-    {
-    }
-
-    explicit TextView(const std::string& text, const gfx::Rect& frame = {} )
+    TextView(const std::string& text, const gfx::Rect& frame = {})
         : View { frame }
         , m_text { text }
     {
@@ -25,7 +19,7 @@ public:
 
     auto intrinsic_size() -> std::optional<gfx::Size> override;
 
-    auto draw(cairo_t*) -> void override;
+    auto draw(cairo_t* cr) -> void override;
 
 private:
     std::string m_text {};
