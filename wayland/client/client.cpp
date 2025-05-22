@@ -2,9 +2,8 @@
 #include <string.h>
 #include <errno.h>
 #include <stdio.h>
-#include <wayland-client.h>
-#include "display.h"
-#include "window.h"
+#include <ui/display.h>
+#include <ui/window.h>
 
 int main(int argc, char* argv[])
 {

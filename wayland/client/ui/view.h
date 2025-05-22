@@ -3,8 +3,8 @@
 #include <cairo/cairo.h>
 #include <optional>
 
-#include "gfx/rect.h"
-#include "gfx/size.h"
+#include <gfx/rect.h>
+#include <gfx/size.h>
 
 class View {
 public:
