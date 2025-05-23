@@ -16,10 +16,7 @@
 
 #include "display.h"
 #include "layer.h"
-#include "text_view.h"
-#include "title_bar.h"
-#include "window_close_button.h"
-#include "window_maximize_button.h"
+#include "window_decoration_view.h"
 
 static auto print_fps() -> void
 {
@@ -190,20 +187,12 @@ Window::Window(Display& display, int width, int height)
     unsigned int projection_loc = glGetUniformLocation(m_program, "projection");
     glUniformMatrix4fv(projection_loc, 1, GL_FALSE, glm::value_ptr(projection));
 
-    m_title_bar = std::make_shared<TitleBar>("Hello, Wayland!", gfx::Rect { 0.0f, 0.0f, static_cast<float>(m_width), 36.0f });
-    m_title_bar->layout();
+    m_decoration_view = std::make_shared<DecorationView>("Hello, Wayland!", gfx::Rect { 0.0f, 0.0f, static_cast<float>(m_width), static_cast<float>(m_height) });
+    m_decoration_view->layout();
 
     m_layer = new Layer(0.0f, 0.0f, m_width, m_height);
     m_layer->on_draw = [this](cairo_t* cr) {
-        cairo_set_source_rgba(cr, 1.0, 1.0, 1.0, 1.0);
-        cairo_paint(cr);
-
-        cairo_set_source_rgba(cr, 0.0, 0.0, 0.0, 1.0);
-
-        cairo_rectangle(cr, 1.0, 1.0, m_width - 2.0, m_height - 2.0);
-        cairo_stroke(cr);
-
-        m_title_bar->draw(cr);
+        m_decoration_view->draw(cr);
     };
 }
 

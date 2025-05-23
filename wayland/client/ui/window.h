@@ -10,10 +10,11 @@ namespace gfx {
 
 class Display;
 class Layer;
-class TitleBar;
 
 class Window final {
 public:
+    class DecorationView;
+
     Window(Display& display, int width, int height);
 
     ~Window();
@@ -47,5 +48,5 @@ private:
 
     Layer* m_layer {};
 
-    std::shared_ptr<TitleBar> m_title_bar {};
+    std::shared_ptr<DecorationView> m_decoration_view {};
 };

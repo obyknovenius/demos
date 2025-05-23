@@ -1,6 +1,5 @@
 #pragma once
 
-#include <memory>
 #include <string>
 
 #include "view.h"
@@ -11,7 +10,7 @@ class WindowMaximizeButton;
 
 class TitleBar : public View {
 public:
-    TitleBar(const std::string& text, const gfx::Rect& frame);
+    TitleBar(const std::string& text, const gfx::Rect& frame = {});
 
     virtual auto layout() -> void;
 

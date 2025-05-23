@@ -33,6 +33,7 @@ ui_sources = [
     'title_bar.cpp',
     'view.cpp',
     'window_button.cpp',
+    'window_decoration_view.cpp',
     'window_close_button.cpp',
     'window_maximize_button.cpp',
     'window.cpp',
