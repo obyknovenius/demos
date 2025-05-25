@@ -1,8 +1,12 @@
-#include "display.h"
+#include "display_server.h"
 
 #include <cstring>
 #include <iostream>
 #include <EGL/eglext.h>
+
+#include "window.h"
+
+namespace ui::wayland {
 
 static auto ping(void* data, struct xdg_wm_base* xdg_wm_base, uint32_t serial) -> void
 {
@@ -15,7 +19,7 @@ struct xdg_wm_base_listener xdg_wm_base_listener = {
 
 static auto registry_global(void* data, struct wl_registry* wl_registry, uint32_t name, const char* interface, uint32_t version) -> void
 {
-    auto display = reinterpret_cast<Display*>(data);
+    auto display = reinterpret_cast<DisplayServer*>(data);
     display->registry_global(wl_registry, name, interface, version);
 }
 
@@ -35,7 +39,41 @@ static auto print_egl_extensions(EGLDisplay display) -> void
     std::cout << "EGL Extensions: " << extensions << std::endl;
 }
 
-Display::Display()
+const char* vertex_shader_source = R"(
+#version 300 es
+
+layout (location = 0) in vec3 aPos;
+layout (location = 1) in vec2 aTexCoord;
+
+out vec2 TexCoord;
+
+uniform mat4 transform;
+uniform mat4 projection;
+
+void main()
+{
+    gl_Position = projection * transform * vec4(aPos, 1.0);
+    TexCoord = aTexCoord;
+}
+)";
+
+const char* fragment_shader_source = R"(
+#version 300 es
+precision mediump float;
+
+in vec2 TexCoord;
+
+out vec4 FragColor;
+
+uniform sampler2D texture1;
+
+void main()
+{
+    FragColor = texture(texture1, TexCoord);
+}
+)";
+
+DisplayServer::DisplayServer()
 {
     m_wl_display = wl_display_connect(NULL);
 
@@ -59,7 +97,7 @@ Display::Display()
 #endif
 }
 
-Display::~Display()
+DisplayServer::~DisplayServer()
 {
     eglMakeCurrent(m_egl_display, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
     eglTerminate(m_egl_display);
@@ -67,7 +105,7 @@ Display::~Display()
     wl_display_disconnect(m_wl_display);
 }
 
-auto Display::registry_global(struct wl_registry* wl_registry, uint32_t name, const char* interface, uint32_t version) -> void
+auto DisplayServer::registry_global(struct wl_registry* wl_registry, uint32_t name, const char* interface, uint32_t version) -> void
 {
     if (strcmp(interface, wl_compositor_interface.name) == 0) {
         m_wl_compositor = reinterpret_cast<struct wl_compositor*>(wl_registry_bind(wl_registry, name, &wl_compositor_interface, 4));
@@ -75,4 +113,25 @@ auto Display::registry_global(struct wl_registry* wl_registry, uint32_t name, co
         m_xdg_wm_base = reinterpret_cast<struct xdg_wm_base*>(wl_registry_bind(wl_registry, name, &xdg_wm_base_interface, 1));
         xdg_wm_base_add_listener(m_xdg_wm_base, &xdg_wm_base_listener, this);
     }
+}
+
+auto DisplayServer::create_window(gfx::Rect frame) -> int
+{
+    auto last_window_id = m_last_window_id++;
+    auto* window = new Window { *this, last_window_id, frame };
+    return last_window_id;
+}
+
+auto DisplayServer::run() -> void
+{
+    while (true) {
+        if (wl_display_dispatch(m_wl_display) < 0) {
+            if (errno != EAGAIN) {
+                perror("wl_display_dispatch");
+                break;
+            }
+        }
+    }
+}
+
 }

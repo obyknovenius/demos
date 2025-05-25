@@ -8,16 +8,23 @@ namespace gfx {
     struct Rect;
 }
 
+namespace ui {
+
 class Display;
 class Layer;
 
-class Window final {
+class Window final : public std::enable_shared_from_this<Window>  {
 public:
     class DecorationView;
 
-    Window(Display& display, int width, int height);
+    static auto create(const gfx::Rect& frame) -> std::shared_ptr<Window>;
 
+    static auto with_id(int id) -> std::shared_ptr<Window>;
+
+    Window(const gfx::Rect& frame);
     ~Window();
+
+    auto layer() const -> Layer* { return m_layer; }
 
     auto configure(struct xdg_surface* xdg_surface, uint32_t serial) -> void;
     auto frame_done(struct wl_callback* callback, uint32_t time) -> void;
@@ -28,6 +35,8 @@ private:
     auto draw(cairo_t* cr) -> void;
     auto draw_titlebar(cairo_t* cr) -> void;
     auto draw_placeholder(cairo_t* cr, const gfx::Rect& rect, float dx) -> void;
+
+    int m_id;
 
     bool m_animate { false };
 
@@ -50,3 +59,5 @@ private:
 
     std::shared_ptr<DecorationView> m_decoration_view {};
 };
+
+}

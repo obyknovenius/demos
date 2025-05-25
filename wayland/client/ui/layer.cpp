@@ -6,19 +6,17 @@
 #define GL_BGRA 0x80E1
 #endif
 
-Layer::Layer(float x, float y, float width, float height)
-{
-    m_x = x;
-    m_y = y;
-    m_width = width;
-    m_height = height;
+namespace ui {
 
+Layer::Layer(const gfx::Rect& frame)
+    : m_frame { frame }
+{
     float vertices[] = {
-        // positions                  // texture coordinates
-        x, y + height, 0.0f,          0.0f, 0.0f,  // bottom left
-        x, y, 0.0f,                   0.0f, 1.0f,  // top left
-        x + width, y + height, 0.0f,  1.0f, 0.0f,  // bottom right
-        x + width, y, 0.0f,           1.0f, 1.0f   // top right
+        // positions                         // texture coordinates
+        frame.min_x(), frame.max_y(), 0.0f,  0.0f, 0.0f,  // bottom left
+        frame.min_x(), frame.min_y(), 0.0f,  0.0f, 1.0f,  // top left
+        frame.max_x(), frame.max_y(), 0.0f,  1.0f, 0.0f,  // bottom right
+        frame.max_x(), frame.min_y(), 0.0f,  1.0f, 1.0f   // top right
     };
 
     glGenVertexArrays(1, &m_vao);
@@ -62,10 +60,10 @@ Layer::~Layer()
 auto Layer::draw() -> void
 {
     if (on_draw) {
-        auto surface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, std::floor(m_width), std::ceil(m_height));
+        auto surface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, std::floor(m_frame.width), std::floor(m_frame.height));
         auto cr = cairo_create(surface);
 
-        cairo_translate(cr, 0, m_height);
+        cairo_translate(cr, 0, m_frame.height);
         cairo_scale(cr, 1, -1);
         
         on_draw(cr);
@@ -76,7 +74,7 @@ auto Layer::draw() -> void
 
         glBindTexture(GL_TEXTURE_2D, m_texture);
         auto* data = cairo_image_surface_get_data(surface);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_width, m_height, 0, GL_BGRA, GL_UNSIGNED_BYTE, data);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_frame.width, m_frame.height, 0, GL_BGRA, GL_UNSIGNED_BYTE, data);
 
         glBindTexture(GL_TEXTURE_2D, bound_texture);
 
@@ -94,4 +92,6 @@ auto Layer::composite() -> void
 
     glBindVertexArray(0);
     glBindTexture(GL_TEXTURE_2D, 0);
+}
+
 }

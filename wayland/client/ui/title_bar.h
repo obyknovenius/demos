@@ -4,6 +4,8 @@
 
 #include "view.h"
 
+namespace ui {
+
 class TextView;
 class WindowCloseButton;
 class WindowMaximizeButton;
@@ -23,3 +25,5 @@ private:
     std::shared_ptr<WindowCloseButton> m_close_button {};
     std::shared_ptr<WindowMaximizeButton> m_maximize_button {};
 };
+
+}

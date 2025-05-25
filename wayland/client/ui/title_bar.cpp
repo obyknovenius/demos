@@ -6,6 +6,8 @@
 
 #include <cassert>
 
+namespace ui {
+
 TitleBar::TitleBar(const std::string& text, const gfx::Rect& frame)
     : View { frame }
 {
@@ -66,4 +68,6 @@ auto TitleBar::draw_placeholder(cairo_t* cr, const gfx::Rect& rect, float dx) ->
     cairo_rectangle(cr, placeholder_rect.x, placeholder_rect.y, placeholder_rect.width, placeholder_rect.height);
     cairo_set_source_rgb(cr, 1.0, 1.0, 1.0);
     cairo_fill(cr);
+}
+
 }

@@ -7,6 +7,8 @@
 #include <memory>
 #include <vector>
 
+namespace ui {
+
 class View {
 public:
     explicit View(const gfx::Rect& frame = {}) : m_frame { frame } {}
@@ -28,3 +30,5 @@ protected:
 
     std::vector<std::shared_ptr<View>> m_subviews {};
 };
+
+}

@@ -1,5 +1,7 @@
 #include "window_maximize_button.h"
 
+namespace ui {
+
 auto WindowMaximizeButton::draw(cairo_t* cr) -> void
 {
     WindowButton::draw(cr);
@@ -13,4 +15,6 @@ auto WindowMaximizeButton::draw(cairo_t* cr) -> void
     cairo_set_line_width(cr, line_width);
     cairo_set_source_rgb(cr, 0.0, 0.0, 0.0);
     cairo_stroke(cr);
+}
+
 }

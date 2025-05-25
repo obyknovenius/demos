@@ -1,8 +1,10 @@
 
-#include <string.h>
 #include <errno.h>
+#include <gfx/rect.h>
 #include <stdio.h>
-#include <ui/display.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ui/display_server.h>
 #include <ui/window.h>
 
 int main(int argc, char* argv[])
@@ -17,17 +19,11 @@ int main(int argc, char* argv[])
         }
     }
 
-    Display display {};
-    Window window { display, width, height };
+    auto display_server = ui::DisplayServer::shared();
 
-    while (true) {
-        if (wl_display_dispatch(display.wl_display()) < 0) {
-            if (errno != EAGAIN) {
-                perror("wl_display_dispatch");
-                break;
-            }
-        }
-    }
+    auto window { ui::Window::create(gfx::Rect { 0, 0, static_cast<float>(width), static_cast<float>(height) }) };
+
+    display_server->run();
 
     return 0;
 }

@@ -1,5 +1,7 @@
 #include "view.h"
 
+namespace ui {
+
 auto View::layout() -> void
 {
     for (const auto& subview : m_subviews) {
@@ -15,4 +17,6 @@ auto View::draw(cairo_t* cr) -> void
         subview->draw(cr);
         cairo_restore(cr);
     }
+}
+
 }

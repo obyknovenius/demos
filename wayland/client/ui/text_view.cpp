@@ -2,6 +2,8 @@
 
 #include <string>
 
+namespace ui {
+
 auto TextView::intrinsic_size() -> std::optional<gfx::Size>
 {
     gfx::Size intrinsic_size {};
@@ -46,4 +48,6 @@ auto TextView::draw(cairo_t* cr) -> void
     cairo_move_to(cr, -text_extents.x_bearing, font_extents.ascent);
     cairo_show_text(cr, m_text.c_str());
     cairo_stroke(cr);
+}
+
 }

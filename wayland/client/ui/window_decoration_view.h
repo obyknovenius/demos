@@ -5,6 +5,8 @@
 #include "view.h"
 #include "window.h"
 
+namespace ui {
+
 class TitleBar;
 class WindowCloseButton;
 class WindowMaximizeButton;
@@ -20,3 +22,5 @@ public:
 private:
     std::shared_ptr<TitleBar> m_title_bar {};
 };
+
+}

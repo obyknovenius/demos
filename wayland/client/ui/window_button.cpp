@@ -1,5 +1,7 @@
 #include "window_close_button.h"
 
+namespace ui {
+
 auto WindowButton::draw(cairo_t* cr) -> void
 {
     auto bounds = gfx::Rect { 0.0f, 0.0f, m_frame.width, m_frame.height };
@@ -14,4 +16,6 @@ auto WindowButton::draw(cairo_t* cr) -> void
     cairo_set_line_width(cr, line_width);
     cairo_set_source_rgb(cr, 0.0, 0.0, 0.0);
     cairo_stroke(cr);
+}
+
 }

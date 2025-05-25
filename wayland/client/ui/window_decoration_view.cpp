@@ -4,6 +4,8 @@
 
 #include "title_bar.h"
 
+namespace ui {
+
 Window::DecorationView::DecorationView(const std::string& text, const gfx::Rect& frame)
     : View { frame }
 {
@@ -29,4 +31,6 @@ auto Window::DecorationView::draw(cairo_t* cr) -> void
     cairo_stroke(cr);
 
     View::draw(cr);
+}
+
 }

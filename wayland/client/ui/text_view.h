@@ -4,6 +4,8 @@
 
 #include <string>
 
+namespace ui {
+
 class TextView final : public View {
 public:
     explicit TextView(const gfx::Rect& frame) : View { frame } {}
@@ -27,3 +29,5 @@ private:
     std::string m_font_face { "ChicagoFLF" };
     double m_font_size { 24.0 };
 };
+
+}
