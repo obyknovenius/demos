@@ -1,9 +1,8 @@
 #pragma once
 
-#include "gfx/rect.h"
+#include "gfx/size.h"
 
 #include <memory>
-#include <mutex>
 
 namespace ui {
 
@@ -13,7 +12,7 @@ public:
 
     virtual ~DisplayServer() = default;
 
-    virtual auto create_window(gfx::Rect frame) -> int = 0;
+    virtual auto create_window(gfx::Size size) -> int = 0;
 
     virtual auto run() -> void = 0;
 

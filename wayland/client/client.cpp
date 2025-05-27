@@ -21,7 +21,7 @@ int main(int argc, char* argv[])
 
     auto display_server = ui::DisplayServer::shared();
 
-    auto window { ui::Window::create(gfx::Rect { 0, 0, static_cast<float>(width), static_cast<float>(height) }) };
+    auto window { ui::Window::create(gfx::Size { static_cast<float>(width), static_cast<float>(height) }) };
 
     display_server->run();
 

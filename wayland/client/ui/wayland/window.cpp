@@ -11,10 +11,11 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/type_ptr.hpp"
 
-#include "display_server.h"
+#include "server.h"
+#include "../window.h"
+#include "../layer.h"
 
-#include "ui/window.h"
-#include "ui/layer.h"
+namespace wayland {
 
 static auto print_fps() -> void
 {
@@ -38,28 +39,6 @@ static auto print_fps() -> void
         previous_time = current_time;
     }
 }
-
-static auto frame_done(void *data, struct wl_callback* callback, uint32_t time) -> void;
-
-struct wl_callback_listener wl_surface_frame_listener = {
-    .done = frame_done,
-};
-
-static auto frame_done(void* data, struct wl_callback* callback, uint32_t time) -> void
-{
-    auto window = reinterpret_cast<ui::wayland::Window*>(data);
-    window->frame_done(callback, time);
-}
-
-static auto configure(void* data, struct xdg_surface* xdg_surface, uint32_t serial) -> void
-{
-    auto window = reinterpret_cast<ui::wayland::Window*>(data);
-    window->configure(xdg_surface, serial);
-}
-
-struct xdg_surface_listener xdg_surface_listener = {
-    .configure = configure,
-};
 
 const char* vertex_shader_source = R"(
 #version 300 es
@@ -95,25 +74,25 @@ void main()
 }
 )";
 
-namespace ui::wayland {
-
-Window::Window(const DisplayServer& server, int id, gfx::Rect frame)
+Window::Window(Server& server, const gfx::Size& size)
+    : m_id { server.next_window_id() }
+    , m_size { size }
 {
-    m_id = id;
+    m_surface = server.compositor().create_surface();
 
-    m_width = frame.width;
-    m_height = frame.height;
+    m_xdg_surface = server.xdg_wm_base().get_xdg_surface(m_surface);
+    m_xdg_surface.on_configure() = [this](uint32_t serial) {
+        m_xdg_surface.ack_configure(serial);
+    };
 
-    m_wl_surface = wl_compositor_create_surface(server.wl_compositor());
+    m_xdg_toplevel = m_xdg_surface.get_toplevel();
+    m_xdg_toplevel.set_title("Hello, Wayland!");
 
-    m_xdg_surface = xdg_wm_base_get_xdg_surface(server.xdg_wm_base(), m_wl_surface);
-    xdg_surface_add_listener(m_xdg_surface, &xdg_surface_listener, this);
+    m_surface.commit();
 
-    m_xdg_toplevel = xdg_surface_get_toplevel(m_xdg_surface);
-    xdg_toplevel_set_title(m_xdg_toplevel, "Hello, Wayland!");
-    wl_surface_commit(m_wl_surface);
+    server.display().roundtrip();
 
-    m_wl_egl_window = wl_egl_window_create(m_wl_surface, m_width, m_height);
+    m_egl_window = egl_window_t { m_surface, static_cast<int>(size.width), static_cast<int>(size.height) };
 
     m_egl_display = server.egl_display();
 
@@ -132,7 +111,7 @@ Window::Window(const DisplayServer& server, int id, gfx::Rect frame)
     eglChooseConfig(m_egl_display, config_attribs, &egl_config, 1, &num_config);
     assert(num_config > 0);
 
-    m_egl_surface = eglCreatePlatformWindowSurface(m_egl_display, egl_config, m_wl_egl_window, NULL);
+    m_egl_surface = eglCreatePlatformWindowSurface(m_egl_display, egl_config, m_egl_window, NULL);
 
     EGLint context_attribs[] = {
         EGL_CONTEXT_MAJOR_VERSION, 3,
@@ -142,7 +121,7 @@ Window::Window(const DisplayServer& server, int id, gfx::Rect frame)
 
     eglMakeCurrent(m_egl_display, m_egl_surface, m_egl_surface, m_egl_context);
 
-    glViewport(0, 0, m_width, m_height);
+    glViewport(0, 0, m_size.width, m_size.height);
 
     unsigned int vertex_shadrer = glCreateShader(GL_VERTEX_SHADER);
     glShaderSource(vertex_shadrer, 1, &vertex_shader_source, NULL);
@@ -185,7 +164,7 @@ Window::Window(const DisplayServer& server, int id, gfx::Rect frame)
     glDeleteShader(vertex_shadrer);
     glDeleteShader(fragment_shader);
 
-    glm::mat4 projection = glm::ortho(0.0f, static_cast<float>(m_width), static_cast<float>(m_height), 0.0f, -1.0f, 1.0f);
+    glm::mat4 projection = glm::ortho(0.0f, m_size.width, m_size.height, 0.0f, -1.0f, 1.0f);
     unsigned int projection_loc = glGetUniformLocation(m_program, "projection");
     glUniformMatrix4fv(projection_loc, 1, GL_FALSE, glm::value_ptr(projection));
 }
@@ -200,21 +179,6 @@ Window::~Window()
     }
     eglDestroyContext(m_egl_display, m_egl_context);
     eglDestroySurface(m_egl_display, m_egl_surface);
-
-    wl_egl_window_destroy(m_wl_egl_window);
-    xdg_toplevel_destroy(m_xdg_toplevel);
-    xdg_surface_destroy(m_xdg_surface);
-    wl_surface_destroy(m_wl_surface);
-}
-
-auto Window::configure(struct xdg_surface* xdg_surface, uint32_t serial) -> void
-{
-    xdg_surface_ack_configure(xdg_surface, serial);
-
-    struct wl_callback* callback = wl_surface_frame(m_wl_surface);
-    wl_callback_add_listener(callback, &wl_surface_frame_listener, this);
-
-    draw();
 }
 
 auto Window::draw() -> void
@@ -257,18 +221,6 @@ auto Window::draw() -> void
 #ifndef NDEBUG
     print_fps();
 #endif
-}
-
-auto Window::frame_done(struct wl_callback* callback, uint32_t time) -> void
-{
-	wl_callback_destroy(callback);
-
-    if (m_animate) {
-        callback = wl_surface_frame(m_wl_surface);
-	    wl_callback_add_listener(callback, &wl_surface_frame_listener, this);
-
-        draw();
-    }
 }
 
 }

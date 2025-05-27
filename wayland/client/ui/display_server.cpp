@@ -1,6 +1,8 @@
 #include "display_server.h"
 
-#include "wayland/display_server.h"
+#include <mutex>
+
+#include "wayland/server.h"
 
 namespace ui {
 
@@ -17,7 +19,7 @@ auto DisplayServer::shared() -> std::shared_ptr<DisplayServer>
 
 DisplayServer* DisplayServer::create()
 {
-    return new wayland::DisplayServer();
+    return new wayland::Server();
 }
 
 }

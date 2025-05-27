@@ -1,42 +1,35 @@
 #pragma once
 
-#include <EGL/egl.h>
-#include <wayland-client.h>
-#include <wayland-egl.h>
-#include "xdg-shell-client.h"
+#include <wayland-egl.hpp>
+#include <gfx/size.h>
 
-namespace gfx {
-    struct Rect;
-}
+#include "server.h"
 
-namespace ui::wayland {
+namespace wayland {
 
-class DisplayServer;
+class Server;
 
 class Window final {
 public:
-    Window(const DisplayServer& display, int id, gfx::Rect frame);
+    Window(Server& server, const gfx::Size& size);
     ~Window();
 
-    auto configure(struct xdg_surface* xdg_surface, uint32_t serial) -> void;
-    auto frame_done(struct wl_callback* callback, uint32_t time) -> void;
+    auto id() const -> int { return m_id; }
 
 private:
-
     auto draw() -> void;
 
     int m_id;
 
     bool m_animate { false };
 
-    float m_width {};
-    float m_height {};
+    gfx::Size m_size {};
 
-    struct wl_surface* m_wl_surface {};
-    struct xdg_surface* m_xdg_surface {};
-    struct xdg_toplevel* m_xdg_toplevel {};
+    surface_t m_surface {};
+    xdg_surface_t m_xdg_surface {};
+    xdg_toplevel_t m_xdg_toplevel {};
 
-    struct wl_egl_window* m_wl_egl_window {};
+    egl_window_t m_egl_window {};
 
     EGLDisplay m_egl_display { EGL_NO_DISPLAY};
     EGLSurface m_egl_surface { EGL_NO_SURFACE };
