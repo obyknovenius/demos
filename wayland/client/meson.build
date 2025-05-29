@@ -11,6 +11,7 @@ subdir('ui')
 
 executable(
     'client',
+    install: true,
     sources: sources,
     dependencies: [libui_dep],
     include_directories: [conf_inc, ui_inc],

@@ -83,6 +83,7 @@ Window::Window(Server& server, const gfx::Size& size)
     m_xdg_surface = server.xdg_wm_base().get_xdg_surface(m_surface);
     m_xdg_surface.on_configure() = [this](uint32_t serial) {
         m_xdg_surface.ack_configure(serial);
+        draw();
     };
 
     m_xdg_toplevel = m_xdg_surface.get_toplevel();

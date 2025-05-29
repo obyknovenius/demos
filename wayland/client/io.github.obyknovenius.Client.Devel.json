@@ -1,0 +1,50 @@
+{
+	"id": "io.github.obyknovenius.Client.Devel",
+	"runtime": "org.freedesktop.Platform",
+	"runtime-version": "24.08",
+	"sdk": "org.freedesktop.Sdk",
+	"command": "client",
+	"finish-args": [
+		"--device=dri",
+		"--socket=wayland"
+	],
+	"modules": [
+		{
+			"name": "pugixml",
+			"buildsystem": "cmake",
+			"sources": [
+				{
+					"type": "git",
+					"url": "https://github.com/zeux/pugixml.git",
+					"branch": "master"
+				}
+			]
+		},
+		{
+			"name": "waylandpp",
+			"buildsystem": "cmake",
+			"sources": [
+				{
+					"type": "git",
+					"url": "https://github.com/wilypomegranate/waylandpp.git",
+					"branch": "master"
+				},
+				{
+					"type": "file",
+					"path": "/usr/share/wayland/wayland.xml",
+					"dest": "protocols"
+				}
+			]
+		},
+		{
+			"name": "client",
+			"buildsystem": "meson",
+			"sources": [
+				{
+					"type": "dir",
+					"path": "."
+				}
+			]
+		}
+	]
+}
