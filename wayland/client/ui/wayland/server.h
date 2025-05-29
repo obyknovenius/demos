@@ -4,9 +4,14 @@
 #include <xdg-shell-client.hpp>
 #include <EGL/egl.h>
 
+#include <map>
+#include <memory>
+
 #include "../display_server.h"
 
 namespace wayland {
+
+class Window;
 
 class Server final : public ui::DisplayServer {
 public:
@@ -21,6 +26,8 @@ public:
 
     auto create_window(gfx::Size size) -> int override;
 
+    auto draw_window(int id) -> void override;
+
     auto run() -> void override;
 
     auto next_window_id() -> int { return m_last_window_id++; }
@@ -34,6 +41,12 @@ private:
     EGLDisplay m_egl_display { EGL_NO_DISPLAY };
 
     int m_last_window_id { 0 };
+
+    std::map<int, std::shared_ptr<Window>> m_windows {};
+
+    std::shared_ptr<Window> find_window(int id);
+    void remove_window(int id);
+    void add_window(std::shared_ptr<Window> window);
 };
 
 }

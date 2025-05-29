@@ -47,4 +47,9 @@ Window::~Window()
     m_layer = nullptr;
 }
 
+auto Window::draw() -> void
+{
+    DisplayServer::shared()->draw_window(m_id);
+}
+
 }

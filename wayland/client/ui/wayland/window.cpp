@@ -83,7 +83,6 @@ Window::Window(Server& server, const gfx::Size& size)
     m_xdg_surface = server.xdg_wm_base().get_xdg_surface(m_surface);
     m_xdg_surface.on_configure() = [this](uint32_t serial) {
         m_xdg_surface.ack_configure(serial);
-        draw();
     };
 
     m_xdg_toplevel = m_xdg_surface.get_toplevel();
@@ -96,6 +95,7 @@ Window::Window(Server& server, const gfx::Size& size)
     m_egl_window = egl_window_t { m_surface, static_cast<int>(size.width), static_cast<int>(size.height) };
 
     m_egl_display = server.egl_display();
+    assert(m_egl_display != EGL_NO_DISPLAY);
 
     EGLint config_attribs[] = {
         EGL_SURFACE_TYPE, EGL_WINDOW_BIT,

@@ -23,9 +23,9 @@ public:
 
     auto layer() const -> Layer* { return m_layer; }
 
-private:
     auto draw() -> void;
 
+private:
     auto draw(cairo_t* cr) -> void;
     auto draw_titlebar(cairo_t* cr) -> void;
     auto draw_placeholder(cairo_t* cr, const gfx::Rect& rect, float dx) -> void;

@@ -16,8 +16,9 @@ public:
 
     auto id() const -> int { return m_id; }
 
-private:
     auto draw() -> void;
+
+private:
 
     int m_id;
 

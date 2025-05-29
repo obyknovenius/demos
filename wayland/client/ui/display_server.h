@@ -14,6 +14,8 @@ public:
 
     virtual auto create_window(gfx::Size size) -> int = 0;
 
+    virtual auto draw_window(int id) -> void = 0;
+
     virtual auto run() -> void = 0;
 
 protected:
