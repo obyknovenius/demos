@@ -17,3 +17,8 @@ executable(
     include_directories: [conf_inc, ui_inc],
     link_with: libui,
 )
+
+install_data(
+    'ChicagoFLF.ttf',
+    install_dir: join_paths(get_option('datadir'), 'fonts')
+)
