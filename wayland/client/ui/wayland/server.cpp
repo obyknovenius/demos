@@ -1,9 +1,12 @@
-#include "display_server.h"
+#include "server.h"
 
 #include <cassert>
+#include <cstring>
 #include <EGL/egl.h>
 #include <EGL/eglext.h>
 #include <iostream>
+#include <wayland-client.h>
+#include <xdg-shell-client.h>
 
 #include "window.h"
 
@@ -17,16 +20,33 @@ static auto print_egl_extensions(EGLDisplay display) -> void
 }
 #endif
 
+const struct wl_registry_listener Server::s_registry_listener = {
+    .global = [](void* data, struct wl_registry* registry, uint32_t name, const char* interface, uint32_t) {
+        auto* server = static_cast<Server*>(data);
+        if (strcmp(interface, wl_compositor_interface.name) == 0) {
+            server->m_compositor = reinterpret_cast<struct wl_compositor*>(wl_registry_bind(registry, name, &wl_compositor_interface, 4));
+        } else if (strcmp(interface, xdg_wm_base_interface.name) == 0) {
+            server->m_xdg_wm_base = reinterpret_cast<struct xdg_wm_base*>(wl_registry_bind(registry, name, &xdg_wm_base_interface, 1));
+            xdg_wm_base_add_listener(server->m_xdg_wm_base, &s_xdg_wm_base_listener, server);
+        }
+    }
+};
+
+const struct xdg_wm_base_listener Server::s_xdg_wm_base_listener = {
+    .ping = [](void* data, struct xdg_wm_base*, uint32_t serial) {
+        auto* server = static_cast<Server*>(data);
+        xdg_wm_base_pong(server->m_xdg_wm_base, serial);
+    }
+};
+
 Server::Server()
 {
-    m_registry = m_display.get_registry();
-    m_registry.on_global() = [this](uint32_t name, const std::string& interface, uint32_t version) {
-        if (interface == compositor_t::interface_name)
-            m_registry.bind(name, m_compositor, version);
-        else if (interface == xdg_wm_base_t::interface_name)
-            m_registry.bind(name, m_xdg_wm_base, version);
-    };
-    m_display.roundtrip();
+    m_display = wl_display_connect(nullptr);
+
+    m_registry = wl_display_get_registry(m_display);
+    wl_registry_add_listener(m_registry, &s_registry_listener, this);
+
+    wl_display_roundtrip(m_display);
 
 #ifndef NDEBUG
     print_egl_extensions(EGL_NO_DISPLAY);
@@ -48,6 +68,8 @@ Server::~Server()
 {
     eglMakeCurrent(m_egl_display, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
     eglTerminate(m_egl_display);
+
+    wl_display_disconnect(m_display);
 }
 
 auto Server::create_window(gfx::Size size) -> int
@@ -89,7 +111,7 @@ void Server::add_window(std::shared_ptr<Window> window) {
 auto Server::run() -> void
 {
     while (true) {
-        if (m_display.dispatch() < 0) {
+        if (wl_display_dispatch(m_display) < 0) {
             if (errno != EAGAIN) {
                 perror("wl_display_dispatch");
                 break;

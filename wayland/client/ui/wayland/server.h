@@ -1,7 +1,7 @@
 #pragma once
 
-#include <wayland-client.hpp>
-#include <xdg-shell-client.hpp>
+#include <wayland-client.h>
+#include <xdg-shell-client.h>
 #include <EGL/egl.h>
 
 #include <map>
@@ -18,9 +18,9 @@ public:
     Server();
     ~Server();
 
-    auto display() -> display_t& { return m_display; }
-    auto compositor() -> compositor_t& { return m_compositor; }
-    auto xdg_wm_base() -> xdg_wm_base_t& { return m_xdg_wm_base; }
+    auto display() -> struct wl_display* { return m_display; }
+    auto compositor() -> struct wl_compositor* { return m_compositor; }
+    auto xdg_wm_base() -> struct xdg_wm_base* { return m_xdg_wm_base; }
 
     auto egl_display() -> EGLDisplay { return m_egl_display; }
 
@@ -33,10 +33,13 @@ public:
     auto next_window_id() -> int { return m_last_window_id++; }
 
 private:
-    display_t m_display {};
-    registry_t m_registry {};
-    compositor_t m_compositor {};
-    xdg_wm_base_t m_xdg_wm_base {};
+    static const struct wl_registry_listener s_registry_listener;
+    static const struct xdg_wm_base_listener s_xdg_wm_base_listener;
+
+    struct wl_display* m_display {};
+    struct wl_registry* m_registry {};
+    struct wl_compositor* m_compositor {};
+    struct xdg_wm_base* m_xdg_wm_base {};
 
     EGLDisplay m_egl_display { EGL_NO_DISPLAY };
 

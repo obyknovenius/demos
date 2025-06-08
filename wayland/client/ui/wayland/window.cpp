@@ -3,9 +3,9 @@
 
 #include <cassert>
 #include <chrono>
+#include <GLES3/gl3.h>
 #include <iostream>
 #include <optional>
-#include <GLES3/gl3.h>
 
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
@@ -74,25 +74,30 @@ void main()
 }
 )";
 
+const struct xdg_surface_listener Window::s_xdg_surface_listener = {
+    .configure = [](void* data, struct xdg_surface*, uint32_t serial) {
+        auto* window = static_cast<Window*>(data);
+        xdg_surface_ack_configure(window->m_xdg_surface, serial);
+    }
+};
+
 Window::Window(Server& server, const gfx::Size& size)
     : m_id { server.next_window_id() }
     , m_size { size }
 {
-    m_surface = server.compositor().create_surface();
+    m_surface = wl_compositor_create_surface(server.compositor());
 
-    m_xdg_surface = server.xdg_wm_base().get_xdg_surface(m_surface);
-    m_xdg_surface.on_configure() = [this](uint32_t serial) {
-        m_xdg_surface.ack_configure(serial);
-    };
+    m_xdg_surface = xdg_wm_base_get_xdg_surface(server.xdg_wm_base(), m_surface);
+    xdg_surface_add_listener(m_xdg_surface, &s_xdg_surface_listener, this);
 
-    m_xdg_toplevel = m_xdg_surface.get_toplevel();
-    m_xdg_toplevel.set_title("Hello, Wayland!");
+    m_xdg_toplevel = xdg_surface_get_toplevel(m_xdg_surface);
+    xdg_toplevel_set_title(m_xdg_toplevel, "Hello, Wayland!");
 
-    m_surface.commit();
+    wl_surface_commit(m_surface);
 
-    server.display().roundtrip();
+    wl_display_roundtrip(server.display());
 
-    m_egl_window = egl_window_t { m_surface, static_cast<int>(size.width), static_cast<int>(size.height) };
+    m_egl_window = wl_egl_window_create(m_surface, size.width, size.height);
 
     m_egl_display = server.egl_display();
     assert(m_egl_display != EGL_NO_DISPLAY);
@@ -122,7 +127,7 @@ Window::Window(Server& server, const gfx::Size& size)
 
     eglMakeCurrent(m_egl_display, m_egl_surface, m_egl_surface, m_egl_context);
 
-    glViewport(0, 0, m_size.width, m_size.height);
+    glViewport(0, 0, size.width, size.height);
 
     unsigned int vertex_shadrer = glCreateShader(GL_VERTEX_SHADER);
     glShaderSource(vertex_shadrer, 1, &vertex_shader_source, NULL);
