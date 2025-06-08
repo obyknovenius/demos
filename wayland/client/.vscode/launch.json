@@ -1,0 +1,21 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Client",
+            "request": "launch",
+            "type": "cppdbg",
+            "linux": {
+                "MIMode": "gdb",
+                "envFile": "${workspaceFolder}/${config:mesonbuild.buildFolder}/meson-vscode.env",
+            },
+            "cwd": "${workspaceFolder}/${config:mesonbuild.buildFolder}/",
+            "program": "${workspaceFolder}/${config:mesonbuild.buildFolder}/client",
+            "stopAtEntry": false,
+            "preLaunchTask": "Meson: Build all targets",
+        }
+    ]
+}
