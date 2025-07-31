@@ -22,6 +22,7 @@ ui_sources = [
 ]
 
 subdir('wayland')
+subdir('gl')
 
 libui = static_library('ui',
   sources: ui_sources,

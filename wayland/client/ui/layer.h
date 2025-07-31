@@ -2,7 +2,6 @@
 
 #include <functional>
 #include <cairo/cairo.h>
-#include <GLES3/gl3.h>
 #include <gfx/rect.h>
 
 namespace ui {
@@ -12,18 +11,17 @@ public:
     Layer(const gfx::Rect& frame);
     ~Layer();
 
+    auto frame() const -> const gfx::Rect& { return m_frame; }
+    auto data() const -> void* { return cairo_image_surface_get_data(m_surface); }
+
     auto draw() -> void;
-    auto composite() -> void;
 
     std::function<void(cairo_t*)> on_draw {};
 
 private:
-    gfx::Rect m_frame;
+    gfx::Rect m_frame {};
 
-    unsigned int m_vao;
-    unsigned int m_vbo;
-
-    GLuint m_texture {};
+    cairo_surface_t* m_surface {};
 };
 
 }

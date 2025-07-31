@@ -6,6 +6,7 @@
 #include <GLES3/gl3.h>
 #include <iostream>
 #include <optional>
+#include <gl/texture.h>
 
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
@@ -220,7 +221,9 @@ auto Window::draw() -> void
 
     auto ui_window = ui::Window::with_id(m_id);
     ui_window->layer()->draw();
-    ui_window->layer()->composite();
+    auto* texture = new gl::Texture(ui_window->layer()->frame(), ui_window->layer()->data());
+    texture->draw();
+    delete texture;
 
     eglSwapBuffers(m_egl_display, m_egl_surface);
 
