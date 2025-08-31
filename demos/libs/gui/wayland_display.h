@@ -34,7 +34,6 @@ private:
     wl_shm* m_wl_shm {};
     wl_compositor* m_wl_compositor {};
     xdg_wm_base* m_xdg_wm_base {};
-    wl_seat* m_wl_seat {};
 
     wayland_seat* m_seat {};
 

@@ -57,6 +57,15 @@ wayland_display::wayland_display(wl_display* wl_display) : m_wl_display(wl_displ
 
 wayland_display::~wayland_display()
 {
+    if (m_seat)
+        delete m_seat;
+
+    xdg_wm_base_destroy(m_xdg_wm_base);
+    wl_compositor_destroy(m_wl_compositor);
+    wl_shm_destroy(m_wl_shm);
+
+    wl_registry_destroy(m_wl_registry);
+
     wl_display_disconnect(m_wl_display);
 }
 

@@ -46,6 +46,8 @@ auto wayland_window::close() -> void
     if (m_closed)
         return;
     
+    xdg_toplevel_destroy(m_xdg_toplevel);
+    xdg_surface_destroy(m_xdg_surface);
     wl_surface_destroy(m_wl_surface);
 
     m_closed = true;

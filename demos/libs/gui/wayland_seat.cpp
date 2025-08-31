@@ -25,6 +25,9 @@ wayland_seat::wayland_seat(wl_seat* wl_seat, wayland_display* display) :
 
 wayland_seat::~wayland_seat()
 {
+    if (m_pointer)
+        delete m_pointer;
+
     wl_seat_release(m_wl_seat);
 }
 
