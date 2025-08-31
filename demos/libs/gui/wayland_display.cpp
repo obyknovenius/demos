@@ -3,6 +3,7 @@
 #include <core/event_loop.h>
 #include <cstring>
 #include <iostream>
+#include "wayland_seat.h"
 #include "wayland_window.h"
 
 namespace gui {
@@ -24,6 +25,11 @@ const struct wl_registry_listener wayland_display::s_wl_registry_listener = {
         {
             display->m_xdg_wm_base = reinterpret_cast<struct xdg_wm_base*>(wl_registry_bind(registry, name, &xdg_wm_base_interface, 1));
             xdg_wm_base_add_listener(display->m_xdg_wm_base, &s_xdg_wm_base_listener, display);
+        }
+        else if (strcmp(interface, wl_seat_interface.name) == 0)
+        {
+            auto* wl_seat = reinterpret_cast<struct wl_seat*>(wl_registry_bind(registry, name, &wl_seat_interface, 7));
+            display->m_seat = new wayland_seat(wl_seat, display);
         }
     },
     .global_remove = [](void *data, struct wl_registry *registry, uint32_t name)
@@ -73,7 +79,7 @@ wayland_display::~wayland_display()
 
 auto wayland_display::create_window() -> std::shared_ptr<window>
 {
-    return std::make_shared<wayland_window>(shared_from_this());
+    return std::make_shared<wayland_window>(this);
 }
 
 }

@@ -1,5 +1,6 @@
 #include <core/event_loop.h>
 #include <gui/display.h>
+#include <gui/window.h>
 #include <iostream>
 #include <unistd.h>
 
@@ -13,6 +14,10 @@ auto main() -> int
     }
 
     auto window = display->create_window();
+    window->on_close = []()
+    {
+        core::event_loop::main().quit();
+    };
 
     core::event_loop::main().run();
 

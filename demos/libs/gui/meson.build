@@ -29,7 +29,10 @@ gui_deps = [
 gui_sources = [
     'display.cpp',
     'wayland_display.cpp',
+    'wayland_pointer.cpp',
+    'wayland_seat.cpp',
     'wayland_window.cpp',
+    'window.cpp',
 ]
 
 gui_lib = static_library(

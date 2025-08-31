@@ -29,7 +29,9 @@ auto event_loop::add_source(source source) -> void
 
 auto event_loop::run() -> void
 {
-    while (true)
+    m_running = true;
+
+    while (m_running)
     {
         for (const auto& source : m_sources)
             if (source.prepare)
@@ -41,6 +43,11 @@ auto event_loop::run() -> void
                 if (m_poll_fds[0].fd == source.fd && m_poll_fds[0].revents & source.events)
                     source.dispatch();
     }
+}
+
+auto event_loop::quit() -> void
+{
+    m_running = false;
 }
 
 }

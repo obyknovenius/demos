@@ -24,13 +24,16 @@ public:
     auto add_source(source source) -> void;
 
     auto run() -> void;
+    auto quit() -> void;
 
 private:
     static event_loop s_main_loop;
 
+    bool m_running { false };
+
     std::vector<source> m_sources {};
 
-    struct pollfd* m_poll_fds { nullptr };
+    struct pollfd* m_poll_fds {};
 };
 
 }
