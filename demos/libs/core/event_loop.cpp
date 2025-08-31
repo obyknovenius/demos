@@ -16,9 +16,9 @@ auto event_loop::add_source(source source) -> void
 {
     int n_poll_fds = m_sources.size();
     if (!m_poll_fds)
-        m_poll_fds = static_cast<struct pollfd*>(malloc(sizeof(struct pollfd)));
+        m_poll_fds = static_cast<pollfd*>(malloc(sizeof(pollfd)));
     else
-        m_poll_fds = static_cast<struct pollfd*>(realloc(m_poll_fds, (n_poll_fds + 1) * sizeof(struct pollfd)));
+        m_poll_fds = static_cast<pollfd*>(realloc(m_poll_fds, (n_poll_fds + 1) * sizeof(pollfd)));
     ++n_poll_fds;
 
     m_poll_fds[n_poll_fds - 1].fd = source.fd;

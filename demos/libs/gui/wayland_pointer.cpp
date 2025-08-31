@@ -19,55 +19,55 @@ wayland_pointer::~wayland_pointer()
     wl_pointer_release(m_wl_pointer);
 }
 
-const struct wl_pointer_listener wayland_pointer::s_wl_pointer_listener = {
-    .enter = [](void* data, struct wl_pointer* wl_pointer, uint32_t serial, struct wl_surface* surface, wl_fixed_t x, wl_fixed_t y)
+const wl_pointer_listener wayland_pointer::s_wl_pointer_listener = {
+    .enter = [](void* data, wl_pointer* wl_pointer, uint32_t serial, wl_surface* surface, wl_fixed_t x, wl_fixed_t y)
     {
         auto* pointer = reinterpret_cast<wayland_pointer*>(data);
         pointer->on_enter(serial, surface, x, y);
     },
-    .leave = [](void* data, struct wl_pointer* wl_pointer, uint32_t serial, struct wl_surface* surface)
+    .leave = [](void* data, wl_pointer* wl_pointer, uint32_t serial, wl_surface* surface)
     {
         auto* pointer = reinterpret_cast<wayland_pointer*>(data);
         pointer->on_leave(serial, surface);
     },
-    .motion = [](void* data, struct wl_pointer* wl_pointer, uint32_t time, wl_fixed_t x, wl_fixed_t y)
+    .motion = [](void* data, wl_pointer* wl_pointer, uint32_t time, wl_fixed_t x, wl_fixed_t y)
     {
         auto* pointer = reinterpret_cast<wayland_pointer*>(data);
         pointer->on_motion(time, x, y);
     },
-    .button = [](void* data, struct wl_pointer* wl_pointer, uint32_t serial, uint32_t time, uint32_t button, uint32_t state)
+    .button = [](void* data, wl_pointer* wl_pointer, uint32_t serial, uint32_t time, uint32_t button, uint32_t state)
     {
         auto* pointer = reinterpret_cast<wayland_pointer*>(data);
         pointer->on_button(serial, time, button, state);
     },
-    .axis = [](void* data, struct wl_pointer* wl_pointer, uint32_t time, uint32_t axis, wl_fixed_t value)
+    .axis = [](void* data, wl_pointer* wl_pointer, uint32_t time, uint32_t axis, wl_fixed_t value)
     {
         auto* pointer = reinterpret_cast<wayland_pointer*>(data);
         pointer->on_axis(time, axis, value);
     },
-    .frame = [](void* data, struct wl_pointer* wl_pointer)
+    .frame = [](void* data, wl_pointer* wl_pointer)
     {
         auto* pointer = reinterpret_cast<wayland_pointer*>(data);
         pointer->on_frame();
     },
-    .axis_source = [](void* data, struct wl_pointer* wl_pointer, uint32_t axis_source)
+    .axis_source = [](void* data, wl_pointer* wl_pointer, uint32_t axis_source)
     {
         auto* pointer = reinterpret_cast<wayland_pointer*>(data);
         pointer->on_axis_source(axis_source);
     },
-    .axis_stop = [](void* data, struct wl_pointer* wl_pointer, uint32_t time, uint32_t axis_stop)
+    .axis_stop = [](void* data, wl_pointer* wl_pointer, uint32_t time, uint32_t axis_stop)
     {
         auto* pointer = reinterpret_cast<wayland_pointer*>(data);
         pointer->on_axis_stop(time, axis_stop);
     },
-    .axis_discrete = [](void* data, struct wl_pointer* wl_pointer, uint32_t axis, int32_t discrete)
+    .axis_discrete = [](void* data, wl_pointer* wl_pointer, uint32_t axis, int32_t discrete)
     {
         auto* pointer = reinterpret_cast<wayland_pointer*>(data);
         pointer->on_axis_discrete(axis, discrete);
     }
 };
 
-auto wayland_pointer::on_enter(uint32_t serial, struct wl_surface* surface, wl_fixed_t x, wl_fixed_t y) -> void
+auto wayland_pointer::on_enter(uint32_t serial, wl_surface* surface, wl_fixed_t x, wl_fixed_t y) -> void
 {
     auto* window = reinterpret_cast<wayland_window*>(wl_surface_get_user_data(surface));
     m_window = window->shared_from_this();
@@ -75,7 +75,7 @@ auto wayland_pointer::on_enter(uint32_t serial, struct wl_surface* surface, wl_f
     m_event = { event::type::invalid };
 }
 
-auto wayland_pointer::on_leave(uint32_t serial, struct wl_surface* surface) -> void
+auto wayland_pointer::on_leave(uint32_t serial, wl_surface* surface) -> void
 {
     m_window.reset();
 

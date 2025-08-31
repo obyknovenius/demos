@@ -7,16 +7,16 @@
 
 namespace gui {
 
-const struct xdg_surface_listener wayland_window::s_xdg_surface_listener = {
-    .configure = [](void* data, struct xdg_surface* xdg_surface, uint32_t serial)
+const xdg_surface_listener wayland_window::s_xdg_surface_listener = {
+    .configure = [](void* data, xdg_surface* xdg_surface, uint32_t serial)
     {
         auto* window = reinterpret_cast<wayland_window*>(data);
         window->on_surface_configure(xdg_surface, serial);
     }
 };
 
-const struct wl_buffer_listener wayland_window::s_wl_buffer_listener = {
-    .release = [](void* data, struct wl_buffer* buffer)
+const wl_buffer_listener wayland_window::s_wl_buffer_listener = {
+    .release = [](void* data, wl_buffer* buffer)
     {
         auto* window = reinterpret_cast<wayland_window*>(data);
         window->on_buffer_release(buffer);
@@ -25,10 +25,10 @@ const struct wl_buffer_listener wayland_window::s_wl_buffer_listener = {
 
 wayland_window::wayland_window(wayland_display* display) : m_display(display)
 {
-    m_wl_surface = wl_compositor_create_surface(m_display->wl_compositor());
+    m_wl_surface = wl_compositor_create_surface(m_display->m_wl_compositor);
     wl_surface_set_user_data(m_wl_surface, this);
 
-    m_xdg_surface = xdg_wm_base_get_xdg_surface(m_display->xdg_wm_base(), m_wl_surface);
+    m_xdg_surface = xdg_wm_base_get_xdg_surface(m_display->m_xdg_wm_base, m_wl_surface);
     xdg_surface_add_listener(m_xdg_surface, &s_xdg_surface_listener, this);
 
     m_xdg_toplevel = xdg_surface_get_toplevel(m_xdg_surface);
@@ -53,7 +53,7 @@ auto wayland_window::close() -> void
     window::close();
 }
 
-auto wayland_window::on_surface_configure(struct xdg_surface* xdg_surface, uint32_t serial) -> void
+auto wayland_window::on_surface_configure(xdg_surface* xdg_surface, uint32_t serial) -> void
 {
     xdg_surface_ack_configure(xdg_surface, serial);
 
@@ -71,8 +71,8 @@ auto wayland_window::on_surface_configure(struct xdg_surface* xdg_surface, uint3
         return;
     }
 
-    struct wl_shm_pool* shm_pool = wl_shm_create_pool(m_display->wl_shm(), fd, size);
-    struct wl_buffer* wl_buffer = wl_shm_pool_create_buffer(shm_pool, 0, width, height, stride, WL_SHM_FORMAT_XRGB8888);
+    wl_shm_pool* shm_pool = wl_shm_create_pool(m_display->m_wl_shm, fd, size);
+    wl_buffer* wl_buffer = wl_shm_pool_create_buffer(shm_pool, 0, width, height, stride, WL_SHM_FORMAT_XRGB8888);
     wl_shm_pool_destroy(shm_pool);
     ::close(fd);
 
@@ -85,7 +85,7 @@ auto wayland_window::on_surface_configure(struct xdg_surface* xdg_surface, uint3
     wl_surface_commit(m_wl_surface);
 }
 
-auto wayland_window::on_buffer_release(struct wl_buffer* buffer) -> void
+auto wayland_window::on_buffer_release(wl_buffer* buffer) -> void
 {
     wl_buffer_destroy(buffer);
 }

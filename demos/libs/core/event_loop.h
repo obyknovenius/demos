@@ -33,7 +33,7 @@ private:
 
     std::vector<source> m_sources {};
 
-    struct pollfd* m_poll_fds {};
+    pollfd* m_poll_fds {};
 };
 
 }

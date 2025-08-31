@@ -5,18 +5,18 @@
 
 namespace gui {
 
-const struct wl_seat_listener wayland_seat::s_wl_seat_listener = {
-    .capabilities = [](void* data, struct wl_seat* wl_seat, uint32_t capabilities)
+const wl_seat_listener wayland_seat::s_wl_seat_listener = {
+    .capabilities = [](void* data, wl_seat* wl_seat, uint32_t capabilities)
     {
         auto* seat = reinterpret_cast<wayland_seat*>(data);
         seat->on_capabilities(capabilities);
     },
-    .name = [](void* data, struct wl_seat* wl_seat, const char* name)
+    .name = [](void* data, wl_seat* wl_seat, const char* name)
     {
     }
 };
 
-wayland_seat::wayland_seat(struct wl_seat* wl_seat, wayland_display* display) :
+wayland_seat::wayland_seat(wl_seat* wl_seat, wayland_display* display) :
     m_wl_seat(wl_seat),
     m_display(display)
 {
