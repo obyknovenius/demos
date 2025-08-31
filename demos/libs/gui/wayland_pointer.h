@@ -3,6 +3,7 @@
 #include "event.h"
 #include "wayland_seat.h"
 #include <wayland-client.h>
+#include <optional>
 
 namespace gui {
 
@@ -33,8 +34,7 @@ private:
     wayland_seat* m_seat {};
 
     std::shared_ptr<wayland_window> m_window {};
-
-    event m_event {};
+    std::optional<event> m_event {};
 };
 
 }

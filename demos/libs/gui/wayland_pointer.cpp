@@ -102,7 +102,10 @@ auto wayland_pointer::on_axis(uint32_t time, uint32_t axis, wl_fixed_t value) ->
 
 auto wayland_pointer::on_frame() -> void
 {
-    m_seat->display()->dispatch_event(m_event);
+    if (m_event)
+        m_seat->display()->dispatch_event(*m_event);
+
+    m_event.reset();
 }
 
 auto wayland_pointer::on_axis_source(uint32_t axis_source) -> void
