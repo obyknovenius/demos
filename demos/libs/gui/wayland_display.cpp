@@ -12,25 +12,7 @@ const struct wl_registry_listener wayland_display::s_wl_registry_listener = {
     .global = [](void* data, struct wl_registry* registry, uint32_t name, const char* interface, uint32_t version)
     {
         auto* display = reinterpret_cast<wayland_display*>(data);
-
-        if (strcmp(interface, wl_shm_interface.name) == 0)
-        {
-            display->m_wl_shm = reinterpret_cast<struct wl_shm*>(wl_registry_bind(registry, name, &wl_shm_interface, 1));
-        }
-        else if (strcmp(interface, wl_compositor_interface.name) == 0)
-        {
-            display->m_wl_compositor = reinterpret_cast<struct wl_compositor*>(wl_registry_bind(registry, name, &wl_compositor_interface, 4));
-        }
-        else if (strcmp(interface, xdg_wm_base_interface.name) == 0)
-        {
-            display->m_xdg_wm_base = reinterpret_cast<struct xdg_wm_base*>(wl_registry_bind(registry, name, &xdg_wm_base_interface, 1));
-            xdg_wm_base_add_listener(display->m_xdg_wm_base, &s_xdg_wm_base_listener, display);
-        }
-        else if (strcmp(interface, wl_seat_interface.name) == 0)
-        {
-            auto* wl_seat = reinterpret_cast<struct wl_seat*>(wl_registry_bind(registry, name, &wl_seat_interface, 7));
-            display->m_seat = new wayland_seat(wl_seat, display);
-        }
+        display->on_registry_global(registry, name, interface, version);
     },
     .global_remove = [](void *data, struct wl_registry *registry, uint32_t name)
     {
@@ -40,7 +22,8 @@ const struct wl_registry_listener wayland_display::s_wl_registry_listener = {
 const struct xdg_wm_base_listener wayland_display::s_xdg_wm_base_listener = {
     .ping = [](void* data, struct xdg_wm_base* xdg_wm_base, uint32_t serial)
     {
-        xdg_wm_base_pong(xdg_wm_base, serial);
+        auto* display = reinterpret_cast<wayland_display*>(data);
+        display->on_wm_ping(xdg_wm_base, serial);
     }
 };
 
@@ -80,6 +63,33 @@ wayland_display::~wayland_display()
 auto wayland_display::create_window() -> std::shared_ptr<window>
 {
     return std::make_shared<wayland_window>(this);
+}
+
+auto wayland_display::on_registry_global(struct wl_registry* registry, uint32_t name, const char* interface, uint32_t version) -> void
+{
+    if (strcmp(interface, wl_shm_interface.name) == 0)
+    {
+        m_wl_shm = reinterpret_cast<struct wl_shm*>(wl_registry_bind(registry, name, &wl_shm_interface, 1));
+    }
+    else if (strcmp(interface, wl_compositor_interface.name) == 0)
+    {
+        m_wl_compositor = reinterpret_cast<struct wl_compositor*>(wl_registry_bind(registry, name, &wl_compositor_interface, 4));
+    }
+    else if (strcmp(interface, xdg_wm_base_interface.name) == 0)
+    {
+        m_xdg_wm_base = reinterpret_cast<struct xdg_wm_base*>(wl_registry_bind(registry, name, &xdg_wm_base_interface, 1));
+        xdg_wm_base_add_listener(m_xdg_wm_base, &s_xdg_wm_base_listener, this);
+    }
+    else if (strcmp(interface, wl_seat_interface.name) == 0)
+    {
+        auto* wl_seat = reinterpret_cast<struct wl_seat*>(wl_registry_bind(registry, name, &wl_seat_interface, 7));
+        m_seat = new wayland_seat(wl_seat, this);
+    }
+}
+
+auto wayland_display::on_wm_ping(struct xdg_wm_base* xdg_wm_base, uint32_t serial) -> void
+{
+    xdg_wm_base_pong(xdg_wm_base, serial);
 }
 
 }

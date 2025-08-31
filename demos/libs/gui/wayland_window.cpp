@@ -11,42 +11,15 @@ const struct xdg_surface_listener wayland_window::s_xdg_surface_listener = {
     .configure = [](void* data, struct xdg_surface* xdg_surface, uint32_t serial)
     {
         auto* window = reinterpret_cast<wayland_window*>(data);
-
-        xdg_surface_ack_configure(xdg_surface, serial);
-
-        const int width = 640, height = 480;
-        const int stride = width * 4;
-        const int size = stride * height;
-
-        int fd = memfd_create("shm_pool", 0);
-        ftruncate(fd, size);
-
-        uint32_t *pixels = reinterpret_cast<uint32_t*>(mmap(NULL, size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0));
-        if (pixels == MAP_FAILED) {
-            std::cerr << "mmap failed" << std::endl;
-            ::close(fd);
-            return;
-        }
-
-        struct wl_shm_pool* shm_pool = wl_shm_create_pool(window->m_display->wl_shm(), fd, size);
-        struct wl_buffer* wl_buffer = wl_shm_pool_create_buffer(shm_pool, 0, width, height, stride, WL_SHM_FORMAT_XRGB8888);
-        wl_shm_pool_destroy(shm_pool);
-        ::close(fd);
-
-        memset(pixels, 0, size);
-
-        munmap(pixels, size);
-        wl_buffer_add_listener(wl_buffer, &s_wl_buffer_listener, window);
-
-        wl_surface_attach(window->m_wl_surface, wl_buffer, 0, 0);
-        wl_surface_commit(window->m_wl_surface);
+        window->on_surface_configure(xdg_surface, serial);
     }
 };
 
 const struct wl_buffer_listener wayland_window::s_wl_buffer_listener = {
     .release = [](void* data, struct wl_buffer* buffer)
     {
-        wl_buffer_destroy(buffer);
+        auto* window = reinterpret_cast<wayland_window*>(data);
+        window->on_buffer_release(buffer);
     }
 };
 
@@ -78,6 +51,43 @@ auto wayland_window::close() -> void
     m_closed = true;
 
     window::close();
+}
+
+auto wayland_window::on_surface_configure(struct xdg_surface* xdg_surface, uint32_t serial) -> void
+{
+    xdg_surface_ack_configure(xdg_surface, serial);
+
+    const int width = 640, height = 480;
+    const int stride = width * 4;
+    const int size = stride * height;
+
+    int fd = memfd_create("shm_pool", 0);
+    ftruncate(fd, size);
+
+    uint32_t *pixels = reinterpret_cast<uint32_t*>(mmap(NULL, size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0));
+    if (pixels == MAP_FAILED) {
+        std::cerr << "mmap failed" << std::endl;
+        ::close(fd);
+        return;
+    }
+
+    struct wl_shm_pool* shm_pool = wl_shm_create_pool(m_display->wl_shm(), fd, size);
+    struct wl_buffer* wl_buffer = wl_shm_pool_create_buffer(shm_pool, 0, width, height, stride, WL_SHM_FORMAT_XRGB8888);
+    wl_shm_pool_destroy(shm_pool);
+    ::close(fd);
+
+    memset(pixels, 0, size);
+
+    munmap(pixels, size);
+    wl_buffer_add_listener(wl_buffer, &s_wl_buffer_listener, this);
+
+    wl_surface_attach(m_wl_surface, wl_buffer, 0, 0);
+    wl_surface_commit(m_wl_surface);
+}
+
+auto wayland_window::on_buffer_release(struct wl_buffer* buffer) -> void
+{
+    wl_buffer_destroy(buffer);
 }
 
 }

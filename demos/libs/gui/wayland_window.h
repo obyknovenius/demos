@@ -18,6 +18,9 @@ private:
     static const struct xdg_surface_listener s_xdg_surface_listener;
     static const struct wl_buffer_listener s_wl_buffer_listener;
 
+    auto on_surface_configure(struct xdg_surface* xdg_surface, uint32_t serial) -> void;
+    auto on_buffer_release(struct wl_buffer* buffer) -> void;
+
     wayland_display* m_display;
 
     struct wl_surface* m_wl_surface {};

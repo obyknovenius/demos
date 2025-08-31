@@ -17,7 +17,8 @@ public:
 
 private:
     static const struct wl_seat_listener s_wl_seat_listener;
-    static const struct wl_pointer_listener s_wl_pointer_listener;
+
+    auto on_capabilities(uint32_t capabilities) -> void;
 
     struct wl_seat* m_wl_seat {};
 

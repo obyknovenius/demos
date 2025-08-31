@@ -31,6 +31,9 @@ private:
     static const struct wl_registry_listener s_wl_registry_listener;
     static const struct xdg_wm_base_listener s_xdg_wm_base_listener;
 
+    auto on_registry_global(struct wl_registry* registry, uint32_t name, const char* interface, uint32_t version) -> void;
+    auto on_wm_ping(struct xdg_wm_base* xdg_wm_base, uint32_t serial) -> void;
+
     struct wl_display* m_wl_display {};
     struct wl_registry* m_wl_registry {};
     struct wl_shm* m_wl_shm {};
