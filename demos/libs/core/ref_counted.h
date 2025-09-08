@@ -1,6 +1,6 @@
 #pragma once
 
-#include <core/ref_ptr.h>
+#include <core/nonnull_ref_ptr.h>
 
 namespace core {
 
@@ -27,9 +27,9 @@ private:
 };
 
 template<typename T, class... Args>
-ref_ptr<T> make_ref_counted(Args&&... args)
+nonnull_ref_ptr<T> make_ref_counted(Args&&... args)
 {
-    return ref_ptr<T>(new T(std::forward<Args>(args)...));
+    return nonnull_ref_ptr<T>(*new T(std::forward<Args>(args)...));
 }
 
 }

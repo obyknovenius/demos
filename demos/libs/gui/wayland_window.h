@@ -38,7 +38,7 @@ private:
     bool m_closed { false };
 
     template<typename T, class... Args>
-    friend ref_ptr<T> core::make_ref_counted(Args&&...);
+    friend nonnull_ref_ptr<T> core::make_ref_counted(Args&&...);
 };
 
 }

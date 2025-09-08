@@ -4,7 +4,6 @@
 
 #include "event.h"
 #include "wayland_seat.h"
-#include <core/ref_ptr.h>
 #include <wayland-client.h>
 #include <xdg-shell-client-protocol.h>
 
@@ -17,7 +16,7 @@ class wayland_display final : public display
 public:
     static auto connect() -> ref_ptr<wayland_display>;
 
-    auto create_window() -> ref_ptr<window> override;
+    auto create_window() -> nonnull_ref_ptr<window> override;
 
 private:
     wayland_display(wl_display* wl_display);
@@ -38,7 +37,7 @@ private:
     ref_ptr<wayland_seat> m_seat {};
 
     template<typename T, class... Args>
-    friend ref_ptr<T> core::make_ref_counted(Args&&...);
+    friend nonnull_ref_ptr<T> core::make_ref_counted(Args&&...);
 
     friend class wayland_window;
 };

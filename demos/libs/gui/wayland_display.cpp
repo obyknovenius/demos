@@ -66,7 +66,7 @@ wayland_display::~wayland_display()
     wl_display_disconnect(m_wl_display);
 }
 
-auto wayland_display::create_window() -> ref_ptr<window>
+auto wayland_display::create_window() -> nonnull_ref_ptr<window>
 {
     return make_ref_counted<wayland_window>(this);
 }

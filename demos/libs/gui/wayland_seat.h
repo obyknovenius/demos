@@ -29,7 +29,7 @@ private:
     ref_ptr<wayland_pointer> m_pointer {};
 
     template<typename T, class... Args>
-    friend ref_ptr<T> core::make_ref_counted(Args&&...);
+    friend nonnull_ref_ptr<T> core::make_ref_counted(Args&&...);
 };
 
 }

@@ -12,7 +12,7 @@ class display : public ref_counted
 public:
     static auto connect() -> ref_ptr<display>;
 
-    virtual auto create_window() -> ref_ptr<window> = 0;
+    virtual auto create_window() -> nonnull_ref_ptr<window> = 0;
 
     auto dispatch_event(const event event) -> void;
 

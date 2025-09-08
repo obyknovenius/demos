@@ -1,51 +1,38 @@
 #pragma once
 
-#include <core/ref_counted.h>
 #include <utility>
 
 namespace core {
 
 template <typename T>
-class ref_ptr
+class nonnull_ref_ptr
 {
 public:
-    ref_ptr(T* ptr = nullptr) : m_ptr(ptr)
+    nonnull_ref_ptr(T& ref) : m_ptr(&ref)
     {
         if (m_ptr)
             m_ptr->ref();
     }
 
-    ref_ptr(const ref_ptr& other) : m_ptr(other.m_ptr)
+    nonnull_ref_ptr(const nonnull_ref_ptr& other) : m_ptr(other.m_ptr)
     {
         if (m_ptr)
             m_ptr->ref();
     }
 
     template<typename U>
-    ref_ptr(const ref_ptr<U>& other) : m_ptr(static_cast<T*>(other.ptr()))
-    {
-        if (m_ptr)
-            m_ptr->ref();
-    }
-
-    ref_ptr(const nonnull_ref_ptr<T>& other) : m_ptr(other.ptr())
+    nonnull_ref_ptr(const nonnull_ref_ptr<U>& other) : m_ptr(static_cast<T*>(other.ptr()))
     {
         m_ptr->ref();
     }
 
-    template<typename U>
-    ref_ptr(const nonnull_ref_ptr<U>& other) : m_ptr(static_cast<T*>(other.ptr()))
-    {
-        m_ptr->ref();
-    }
-
-    ~ref_ptr()
+    ~nonnull_ref_ptr()
     {
         if (m_ptr)
             m_ptr->unref();
     }
 
-    ref_ptr& operator=(const ref_ptr& other)
+    nonnull_ref_ptr& operator=(const nonnull_ref_ptr& other)
     {
         if (this != &other)
         {
@@ -70,4 +57,4 @@ private:
 
 }
 
-using core::ref_ptr;
+using core::nonnull_ref_ptr;
