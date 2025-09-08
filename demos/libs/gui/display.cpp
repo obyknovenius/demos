@@ -5,7 +5,7 @@
 
 namespace gui {
 
-auto display::connect() -> std::shared_ptr<display>
+auto display::connect() -> ref_ptr<display>
 {
     return wayland_display::connect();
 }

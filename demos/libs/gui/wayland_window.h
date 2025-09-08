@@ -1,22 +1,24 @@
 #pragma once
 
 #include "window.h"
-#include "wayland_display.h"
-#include <memory>
+#include <wayland-client.h>
+#include <xdg-shell-client-protocol.h>
 
 namespace gui {
 
-class wayland_window : public window, public std::enable_shared_from_this<wayland_window>
+class wayland_display;
+
+class wayland_window final : public window
 {
 public:
-    explicit wayland_window(wayland_display* display);
-    ~wayland_window();
-
     auto close() -> void override;
 
 private:
     static const xdg_surface_listener s_xdg_surface_listener;
     static const wl_buffer_listener s_wl_buffer_listener;
+
+    explicit wayland_window(wayland_display* display);
+    ~wayland_window();
 
     auto on_surface_configure(xdg_surface* xdg_surface, uint32_t serial) -> void;
     auto on_buffer_release(wl_buffer* buffer) -> void;
@@ -34,6 +36,9 @@ private:
     xdg_toplevel* m_xdg_toplevel {};
 
     bool m_closed { false };
+
+    template<typename T, class... Args>
+    friend ref_ptr<T> core::make_ref_counted(Args&&...);
 };
 
 }

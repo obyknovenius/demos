@@ -1,5 +1,6 @@
 #include "wayland_window.h"
 
+#include "wayland_display.h"
 #include <cstring>
 #include <iostream>
 #include <sys/mman.h>

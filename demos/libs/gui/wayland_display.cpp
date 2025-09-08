@@ -2,8 +2,6 @@
 
 #include <core/event_loop.h>
 #include <cstring>
-#include <iostream>
-#include "wayland_seat.h"
 #include "wayland_window.h"
 
 namespace gui {
@@ -27,12 +25,12 @@ const xdg_wm_base_listener wayland_display::s_xdg_wm_base_listener = {
     }
 };
 
-auto wayland_display::connect() -> std::shared_ptr<wayland_display>
+auto wayland_display::connect() -> ref_ptr<wayland_display>
 {
     wl_display* wl_display = wl_display_connect(nullptr);
     if (!wl_display)
         return nullptr;
-    return std::shared_ptr<wayland_display>(new wayland_display(wl_display));
+    return make_ref_counted<wayland_display>(wl_display);
 }
 
 wayland_display::wayland_display(wl_display* wl_display) : m_wl_display(wl_display)
@@ -57,8 +55,7 @@ wayland_display::wayland_display(wl_display* wl_display) : m_wl_display(wl_displ
 
 wayland_display::~wayland_display()
 {
-    if (m_seat)
-        delete m_seat;
+    m_seat = nullptr;
 
     xdg_wm_base_destroy(m_xdg_wm_base);
     wl_compositor_destroy(m_wl_compositor);
@@ -69,9 +66,9 @@ wayland_display::~wayland_display()
     wl_display_disconnect(m_wl_display);
 }
 
-auto wayland_display::create_window() -> std::shared_ptr<window>
+auto wayland_display::create_window() -> ref_ptr<window>
 {
-    return std::make_shared<wayland_window>(this);
+    return make_ref_counted<wayland_window>(this);
 }
 
 auto wayland_display::on_registry_global(wl_registry* registry, uint32_t name, const char* interface, uint32_t version) -> void
@@ -92,7 +89,7 @@ auto wayland_display::on_registry_global(wl_registry* registry, uint32_t name, c
     else if (strcmp(interface, wl_seat_interface.name) == 0)
     {
         auto* wl_seat = reinterpret_cast<struct wl_seat*>(wl_registry_bind(registry, name, &wl_seat_interface, 7));
-        m_seat = new wayland_seat(wl_seat, this);
+        m_seat = make_ref_counted<wayland_seat>(wl_seat, this);
     }
 }
 

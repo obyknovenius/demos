@@ -3,7 +3,6 @@
 #include "event.h"
 #include "wayland_display.h"
 #include "wayland_window.h"
-#include <iostream>
 
 namespace gui {
 
@@ -69,15 +68,14 @@ const wl_pointer_listener wayland_pointer::s_wl_pointer_listener = {
 
 auto wayland_pointer::on_enter(uint32_t serial, wl_surface* surface, wl_fixed_t x, wl_fixed_t y) -> void
 {
-    auto* window = reinterpret_cast<wayland_window*>(wl_surface_get_user_data(surface));
-    m_window = window->shared_from_this();
+    m_window = reinterpret_cast<wayland_window*>(wl_surface_get_user_data(surface));
 
     m_event = { event::type::invalid };
 }
 
 auto wayland_pointer::on_leave(uint32_t serial, wl_surface* surface) -> void
 {
-    m_window.reset();
+    m_window = nullptr;
 
     m_event = { event::type::invalid };
 }

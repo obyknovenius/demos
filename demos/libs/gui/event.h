@@ -1,6 +1,6 @@
 #pragma once
 
-#include <memory>
+#include <core/ref_ptr.h>
 
 namespace gui {
 
@@ -16,7 +16,7 @@ struct event
     };
 
     type type;
-    std::shared_ptr<class window> window;
+    ref_ptr<class window> window;
 };
 
 }

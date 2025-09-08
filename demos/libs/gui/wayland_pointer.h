@@ -1,23 +1,22 @@
 #pragma once
 
 #include "event.h"
-#include "wayland_seat.h"
-#include <wayland-client.h>
+#include "wayland_window.h"
+#include <core/ref_counted.h>
 #include <optional>
+#include <wayland-client.h>
 
 namespace gui {
 
 class wayland_seat;
-class wayland_window;
 
-class wayland_pointer
+class wayland_pointer final : public ref_counted
 {
-public:
-    wayland_pointer(wl_pointer* wl_pointer, wayland_seat* seat);
-    ~wayland_pointer();
-
 private:
     static const wl_pointer_listener s_wl_pointer_listener;
+
+    wayland_pointer(wl_pointer* wl_pointer, wayland_seat* seat);
+    ~wayland_pointer();
 
     auto on_enter(uint32_t serial, wl_surface* surface, wl_fixed_t x, wl_fixed_t y) -> void;
     auto on_leave(uint32_t serial, wl_surface* surface) -> void;
@@ -33,8 +32,11 @@ private:
 
     wayland_seat* m_seat {};
 
-    std::shared_ptr<wayland_window> m_window {};
+    ref_ptr<wayland_window> m_window {};
     std::optional<event> m_event {};
+
+    template<typename T, class... Args>
+    friend ref_ptr<T> core::make_ref_counted(Args&&...);
 };
 
 }

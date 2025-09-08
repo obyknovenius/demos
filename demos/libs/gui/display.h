@@ -1,22 +1,24 @@
 #pragma once
 
-#include <memory>
 #include "event.h"
+#include <core/ref_counted.h>
 
 namespace gui {
 
 class window;
 
-class display
+class display : public ref_counted
 {
 public:
-    static auto connect() -> std::shared_ptr<display>;
+    static auto connect() -> ref_ptr<display>;
 
-    virtual ~display() = default;
-
-    virtual auto create_window() -> std::shared_ptr<window> = 0;
+    virtual auto create_window() -> ref_ptr<window> = 0;
 
     auto dispatch_event(const event event) -> void;
+
+protected:
+    display() = default;
+    virtual ~display() = default;
 };
 
 }

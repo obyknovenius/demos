@@ -1,7 +1,6 @@
 #include "wayland_seat.h"
 
 #include "wayland_display.h"
-#include "wayland_pointer.h"
 
 namespace gui {
 
@@ -25,8 +24,7 @@ wayland_seat::wayland_seat(wl_seat* wl_seat, wayland_display* display) :
 
 wayland_seat::~wayland_seat()
 {
-    if (m_pointer)
-        delete m_pointer;
+    m_pointer = nullptr;
 
     wl_seat_release(m_wl_seat);
 }
@@ -36,12 +34,9 @@ auto wayland_seat::on_capabilities(uint32_t capabilities) -> void
     bool have_pointer = capabilities & WL_SEAT_CAPABILITY_POINTER;
 
     if (have_pointer && !m_pointer)
-        m_pointer = new wayland_pointer(wl_seat_get_pointer(m_wl_seat), this);
+        m_pointer = make_ref_counted<wayland_pointer>(wl_seat_get_pointer(m_wl_seat), this);
     else if (!have_pointer && m_pointer)
-    {
-        delete m_pointer;
         m_pointer = nullptr;
-    }
 }
 
 }

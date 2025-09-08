@@ -3,7 +3,8 @@
 #include "display.h"
 
 #include "event.h"
-#include <memory>
+#include "wayland_seat.h"
+#include <core/ref_ptr.h>
 #include <wayland-client.h>
 #include <xdg-shell-client-protocol.h>
 
@@ -11,17 +12,16 @@ namespace gui {
 
 class wayland_seat;
 
-class wayland_display : public display
+class wayland_display final : public display
 {
 public:
-    static auto connect() -> std::shared_ptr<wayland_display>;
+    static auto connect() -> ref_ptr<wayland_display>;
 
-    ~wayland_display();
-
-    auto create_window() -> std::shared_ptr<window> override;
+    auto create_window() -> ref_ptr<window> override;
 
 private:
-    explicit wayland_display(wl_display* wl_display);
+    wayland_display(wl_display* wl_display);
+    ~wayland_display();
 
     static const wl_registry_listener s_wl_registry_listener;
     static const xdg_wm_base_listener s_xdg_wm_base_listener;
@@ -35,7 +35,10 @@ private:
     wl_compositor* m_wl_compositor {};
     xdg_wm_base* m_xdg_wm_base {};
 
-    wayland_seat* m_seat {};
+    ref_ptr<wayland_seat> m_seat {};
+
+    template<typename T, class... Args>
+    friend ref_ptr<T> core::make_ref_counted(Args&&...);
 
     friend class wayland_window;
 };
