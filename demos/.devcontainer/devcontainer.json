@@ -1,0 +1,21 @@
+{
+	"name": "Demos",
+	"build": {
+		"dockerfile": "Containerfile"
+	},
+	"mounts": [
+		"source=${localEnv:XDG_RUNTIME_DIR}/${localEnv:WAYLAND_DISPLAY},target=${localEnv:XDG_RUNTIME_DIR}/${localEnv:WAYLAND_DISPLAY},type=bind"
+	],
+	"containerEnv": {
+		"XDG_RUNTIME_DIR": "${localEnv:XDG_RUNTIME_DIR}",
+		"WAYLAND_DISPLAY": "${localEnv:WAYLAND_DISPLAY}"
+	},
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"ms-vscode.cpptools",
+				"mesonbuild.mesonbuild"
+			]
+		}
+	}
+}

@@ -1,5 +1,5 @@
 {
-    "C_Cpp.default.compileCommands": "/home/vitaly/Projects/Personal/demos/demos/builddir/compile_commands.json",
+    "C_Cpp.default.compileCommands": "/workspaces/demos/demos/builddir/compile_commands.json",
     "C_Cpp.default.configurationProvider": "mesonbuild.mesonbuild",
     "files.associations": {
         "array": "cpp",
