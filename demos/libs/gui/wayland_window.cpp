@@ -24,7 +24,7 @@ const wl_buffer_listener wayland_window::s_wl_buffer_listener = {
     }
 };
 
-wayland_window::wayland_window(wayland_display* display) : m_display(display)
+wayland_window::wayland_window(wayland_display* display) : m_display { display }
 {
     m_wl_surface = wl_compositor_create_surface(m_display->m_wl_compositor);
     wl_surface_set_user_data(m_wl_surface, this);

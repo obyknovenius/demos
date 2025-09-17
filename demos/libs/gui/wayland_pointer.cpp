@@ -7,8 +7,8 @@
 namespace gui {
 
 wayland_pointer::wayland_pointer(wl_pointer* wl_pointer, nonnull_ref_ptr<wayland_seat> seat) :
-    m_wl_pointer(wl_pointer),
-    m_seat(seat)
+    m_wl_pointer { wl_pointer },
+    m_seat { seat }
 {
     wl_pointer_add_listener(m_wl_pointer, &s_wl_pointer_listener, this);
 }

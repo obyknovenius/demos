@@ -33,7 +33,7 @@ auto wayland_display::connect() -> ref_ptr<wayland_display>
     return make_ref_counted<wayland_display>(wl_display);
 }
 
-wayland_display::wayland_display(wl_display* wl_display) : m_wl_display(wl_display)
+wayland_display::wayland_display(wl_display* wl_display) : m_wl_display { wl_display }
 {
     m_wl_registry = wl_display_get_registry(m_wl_display);
     wl_registry_add_listener(m_wl_registry, &s_wl_registry_listener, this);
