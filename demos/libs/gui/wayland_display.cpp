@@ -68,7 +68,7 @@ wayland_display::~wayland_display()
 
 auto wayland_display::create_window() -> nonnull_ref_ptr<window>
 {
-    return make_ref_counted<wayland_window>(this);
+    return make_ref_counted<wayland_window>(*this);
 }
 
 auto wayland_display::roundtrip() -> void

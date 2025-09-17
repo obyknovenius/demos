@@ -1,6 +1,7 @@
 #pragma once
 
 #include "window.h"
+#include <core/weak_ptr.h>
 #include <wayland-client.h>
 #include <xdg-shell-client-protocol.h>
 
@@ -20,13 +21,13 @@ private:
     static const xdg_surface_listener s_xdg_surface_listener;
     static const wl_buffer_listener s_wl_buffer_listener;
 
-    explicit wayland_window(wayland_display* display);
+    explicit wayland_window(nonnull_ref_ptr<wayland_display> display);
     ~wayland_window();
 
     auto on_surface_configure(xdg_surface* xdg_surface, uint32_t serial) -> void;
     auto on_buffer_release(wl_buffer* buffer) -> void;
 
-    wayland_display* m_display;
+    weak_ptr<wayland_display> m_display;
 
     wl_surface* m_wl_surface {};
 
