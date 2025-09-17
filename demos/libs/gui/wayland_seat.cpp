@@ -15,7 +15,7 @@ const wl_seat_listener wayland_seat::s_wl_seat_listener = {
     }
 };
 
-wayland_seat::wayland_seat(wl_seat* wl_seat, wayland_display* display) :
+wayland_seat::wayland_seat(wl_seat* wl_seat, nonnull_ref_ptr<wayland_display> display) :
     m_wl_seat(wl_seat),
     m_display(display)
 {

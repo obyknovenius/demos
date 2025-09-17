@@ -29,13 +29,13 @@ private:
             delete this;
     }
 
-    int m_ref_count { 0 };
+    int m_ref_count { 1 };
 };
 
 template<typename T, class... Args>
 nonnull_ref_ptr<T> make_ref_counted(Args&&... args)
 {
-    return nonnull_ref_ptr<T>(*new T(std::forward<Args>(args)...));
+    return adopt(*new T(std::forward<Args>(args)...));
 }
 
 }

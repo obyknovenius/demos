@@ -1,13 +1,13 @@
 #pragma once
 
 #include "event.h"
-#include <core/ref_counted.h>
+#include <core/weakable.h>
 
 namespace gui {
 
 class window;
 
-class display : public ref_counted
+class display : public weakable
 {
 public:
     static auto connect() -> ref_ptr<display>;

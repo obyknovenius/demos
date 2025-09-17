@@ -8,10 +8,16 @@ template <typename T>
 class nonnull_ref_ptr
 {
 public:
+    enum adopt_tag { adopt };
+
     nonnull_ref_ptr(T& ref) : m_ptr(&ref)
     {
         if (m_ptr)
             m_ptr->ref();
+    }
+
+    nonnull_ref_ptr(adopt_tag, T& ref) : m_ptr(&ref)
+    {
     }
 
     nonnull_ref_ptr(const nonnull_ref_ptr& other) : m_ptr(other.m_ptr)
@@ -55,6 +61,13 @@ private:
     T* m_ptr { nullptr };
 };
 
+template<typename T>
+auto adopt(T& ref) -> nonnull_ref_ptr<T>
+{
+    return nonnull_ref_ptr<T>(nonnull_ref_ptr<T>::adopt, ref);
+}
+
 }
 
 using core::nonnull_ref_ptr;
+using core::adopt;

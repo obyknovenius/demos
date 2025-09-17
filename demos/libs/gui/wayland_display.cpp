@@ -71,6 +71,11 @@ auto wayland_display::create_window() -> nonnull_ref_ptr<window>
     return make_ref_counted<wayland_window>(this);
 }
 
+auto wayland_display::roundtrip() -> void
+{
+    wl_display_roundtrip(m_wl_display);
+}
+
 auto wayland_display::on_registry_global(wl_registry* registry, uint32_t name, const char* interface, uint32_t version) -> void
 {
     if (strcmp(interface, wl_shm_interface.name) == 0)
@@ -89,7 +94,7 @@ auto wayland_display::on_registry_global(wl_registry* registry, uint32_t name, c
     else if (strcmp(interface, wl_seat_interface.name) == 0)
     {
         auto* wl_seat = reinterpret_cast<struct wl_seat*>(wl_registry_bind(registry, name, &wl_seat_interface, 7));
-        m_seat = make_ref_counted<wayland_seat>(wl_seat, this);
+        m_seat = make_ref_counted<wayland_seat>(wl_seat, *this);
     }
 }
 
