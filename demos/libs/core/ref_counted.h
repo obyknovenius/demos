@@ -1,12 +1,17 @@
 #pragma once
 
 #include <core/nonnull_ref_ptr.h>
+#include <core/ref_counted.h>
 
 namespace core {
 
 class ref_counted
 {
-public:
+protected:
+    ref_counted() = default;
+    virtual ~ref_counted() = default;
+
+private:
     void ref()
     {
         ++m_ref_count;
@@ -18,12 +23,13 @@ public:
             delete this;
     }
 
-protected:
-    ref_counted() = default;
-    virtual ~ref_counted() = default;
-
-private:
     int m_ref_count { 0 };
+
+    template<typename T>
+    friend class ref_ptr;
+
+    template<typename T>
+    friend class nonnull_ref_ptr;
 };
 
 template<typename T, class... Args>

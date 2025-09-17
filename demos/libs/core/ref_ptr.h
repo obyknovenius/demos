@@ -1,6 +1,6 @@
 #pragma once
 
-#include <core/ref_counted.h>
+#include <core/nonnull_ref_ptr.h>
 #include <utility>
 
 namespace core {
