@@ -14,6 +14,9 @@ class wayland_seat;
 
 class wayland_pointer final : public ref_counted
 {
+    template<typename T, class... Args>
+    friend nonnull_ref_ptr<T> core::make_ref_counted(Args&&...);
+
 private:
     static const wl_pointer_listener s_wl_pointer_listener;
 
@@ -36,9 +39,6 @@ private:
 
     ref_ptr<wayland_window> m_window {};
     std::optional<event> m_event {};
-
-    template<typename T, class... Args>
-    friend nonnull_ref_ptr<T> core::make_ref_counted(Args&&...);
 };
 
 }

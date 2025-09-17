@@ -7,6 +7,12 @@ namespace core {
 
 class ref_counted
 {
+    template<typename T>
+    friend class ref_ptr;
+
+    template<typename T>
+    friend class nonnull_ref_ptr;
+
 protected:
     ref_counted() = default;
     virtual ~ref_counted() = default;
@@ -24,12 +30,6 @@ private:
     }
 
     int m_ref_count { 0 };
-
-    template<typename T>
-    friend class ref_ptr;
-
-    template<typename T>
-    friend class nonnull_ref_ptr;
 };
 
 template<typename T, class... Args>

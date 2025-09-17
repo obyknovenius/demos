@@ -13,6 +13,11 @@ class wayland_seat;
 
 class wayland_display final : public display
 {
+    template<typename T, class... Args>
+    friend nonnull_ref_ptr<T> core::make_ref_counted(Args&&...);
+
+    friend class wayland_window;
+
 public:
     static auto connect() -> ref_ptr<wayland_display>;
 
@@ -35,11 +40,6 @@ private:
     xdg_wm_base* m_xdg_wm_base {};
 
     ref_ptr<wayland_seat> m_seat {};
-
-    template<typename T, class... Args>
-    friend nonnull_ref_ptr<T> core::make_ref_counted(Args&&...);
-
-    friend class wayland_window;
 };
 
 }

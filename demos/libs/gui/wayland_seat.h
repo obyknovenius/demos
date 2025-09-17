@@ -12,6 +12,9 @@ class wayland_pointer;
 
 class wayland_seat final : public weakable
 {
+    template<typename T, class... Args>
+    friend nonnull_ref_ptr<T> core::make_ref_counted(Args&&...);
+
 public:
     auto display() -> wayland_display* { return m_display; }
 
@@ -28,9 +31,6 @@ private:
     wayland_display* m_display {};
 
     ref_ptr<wayland_pointer> m_pointer {};
-
-    template<typename T, class... Args>
-    friend nonnull_ref_ptr<T> core::make_ref_counted(Args&&...);
 };
 
 }

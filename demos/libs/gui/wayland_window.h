@@ -10,6 +10,9 @@ class wayland_display;
 
 class wayland_window final : public window
 {
+    template<typename T, class... Args>
+    friend nonnull_ref_ptr<T> core::make_ref_counted(Args&&...);
+
 public:
     auto close() -> void override;
 
@@ -36,9 +39,6 @@ private:
     xdg_toplevel* m_xdg_toplevel {};
 
     bool m_closed { false };
-
-    template<typename T, class... Args>
-    friend nonnull_ref_ptr<T> core::make_ref_counted(Args&&...);
 };
 
 }
