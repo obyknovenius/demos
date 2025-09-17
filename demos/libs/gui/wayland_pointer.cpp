@@ -1,5 +1,6 @@
 #include "wayland_pointer.h"
 
+#include "event.h"
 #include "wayland_display.h"
 #include "wayland_seat.h"
 #include "wayland_window.h"
@@ -69,57 +70,46 @@ const wl_pointer_listener wayland_pointer::s_wl_pointer_listener = {
 auto wayland_pointer::on_enter(uint32_t serial, wl_surface* surface, wl_fixed_t x, wl_fixed_t y) -> void
 {
     m_window = reinterpret_cast<wayland_window*>(wl_surface_get_user_data(surface));
-
-    m_event = { event::type::invalid };
 }
 
 auto wayland_pointer::on_leave(uint32_t serial, wl_surface* surface) -> void
 {
     m_window = nullptr;
-
-    m_event = { event::type::invalid };
 }
 
 auto wayland_pointer::on_motion(uint32_t time, wl_fixed_t x, wl_fixed_t y) -> void
 {
-    m_event = { event::type::invalid };
 }
 
 auto wayland_pointer::on_button(uint32_t serial, uint32_t time, uint32_t button, uint32_t state) -> void
 {
-    m_event = {
-        state == WL_POINTER_BUTTON_STATE_PRESSED ? event::type::button_pressed : event::type::button_released,
-        m_window
-    };
+    auto type = state == WL_POINTER_BUTTON_STATE_PRESSED ? event::type::button_pressed : event::type::button_released;
+    m_event = std::make_unique<event>(type, m_window);
 }
 
 auto wayland_pointer::on_axis(uint32_t time, uint32_t axis, wl_fixed_t value) -> void
 {
-    m_event = { event::type::invalid };
 }
 
 auto wayland_pointer::on_frame() -> void
 {
     if (m_event)
         if (auto seat = m_seat.strong_ref())
-            seat->display()->dispatch_event(*m_event);
+            seat->display()->dispatch_event(std::move(m_event));
 
     m_event.reset();
 }
 
 auto wayland_pointer::on_axis_source(uint32_t axis_source) -> void
 {
-    m_event = { event::type::invalid };
 }
 
 auto wayland_pointer::on_axis_stop(uint32_t time, uint32_t axis_stop) -> void
 {
-    m_event = { event::type::invalid };
 }
 
 auto wayland_pointer::on_axis_discrete(uint32_t axis, int32_t discrete) -> void
 {
-    m_event = { event::type::invalid };
 }
 
 

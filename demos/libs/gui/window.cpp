@@ -4,7 +4,7 @@
 
 namespace gui {
 
-auto window::dispatch_event(const event event) -> void
+auto window::dispatch_event(std::unique_ptr<const event> event) -> void
 {
     close();
 }

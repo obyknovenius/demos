@@ -1,6 +1,7 @@
 #pragma once
 
 #include <core/weakable.h>
+#include <memory>
 
 namespace gui {
 
@@ -14,7 +15,7 @@ public:
 
     virtual auto create_window() -> nonnull_ref_ptr<window> = 0;
 
-    auto dispatch_event(const event event) -> void;
+    auto dispatch_event(std::unique_ptr<const event> event) -> void;
 
 protected:
     display() = default;

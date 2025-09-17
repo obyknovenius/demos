@@ -2,6 +2,7 @@
 
 #include <core/ref_counted.h>
 #include <functional>
+#include <memory>
 
 namespace gui {
 
@@ -10,7 +11,7 @@ struct event;
 class window : public ref_counted
 {
 public:
-    auto dispatch_event(const event event) -> void;
+    auto dispatch_event(std::unique_ptr<const event> event) -> void;
 
     virtual auto close() -> void;
 

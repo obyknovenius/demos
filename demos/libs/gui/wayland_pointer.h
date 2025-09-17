@@ -1,15 +1,15 @@
 #pragma once
 
-#include "event.h"
 #include "wayland_window.h"
 #include <core/ref_counted.h>
 #include <core/weak_ptr.h>
-#include <optional>
+#include <memory>
 #include <wayland-client.h>
 
 namespace gui {
 
 class wayland_seat;
+struct event;
 
 class wayland_pointer final : public ref_counted
 {
@@ -37,7 +37,7 @@ private:
     weak_ptr<wayland_seat> m_seat;
 
     ref_ptr<wayland_window> m_window;
-    std::optional<event> m_event {};
+    std::unique_ptr<event> m_event;
 };
 
 }
