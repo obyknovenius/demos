@@ -2,7 +2,6 @@
 
 #include "event.h"
 #include "wayland_window.h"
-#include "wayland_seat.h"
 #include <core/ref_counted.h>
 #include <core/weak_ptr.h>
 #include <optional>
@@ -37,7 +36,7 @@ private:
 
     weak_ptr<wayland_seat> m_seat;
 
-    ref_ptr<wayland_window> m_window {};
+    ref_ptr<wayland_window> m_window;
     std::optional<event> m_event {};
 };
 

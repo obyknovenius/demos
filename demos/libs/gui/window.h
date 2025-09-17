@@ -1,10 +1,11 @@
 #pragma once
 
-#include "event.h"
 #include <core/ref_counted.h>
 #include <functional>
 
 namespace gui {
+
+struct event;
 
 class window : public ref_counted
 {

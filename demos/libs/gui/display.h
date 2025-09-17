@@ -1,11 +1,11 @@
 #pragma once
 
-#include "event.h"
 #include <core/weakable.h>
 
 namespace gui {
 
 class window;
+struct event;
 
 class display : public weakable
 {

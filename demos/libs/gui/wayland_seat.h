@@ -1,7 +1,5 @@
 #pragma once
 
-#include "wayland_pointer.h"
-#include <core/ref_counted.h>
 #include <core/weakable.h>
 #include <core/weak_ptr.h>
 #include <wayland-client.h>
@@ -31,7 +29,7 @@ private:
 
     weak_ptr<wayland_display> m_display;
 
-    ref_ptr<wayland_pointer> m_pointer {};
+    ref_ptr<wayland_pointer> m_pointer;
 };
 
 }

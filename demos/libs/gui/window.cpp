@@ -1,5 +1,7 @@
 #include "window.h"
 
+#include "event.h"
+
 namespace gui {
 
 auto window::dispatch_event(const event event) -> void

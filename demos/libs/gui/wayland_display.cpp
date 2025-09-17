@@ -1,8 +1,9 @@
 #include "wayland_display.h"
 
+#include "wayland_seat.h"
+#include "wayland_window.h"
 #include <core/event_loop.h>
 #include <cstring>
-#include "wayland_window.h"
 
 namespace gui {
 

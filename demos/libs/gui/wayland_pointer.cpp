@@ -1,7 +1,7 @@
 #include "wayland_pointer.h"
 
-#include "event.h"
 #include "wayland_display.h"
+#include "wayland_seat.h"
 #include "wayland_window.h"
 
 namespace gui {

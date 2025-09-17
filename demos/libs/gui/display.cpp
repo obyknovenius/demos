@@ -1,5 +1,6 @@
 #include "display.h"
 
+#include "event.h"
 #include "wayland_display.h"
 #include "window.h"
 

@@ -4,8 +4,6 @@
 
 namespace gui {
 
-class window;
-
 struct event
 {
     enum class type

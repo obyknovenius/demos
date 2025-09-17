@@ -1,9 +1,6 @@
 #pragma once
 
 #include "display.h"
-
-#include "event.h"
-#include "wayland_seat.h"
 #include <wayland-client.h>
 #include <xdg-shell-client-protocol.h>
 
@@ -41,7 +38,7 @@ private:
     wl_compositor* m_wl_compositor {};
     xdg_wm_base* m_xdg_wm_base {};
 
-    ref_ptr<wayland_seat> m_seat {};
+    ref_ptr<wayland_seat> m_seat;
 };
 
 }
