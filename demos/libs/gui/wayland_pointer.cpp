@@ -6,7 +6,7 @@
 
 namespace gui {
 
-wayland_pointer::wayland_pointer(wl_pointer* wl_pointer, wayland_seat* seat) :
+wayland_pointer::wayland_pointer(wl_pointer* wl_pointer, nonnull_ref_ptr<wayland_seat> seat) :
     m_wl_pointer(wl_pointer),
     m_seat(seat)
 {
@@ -101,7 +101,8 @@ auto wayland_pointer::on_axis(uint32_t time, uint32_t axis, wl_fixed_t value) ->
 auto wayland_pointer::on_frame() -> void
 {
     if (m_event)
-        m_seat->display()->dispatch_event(*m_event);
+        if (auto seat = m_seat.strong_ref())
+            seat->display()->dispatch_event(*m_event);
 
     m_event.reset();
 }

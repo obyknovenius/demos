@@ -2,6 +2,7 @@
 
 #include "wayland_pointer.h"
 #include <core/ref_counted.h>
+#include <core/weakable.h>
 #include <wayland-client.h>
 
 namespace gui {
@@ -9,7 +10,7 @@ namespace gui {
 class wayland_display;
 class wayland_pointer;
 
-class wayland_seat final : public ref_counted
+class wayland_seat final : public weakable
 {
 public:
     auto display() -> wayland_display* { return m_display; }

@@ -2,7 +2,9 @@
 
 #include "event.h"
 #include "wayland_window.h"
+#include "wayland_seat.h"
 #include <core/ref_counted.h>
+#include <core/weak_ptr.h>
 #include <optional>
 #include <wayland-client.h>
 
@@ -15,7 +17,7 @@ class wayland_pointer final : public ref_counted
 private:
     static const wl_pointer_listener s_wl_pointer_listener;
 
-    wayland_pointer(wl_pointer* wl_pointer, wayland_seat* seat);
+    wayland_pointer(wl_pointer* wl_pointer, nonnull_ref_ptr<wayland_seat> seat);
     ~wayland_pointer();
 
     auto on_enter(uint32_t serial, wl_surface* surface, wl_fixed_t x, wl_fixed_t y) -> void;
@@ -30,7 +32,7 @@ private:
 
     wl_pointer* m_wl_pointer {};
 
-    wayland_seat* m_seat {};
+    weak_ptr<wayland_seat> m_seat;
 
     ref_ptr<wayland_window> m_window {};
     std::optional<event> m_event {};

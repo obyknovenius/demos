@@ -52,7 +52,7 @@ public:
     operator bool() const { return m_ptr; }
 
 private:
-    T* m_ptr;
+    T* m_ptr { nullptr };
 };
 
 }
