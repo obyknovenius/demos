@@ -10,6 +10,7 @@
             "request": "launch",
             "program": "${workspaceFolder}/${config:mesonbuild.buildFolder}/apps/window/window",
             "cwd": "${workspaceFolder}",
+            "preLaunchTask": "Meson: Build all targets"
         }
     ]
 }
