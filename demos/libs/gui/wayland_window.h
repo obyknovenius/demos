@@ -14,6 +14,8 @@ class wayland_window final : public window
     template<typename T, class... Args>
     friend nonnull_ref_ptr<T> core::make_ref_counted(Args&&...);
 
+    friend class wayland_pointer;
+
 public:
     auto close() -> void override;
 

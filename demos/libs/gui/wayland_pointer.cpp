@@ -83,6 +83,15 @@ auto wayland_pointer::on_motion(uint32_t time, wl_fixed_t x, wl_fixed_t y) -> vo
 
 auto wayland_pointer::on_button(uint32_t serial, uint32_t time, uint32_t button, uint32_t state) -> void
 {
+    if (auto seat = m_seat.strong_ref())
+    {
+        if (state == WL_POINTER_BUTTON_STATE_PRESSED)
+        {
+            xdg_toplevel_move(m_window->m_xdg_toplevel, seat->m_wl_seat, serial);
+            return;
+        }
+    }
+
     auto type = state == WL_POINTER_BUTTON_STATE_PRESSED ? event::type::button_pressed : event::type::button_released;
     m_event = std::make_unique<event>(type, m_window);
 }
