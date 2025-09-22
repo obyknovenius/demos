@@ -26,10 +26,10 @@ const wl_buffer_listener wayland_window::s_wl_buffer_listener = {
 
 wayland_window::wayland_window(nonnull_ref_ptr<wayland_display> display) : m_display { display }
 {
-    m_wl_surface = wl_compositor_create_surface(display->m_wl_compositor);
+    m_wl_surface = wl_compositor_create_surface(display->get_wl_compositor());
     wl_surface_set_user_data(m_wl_surface, this);
 
-    m_xdg_surface = xdg_wm_base_get_xdg_surface(display->m_xdg_wm_base, m_wl_surface);
+    m_xdg_surface = xdg_wm_base_get_xdg_surface(display->get_xdg_wm_base(), m_wl_surface);
     xdg_surface_add_listener(m_xdg_surface, &s_xdg_surface_listener, this);
 
     m_xdg_toplevel = xdg_surface_get_toplevel(m_xdg_surface);
@@ -79,7 +79,7 @@ auto wayland_window::on_surface_configure(xdg_surface* xdg_surface, uint32_t ser
         return;
     }
 
-    wl_shm_pool* shm_pool = wl_shm_create_pool(display->m_wl_shm, fd, size);
+    wl_shm_pool* shm_pool = wl_shm_create_pool(display->get_wl_shm(), fd, size);
     wl_buffer* wl_buffer = wl_shm_pool_create_buffer(shm_pool, 0, width, height, stride, WL_SHM_FORMAT_XRGB8888);
     wl_shm_pool_destroy(shm_pool);
     ::close(fd);

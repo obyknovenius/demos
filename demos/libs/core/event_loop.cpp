@@ -4,7 +4,7 @@
 
 namespace core {
 
-event_loop event_loop::s_main_loop = event_loop();
+event_loop event_loop::s_main = event_loop();
 
 event_loop::~event_loop()
 {

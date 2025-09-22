@@ -16,10 +16,10 @@ auto main() -> int
     auto window = display->create_window();
     window->on_close = []()
     {
-        core::event_loop::main().quit();
+        core::event_loop::get_main().quit();
     };
 
-    core::event_loop::main().run();
+    core::event_loop::get_main().run();
 
     return 0;
 }

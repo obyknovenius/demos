@@ -14,10 +14,10 @@ class wayland_window final : public window
     template<typename T, class... Args>
     friend nonnull_ref_ptr<T> core::make_ref_counted(Args&&...);
 
-    friend class wayland_pointer;
-
 public:
     auto close() -> void override;
+
+    auto get_xdg_toplevel() -> xdg_toplevel* { return m_xdg_toplevel; }
 
 private:
     static const xdg_surface_listener s_xdg_surface_listener;

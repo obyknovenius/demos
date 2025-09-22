@@ -16,7 +16,7 @@ public:
         std::function<void()> dispatch;
     };
 
-    static auto main() -> event_loop& { return s_main_loop; }
+    static auto get_main() -> event_loop& { return s_main; }
 
     event_loop() = default;
     ~event_loop();
@@ -27,7 +27,7 @@ public:
     auto quit() -> void;
 
 private:
-    static event_loop s_main_loop;
+    static event_loop s_main;
 
     bool m_running { false };
 

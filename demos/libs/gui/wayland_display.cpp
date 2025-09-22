@@ -40,7 +40,7 @@ wayland_display::wayland_display(wl_display* wl_display) : m_wl_display { wl_dis
     wl_registry_add_listener(m_wl_registry, &s_wl_registry_listener, this);
     wl_display_roundtrip(m_wl_display);
 
-    core::event_loop::main().add_source({
+    core::event_loop::get_main().add_source({
         .fd = wl_display_get_fd(m_wl_display),
         .events = POLLIN,
         .prepare = [this]()
@@ -70,11 +70,6 @@ wayland_display::~wayland_display()
 auto wayland_display::create_window() -> nonnull_ref_ptr<window>
 {
     return make_ref_counted<wayland_window>(*this);
-}
-
-auto wayland_display::roundtrip() -> void
-{
-    wl_display_roundtrip(m_wl_display);
 }
 
 auto wayland_display::on_registry_global(wl_registry* registry, uint32_t name, const char* interface, uint32_t version) -> void

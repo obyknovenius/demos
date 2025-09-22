@@ -87,7 +87,7 @@ auto wayland_pointer::on_button(uint32_t serial, uint32_t time, uint32_t button,
     {
         if (state == WL_POINTER_BUTTON_STATE_PRESSED)
         {
-            xdg_toplevel_move(m_window->m_xdg_toplevel, seat->m_wl_seat, serial);
+            xdg_toplevel_move(m_window->get_xdg_toplevel(), seat->get_wl_seat(), serial);
             return;
         }
     }
@@ -104,7 +104,7 @@ auto wayland_pointer::on_frame() -> void
 {
     if (m_event)
         if (auto seat = m_seat.strong_ref())
-            seat->display()->dispatch_event(std::move(m_event));
+            seat->get_display()->dispatch_event(std::move(m_event));
 
     m_event.reset();
 }
