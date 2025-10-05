@@ -7,7 +7,7 @@
 
 namespace gui {
 
-wayland_pointer::wayland_pointer(wl_pointer* wl_pointer, nonnull_ref_ptr<wayland_seat> seat) :
+wayland_pointer::wayland_pointer(wl_pointer* wl_pointer, const nonnull_ref_ptr<wayland_seat>& seat) :
     m_wl_pointer { wl_pointer },
     m_seat { seat }
 {

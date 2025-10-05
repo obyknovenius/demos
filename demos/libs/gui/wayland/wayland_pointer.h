@@ -13,13 +13,16 @@ struct event;
 
 class wayland_pointer final : public ref_counted
 {
-    template<typename T, class... Args>
-    friend nonnull_ref_ptr<T> core::make_ref_counted(Args&&...);
+public:
+    static auto create(wl_pointer* wl_pointer, const nonnull_ref_ptr<wayland_seat>& seat) -> nonnull_ref_ptr<wayland_pointer>
+    {
+        return adopt(*new wayland_pointer(wl_pointer, seat));
+    }
 
 private:
     static const wl_pointer_listener s_wl_pointer_listener;
 
-    wayland_pointer(wl_pointer* wl_pointer, nonnull_ref_ptr<wayland_seat> seat);
+    wayland_pointer(wl_pointer* wl_pointer, const nonnull_ref_ptr<wayland_seat>& seat);
     ~wayland_pointer();
 
     auto on_enter(uint32_t serial, wl_surface* surface, wl_fixed_t x, wl_fixed_t y) -> void;

@@ -16,7 +16,7 @@ const wl_seat_listener wayland_seat::s_wl_seat_listener = {
     }
 };
 
-wayland_seat::wayland_seat(wl_seat* wl_seat, nonnull_ref_ptr<wayland_display> display) :
+wayland_seat::wayland_seat(wl_seat* wl_seat, const nonnull_ref_ptr<wayland_display>& display) :
     m_wl_seat { wl_seat },
     m_display { display }
 {
@@ -35,7 +35,7 @@ auto wayland_seat::on_capabilities(uint32_t capabilities) -> void
     bool have_pointer = capabilities & WL_SEAT_CAPABILITY_POINTER;
 
     if (have_pointer && !m_pointer)
-        m_pointer = make_ref_counted<wayland_pointer>(wl_seat_get_pointer(m_wl_seat), *this);
+        m_pointer = wayland_pointer::create(wl_seat_get_pointer(m_wl_seat), *this);
     else if (!have_pointer && m_pointer)
         m_pointer = nullptr;
 }

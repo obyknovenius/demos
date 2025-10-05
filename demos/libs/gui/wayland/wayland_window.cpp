@@ -25,7 +25,7 @@ const wl_buffer_listener wayland_window::s_wl_buffer_listener = {
     }
 };
 
-wayland_window::wayland_window(nonnull_ref_ptr<wayland_display> display) : m_display { display }
+wayland_window::wayland_window(const nonnull_ref_ptr<wayland_display>& display) : m_display { display }
 {
     m_wl_surface = wl_compositor_create_surface(display->get_wl_compositor());
     wl_surface_set_user_data(m_wl_surface, this);
@@ -88,7 +88,7 @@ auto wayland_window::on_surface_configure(xdg_surface* xdg_surface, uint32_t ser
         m_size.width, m_size.height, stride
     );
     auto* cr = cairo_create(cairo_surface);
-    auto context = make_ref_counted<gfx::cairo::context>(cr);
+    auto context = gfx::cairo::context::create(cr);
     redraw(context);
     cairo_surface_destroy(cairo_surface);
 

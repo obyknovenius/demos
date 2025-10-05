@@ -28,10 +28,12 @@ public:
 protected:
     class decoration_view final : public view
     {
-        template<typename T, class... Args>
-        friend nonnull_ref_ptr<T> core::make_ref_counted(Args&&...);
-
     public:
+        static auto create(const gfx::rect& frame) -> nonnull_ref_ptr<decoration_view>
+        {
+            return adopt(*new decoration_view(frame));
+        }
+
         auto redraw(nonnull_ref_ptr<gfx::context> context) -> void override;
 
     private:
@@ -46,7 +48,7 @@ protected:
 
     gfx::size m_size { 800, 600 };
 
-    nonnull_ref_ptr<decoration_view> m_decoration_view { make_ref_counted<decoration_view>(gfx::rect {0, 0, m_size.width, m_size.height}) };
+    nonnull_ref_ptr<decoration_view> m_decoration_view { decoration_view::create({ 0, 0, m_size.width, m_size.height }) };
 };
 
 }

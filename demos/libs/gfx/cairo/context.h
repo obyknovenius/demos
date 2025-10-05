@@ -7,10 +7,12 @@ namespace gfx::cairo {
 
 class context final : public gfx::context
 {
-    template<typename T, class... Args>
-    friend nonnull_ref_ptr<T> core::make_ref_counted(Args&&...);
-
 public:
+    static auto create(cairo_t* cr) -> nonnull_ref_ptr<context>
+    {
+        return adopt(*new context(cr));
+    }
+
     auto stroke_rect(const rect& rect, const color& color, float line_width) -> void override;
     auto fill_rect(const rect& rect, const color& color) -> void override;
 

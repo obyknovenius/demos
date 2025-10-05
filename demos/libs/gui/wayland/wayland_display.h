@@ -10,9 +10,6 @@ class wayland_seat;
 
 class wayland_display final : public display
 {
-    template<typename T, class... Args>
-    friend nonnull_ref_ptr<T> core::make_ref_counted(Args&&...);
-
 public:
     static auto connect() -> ref_ptr<wayland_display>;
 
@@ -23,6 +20,11 @@ public:
     auto get_wl_shm() -> wl_shm* { return m_wl_shm; }
 
 private:
+    static auto create(wl_display* wl_display) -> nonnull_ref_ptr<wayland_display>
+    {
+        return adopt(*new wayland_display(wl_display));
+    }
+
     wayland_display(wl_display* wl_display);
     ~wayland_display();
 

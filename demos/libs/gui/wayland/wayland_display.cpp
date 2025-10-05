@@ -31,7 +31,7 @@ auto wayland_display::connect() -> ref_ptr<wayland_display>
     wl_display* wl_display = wl_display_connect(nullptr);
     if (!wl_display)
         return nullptr;
-    return make_ref_counted<wayland_display>(wl_display);
+    return create(wl_display);
 }
 
 wayland_display::wayland_display(wl_display* wl_display) : m_wl_display { wl_display }
@@ -69,7 +69,7 @@ wayland_display::~wayland_display()
 
 auto wayland_display::create_window() -> nonnull_ref_ptr<window>
 {
-    return make_ref_counted<wayland_window>(*this);
+    return wayland_window::create(*this);
 }
 
 auto wayland_display::on_registry_global(wl_registry* registry, uint32_t name, const char* interface, uint32_t version) -> void
@@ -90,7 +90,7 @@ auto wayland_display::on_registry_global(wl_registry* registry, uint32_t name, c
     else if (strcmp(interface, wl_seat_interface.name) == 0)
     {
         auto* wl_seat = reinterpret_cast<struct wl_seat*>(wl_registry_bind(registry, name, &wl_seat_interface, 7));
-        m_seat = make_ref_counted<wayland_seat>(wl_seat, *this);
+        m_seat = wayland_seat::create(wl_seat, *this);
     }
 }
 

@@ -11,10 +11,12 @@ class wayland_display;
 
 class wayland_window final : public window
 {
-    template<typename T, class... Args>
-    friend nonnull_ref_ptr<T> core::make_ref_counted(Args&&...);
-
 public:
+    static auto create(const nonnull_ref_ptr<wayland_display>& display) -> nonnull_ref_ptr<wayland_window>
+    {
+        return adopt(*new wayland_window(display));
+    }
+
     auto close() -> void override;
 
     auto get_xdg_toplevel() -> xdg_toplevel* { return m_xdg_toplevel; }
@@ -23,7 +25,7 @@ private:
     static const xdg_surface_listener s_xdg_surface_listener;
     static const wl_buffer_listener s_wl_buffer_listener;
 
-    explicit wayland_window(nonnull_ref_ptr<wayland_display> display);
+    wayland_window(const nonnull_ref_ptr<wayland_display>& display);
     ~wayland_window();
 
     auto on_surface_configure(xdg_surface* xdg_surface, uint32_t serial) -> void;

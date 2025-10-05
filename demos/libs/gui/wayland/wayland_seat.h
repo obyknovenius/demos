@@ -11,10 +11,12 @@ class wayland_pointer;
 
 class wayland_seat final : public weakable
 {
-    template<typename T, class... Args>
-    friend nonnull_ref_ptr<T> core::make_ref_counted(Args&&...);
-
 public:
+    static auto create(wl_seat* wl_seat, const nonnull_ref_ptr<wayland_display>& display) -> nonnull_ref_ptr<wayland_seat>
+    {
+        return adopt(*new wayland_seat(wl_seat, display));
+    }
+
     auto get_display() -> ref_ptr<wayland_display> { return m_display.strong_ref(); }
 
     auto get_wl_seat() -> wl_seat* { return m_wl_seat; }
@@ -22,7 +24,7 @@ public:
 private:
     static const wl_seat_listener s_wl_seat_listener;
 
-    wayland_seat(wl_seat* wl_seat, nonnull_ref_ptr<wayland_display> display);
+    wayland_seat(wl_seat* wl_seat, const nonnull_ref_ptr<wayland_display>& display);
     ~wayland_seat();
 
     auto on_capabilities(uint32_t capabilities) -> void;
