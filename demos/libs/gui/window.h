@@ -6,36 +6,36 @@
 #include <functional>
 #include <memory>
 
-namespace gfx {
+namespace gfx
+{
     class context;
     struct rect;
     struct size;
 }
 
-namespace gui {
-
-struct event;
-
-class window : public ref_counted
+namespace gui
 {
-public:
-    auto dispatch_event(std::unique_ptr<const event> event) -> void;
+    struct event;
 
-    virtual auto close() -> void;
+    class window : public ref_counted
+    {
+    public:
+        auto dispatch_event(std::unique_ptr<const event> event) -> void;
 
-    std::function<void()> on_close;
+        virtual auto close() -> void;
 
-protected:
-    class decoration_view;
+        std::function<void()> on_close;
 
-    window(const gfx::size& size = { 800, 600 });
-    ~window();
+    protected:
+        class decoration_view;
 
-    auto redraw(nonnull_ref_ptr<gfx::context> context) -> void;
+        window(const gfx::size& size = { 800, 600 });
+        ~window();
 
-    gfx::size m_size;
+        auto redraw(nonnull_ref_ptr<gfx::context> context) -> void;
 
-    nonnull_ref_ptr<decoration_view> m_decoration_view;
-};
+        gfx::size m_size;
 
+        nonnull_ref_ptr<decoration_view> m_decoration_view;
+    };
 }

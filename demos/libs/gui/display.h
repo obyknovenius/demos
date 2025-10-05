@@ -3,23 +3,22 @@
 #include <core/weakable.h>
 #include <memory>
 
-namespace gui {
-
-class window;
-struct event;
-
-class display : public weakable
+namespace gui
 {
-public:
-    static auto connect() -> ref_ptr<display>;
+    class window;
+    struct event;
 
-    virtual auto create_window() -> nonnull_ref_ptr<window> = 0;
+    class display : public weakable
+    {
+    public:
+        static auto connect() -> ref_ptr<display>;
 
-    auto dispatch_event(std::unique_ptr<const event> event) -> void;
+        virtual auto create_window() -> nonnull_ref_ptr<window> = 0;
 
-protected:
-    display() = default;
-    virtual ~display() = default;
-};
+        auto dispatch_event(std::unique_ptr<const event> event) -> void;
 
+    protected:
+        display() = default;
+        virtual ~display() = default;
+    };
 }

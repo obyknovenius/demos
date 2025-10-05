@@ -3,51 +3,50 @@
 #include "ref_counted.h"
 #include "ref_ptr.h"
 
-namespace core {
-
-class weakable;
-
-class weak_link : public ref_counted
+namespace core
 {
-public:
-    weak_link(weakable& ref) : m_ptr(&ref) {}
-    ~weak_link() = default;
+    class weakable;
 
-    auto strong_ref() -> ref_ptr<weakable>
+    class weak_link : public ref_counted
     {
-        return m_ptr;
-    }
+    public:
+        weak_link(weakable& ref) : m_ptr(&ref) {}
+        ~weak_link() = default;
 
-    auto reset() -> void
+        auto strong_ref() -> ref_ptr<weakable>
+        {
+            return m_ptr;
+        }
+
+        auto reset() -> void
+        {
+            m_ptr = nullptr;
+        }
+
+    private:
+        weakable* m_ptr { nullptr };
+
+        int m_ref_count { 0 };
+    };
+
+    class weakable : public ref_counted
     {
-        m_ptr = nullptr;
-    }
+        template<typename T>
+        friend class weak_ptr;
 
-private:
-    weakable* m_ptr { nullptr };
+    public:
+        weakable() : m_weak_link(*new weak_link(*this))
+        {
+        }
 
-    int m_ref_count { 0 };
-};
+        ~weakable()
+        {
+            m_weak_link->reset();
+        }
 
-class weakable : public ref_counted
-{
-    template<typename T>
-    friend class weak_ptr;
-
-public:
-    weakable() : m_weak_link(*new weak_link(*this))
-    {
-    }
-
-    ~weakable()
-    {
-        m_weak_link->reset();
-    }
-
-private:
-    ref_ptr<weak_link> m_weak_link {};
-};
-
+    private:
+        ref_ptr<weak_link> m_weak_link {};
+    };
 }
 
 using core::weakable;
