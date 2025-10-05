@@ -5,16 +5,16 @@
 #include <wayland-client.h>
 #include <xdg-shell-client-protocol.h>
 
-namespace gui
+namespace gui::wayland
 {
-    class wayland_display;
+    class display;
 
-    class wayland_window final : public window
+    class window final : public gui::window
     {
     public:
-        static nonnull_ref_ptr<wayland_window> create(const nonnull_ref_ptr<wayland_display>& display)
+        static nonnull_ref_ptr<window> create(const nonnull_ref_ptr<display>& display)
         {
-            return adopt(*new wayland_window(display));
+            return adopt(*new window(display));
         }
 
         void close() override;
@@ -25,13 +25,13 @@ namespace gui
         static const xdg_surface_listener s_xdg_surface_listener;
         static const wl_buffer_listener s_wl_buffer_listener;
 
-        wayland_window(const nonnull_ref_ptr<wayland_display>& display);
-        ~wayland_window();
+        window(const nonnull_ref_ptr<display>& display);
+        ~window();
 
         void on_surface_configure(xdg_surface* xdg_surface, uint32_t serial);
         void on_buffer_release(wl_buffer* buffer);
 
-        weak_ptr<wayland_display> m_display;
+        weak_ptr<display> m_display;
 
         wl_surface* m_wl_surface {};
 

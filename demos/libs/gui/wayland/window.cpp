@@ -1,31 +1,31 @@
-#include "wayland_window.h"
+#include "window.h"
 
-#include "wayland_display.h"
+#include "display.h"
 #include <cstring>
 #include <gfx/cairo/context.h>
 #include <iostream>
 #include <sys/mman.h>
 #include <unistd.h>
 
-namespace gui
+namespace gui::wayland
 {
-    const xdg_surface_listener wayland_window::s_xdg_surface_listener = {
+    const xdg_surface_listener window::s_xdg_surface_listener = {
         .configure = [](void* data, xdg_surface* xdg_surface, uint32_t serial)
         {
-            auto* window = reinterpret_cast<wayland_window*>(data);
+            auto* window = reinterpret_cast<class window*>(data);
             window->on_surface_configure(xdg_surface, serial);
         }
     };
 
-    const wl_buffer_listener wayland_window::s_wl_buffer_listener = {
+    const wl_buffer_listener window::s_wl_buffer_listener = {
         .release = [](void* data, wl_buffer* buffer)
         {
-            auto* window = reinterpret_cast<wayland_window*>(data);
+            auto* window = reinterpret_cast<class window*>(data);
             window->on_buffer_release(buffer);
         }
     };
 
-    wayland_window::wayland_window(const nonnull_ref_ptr<wayland_display>& display) : m_display { display }
+    window::window(const nonnull_ref_ptr<display>& display) : m_display { display }
     {
         m_wl_surface = wl_compositor_create_surface(display->get_wl_compositor());
         wl_surface_set_user_data(m_wl_surface, this);
@@ -38,12 +38,12 @@ namespace gui
         wl_surface_commit(m_wl_surface);
     }
 
-    wayland_window::~wayland_window()
+    window::~window()
     {
         close();
     }
 
-    void wayland_window::close()
+    void window::close()
     {
         if (m_closed)
             return;
@@ -57,7 +57,7 @@ namespace gui
         window::close();
     }
 
-    void wayland_window::on_surface_configure(xdg_surface* xdg_surface, uint32_t serial)
+    void window::on_surface_configure(xdg_surface* xdg_surface, uint32_t serial)
     {
         xdg_surface_ack_configure(xdg_surface, serial);
 
@@ -99,7 +99,7 @@ namespace gui
         wl_surface_commit(m_wl_surface);
     }
 
-    void wayland_window::on_buffer_release(wl_buffer* buffer)
+    void window::on_buffer_release(wl_buffer* buffer)
     {
         wl_buffer_destroy(buffer);
     }

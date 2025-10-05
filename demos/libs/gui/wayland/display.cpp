@@ -1,16 +1,16 @@
-#include "wayland_display.h"
+#include "display.h"
 
-#include "wayland_seat.h"
-#include "wayland_window.h"
+#include "seat.h"
+#include "window.h"
 #include <core/event_loop.h>
 #include <cstring>
 
-namespace gui
+namespace gui::wayland
 {
-    const wl_registry_listener wayland_display::s_wl_registry_listener = {
+    const wl_registry_listener display::s_wl_registry_listener = {
         .global = [](void* data, wl_registry* registry, uint32_t name, const char* interface, uint32_t version)
         {
-            auto* display = reinterpret_cast<wayland_display*>(data);
+            auto* display = reinterpret_cast<class display*>(data);
             display->on_registry_global(registry, name, interface, version);
         },
         .global_remove = [](void *data, wl_registry *registry, uint32_t name)
@@ -18,15 +18,15 @@ namespace gui
         }
     };
 
-    const xdg_wm_base_listener wayland_display::s_xdg_wm_base_listener = {
+    const xdg_wm_base_listener display::s_xdg_wm_base_listener = {
         .ping = [](void* data, xdg_wm_base* xdg_wm_base, uint32_t serial)
         {
-            auto* display = reinterpret_cast<wayland_display*>(data);
+            auto* display = reinterpret_cast<class display*>(data);
             display->on_wm_ping(xdg_wm_base, serial);
         }
     };
 
-    ref_ptr<wayland_display> wayland_display::connect()
+    ref_ptr<display> display::connect()
     {
         wl_display* wl_display = wl_display_connect(nullptr);
         if (!wl_display)
@@ -34,7 +34,7 @@ namespace gui
         return create(wl_display);
     }
 
-    wayland_display::wayland_display(wl_display* wl_display) : m_wl_display { wl_display }
+    display::display(wl_display* wl_display) : m_wl_display { wl_display }
     {
         m_wl_registry = wl_display_get_registry(m_wl_display);
         wl_registry_add_listener(m_wl_registry, &s_wl_registry_listener, this);
@@ -54,7 +54,7 @@ namespace gui
         });
     }
 
-    wayland_display::~wayland_display()
+    display::~display()
     {
         m_seat = nullptr;
 
@@ -67,12 +67,12 @@ namespace gui
         wl_display_disconnect(m_wl_display);
     }
 
-    nonnull_ref_ptr<window> wayland_display::create_window()
+    nonnull_ref_ptr<gui::window> display::create_window()
     {
-        return wayland_window::create(*this);
+        return window::create(*this);
     }
 
-    void wayland_display::on_registry_global(wl_registry* registry, uint32_t name, const char* interface, uint32_t version)
+    void display::on_registry_global(wl_registry* registry, uint32_t name, const char* interface, uint32_t version)
     {
         if (strcmp(interface, wl_shm_interface.name) == 0)
         {
@@ -90,11 +90,11 @@ namespace gui
         else if (strcmp(interface, wl_seat_interface.name) == 0)
         {
             auto* wl_seat = reinterpret_cast<struct wl_seat*>(wl_registry_bind(registry, name, &wl_seat_interface, 7));
-            m_seat = wayland_seat::create(wl_seat, *this);
+            m_seat = seat::create(wl_seat, *this);
         }
     }
 
-    void wayland_display::on_wm_ping(xdg_wm_base* xdg_wm_base, uint32_t serial)
+    void display::on_wm_ping(xdg_wm_base* xdg_wm_base, uint32_t serial)
     {
         xdg_wm_base_pong(xdg_wm_base, serial);
     }

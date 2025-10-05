@@ -1,6 +1,5 @@
 #pragma once
 
-#include "wayland_window.h"
 #include <core/ref_counted.h>
 #include <core/weak_ptr.h>
 #include <memory>
@@ -8,22 +7,27 @@
 
 namespace gui
 {
-    class wayland_seat;
     struct event;
+}
 
-    class wayland_pointer final : public ref_counted
+namespace gui::wayland
+{
+    class seat;
+    class window;
+
+    class pointer final : public ref_counted
     {
     public:
-        static nonnull_ref_ptr<wayland_pointer> create(wl_pointer* wl_pointer, const nonnull_ref_ptr<wayland_seat>& seat)
+        static nonnull_ref_ptr<pointer> create(wl_pointer* wl_pointer, const nonnull_ref_ptr<seat>& seat)
         {
-            return adopt(*new wayland_pointer(wl_pointer, seat));
+            return adopt(*new pointer(wl_pointer, seat));
         }
 
     private:
         static const wl_pointer_listener s_wl_pointer_listener;
 
-        wayland_pointer(wl_pointer* wl_pointer, const nonnull_ref_ptr<wayland_seat>& seat);
-        ~wayland_pointer();
+        pointer(wl_pointer* wl_pointer, const nonnull_ref_ptr<seat>& seat);
+        ~pointer();
 
         void on_enter(uint32_t serial, wl_surface* surface, wl_fixed_t x, wl_fixed_t y);
         void on_leave(uint32_t serial, wl_surface* surface);
@@ -37,9 +41,9 @@ namespace gui
 
         wl_pointer* m_wl_pointer {};
 
-        weak_ptr<wayland_seat> m_seat;
+        weak_ptr<seat> m_seat;
 
-        ref_ptr<wayland_window> m_window;
+        ref_ptr<window> m_window;
         std::unique_ptr<event> m_event;
     };
 }

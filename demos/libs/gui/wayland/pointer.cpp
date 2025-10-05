@@ -1,87 +1,87 @@
-#include "wayland_pointer.h"
+#include "pointer.h"
 
 #include "event.h"
-#include "wayland_display.h"
-#include "wayland_seat.h"
-#include "wayland_window.h"
+#include "display.h"
+#include "seat.h"
+#include "window.h"
 
-namespace gui
+namespace gui::wayland
 {
-    wayland_pointer::wayland_pointer(wl_pointer* wl_pointer, const nonnull_ref_ptr<wayland_seat>& seat) :
+    pointer::pointer(wl_pointer* wl_pointer, const nonnull_ref_ptr<seat>& seat) :
         m_wl_pointer { wl_pointer },
         m_seat { seat }
     {
         wl_pointer_add_listener(m_wl_pointer, &s_wl_pointer_listener, this);
     }
 
-    wayland_pointer::~wayland_pointer()
+    pointer::~pointer()
     {
         wl_pointer_release(m_wl_pointer);
     }
 
-    const wl_pointer_listener wayland_pointer::s_wl_pointer_listener = {
+    const wl_pointer_listener pointer::s_wl_pointer_listener = {
         .enter = [](void* data, wl_pointer* wl_pointer, uint32_t serial, wl_surface* surface, wl_fixed_t x, wl_fixed_t y)
         {
-            auto* pointer = reinterpret_cast<wayland_pointer*>(data);
+            auto* pointer = reinterpret_cast<class pointer*>(data);
             pointer->on_enter(serial, surface, x, y);
         },
         .leave = [](void* data, wl_pointer* wl_pointer, uint32_t serial, wl_surface* surface)
         {
-            auto* pointer = reinterpret_cast<wayland_pointer*>(data);
+            auto* pointer = reinterpret_cast<class pointer*>(data);
             pointer->on_leave(serial, surface);
         },
         .motion = [](void* data, wl_pointer* wl_pointer, uint32_t time, wl_fixed_t x, wl_fixed_t y)
         {
-            auto* pointer = reinterpret_cast<wayland_pointer*>(data);
+            auto* pointer = reinterpret_cast<class pointer*>(data);
             pointer->on_motion(time, x, y);
         },
         .button = [](void* data, wl_pointer* wl_pointer, uint32_t serial, uint32_t time, uint32_t button, uint32_t state)
         {
-            auto* pointer = reinterpret_cast<wayland_pointer*>(data);
+            auto* pointer = reinterpret_cast<class pointer*>(data);
             pointer->on_button(serial, time, button, state);
         },
         .axis = [](void* data, wl_pointer* wl_pointer, uint32_t time, uint32_t axis, wl_fixed_t value)
         {
-            auto* pointer = reinterpret_cast<wayland_pointer*>(data);
+            auto* pointer = reinterpret_cast<class pointer*>(data);
             pointer->on_axis(time, axis, value);
         },
         .frame = [](void* data, wl_pointer* wl_pointer)
         {
-            auto* pointer = reinterpret_cast<wayland_pointer*>(data);
+            auto* pointer = reinterpret_cast<class pointer*>(data);
             pointer->on_frame();
         },
         .axis_source = [](void* data, wl_pointer* wl_pointer, uint32_t axis_source)
         {
-            auto* pointer = reinterpret_cast<wayland_pointer*>(data);
+            auto* pointer = reinterpret_cast<class pointer*>(data);
             pointer->on_axis_source(axis_source);
         },
         .axis_stop = [](void* data, wl_pointer* wl_pointer, uint32_t time, uint32_t axis_stop)
         {
-            auto* pointer = reinterpret_cast<wayland_pointer*>(data);
+            auto* pointer = reinterpret_cast<class pointer*>(data);
             pointer->on_axis_stop(time, axis_stop);
         },
         .axis_discrete = [](void* data, wl_pointer* wl_pointer, uint32_t axis, int32_t discrete)
         {
-            auto* pointer = reinterpret_cast<wayland_pointer*>(data);
+            auto* pointer = reinterpret_cast<class pointer*>(data);
             pointer->on_axis_discrete(axis, discrete);
         }
     };
 
-    void wayland_pointer::on_enter(uint32_t serial, wl_surface* surface, wl_fixed_t x, wl_fixed_t y)
+    void pointer::on_enter(uint32_t serial, wl_surface* surface, wl_fixed_t x, wl_fixed_t y)
     {
-        m_window = reinterpret_cast<wayland_window*>(wl_surface_get_user_data(surface));
+        m_window = reinterpret_cast<window*>(wl_surface_get_user_data(surface));
     }
 
-    void wayland_pointer::on_leave(uint32_t serial, wl_surface* surface)
+    void pointer::on_leave(uint32_t serial, wl_surface* surface)
     {
         m_window = nullptr;
     }
 
-    void wayland_pointer::on_motion(uint32_t time, wl_fixed_t x, wl_fixed_t y)
+    void pointer::on_motion(uint32_t time, wl_fixed_t x, wl_fixed_t y)
     {
     }
 
-    void wayland_pointer::on_button(uint32_t serial, uint32_t time, uint32_t button, uint32_t state)
+    void pointer::on_button(uint32_t serial, uint32_t time, uint32_t button, uint32_t state)
     {
         if (auto seat = m_seat.strong_ref())
         {
@@ -96,11 +96,11 @@ namespace gui
         m_event = std::make_unique<event>(type, m_window);
     }
 
-    void wayland_pointer::on_axis(uint32_t time, uint32_t axis, wl_fixed_t value)
+    void pointer::on_axis(uint32_t time, uint32_t axis, wl_fixed_t value)
     {
     }
 
-    void wayland_pointer::on_frame()
+    void pointer::on_frame()
     {
         if (m_event)
             if (auto seat = m_seat.strong_ref())
@@ -109,15 +109,15 @@ namespace gui
         m_event.reset();
     }
 
-    void wayland_pointer::on_axis_source(uint32_t axis_source)
+    void pointer::on_axis_source(uint32_t axis_source)
     {
     }
 
-    void wayland_pointer::on_axis_stop(uint32_t time, uint32_t axis_stop)
+    void pointer::on_axis_stop(uint32_t time, uint32_t axis_stop)
     {
     }
 
-    void wayland_pointer::on_axis_discrete(uint32_t axis, int32_t discrete)
+    void pointer::on_axis_discrete(uint32_t axis, int32_t discrete)
     {
     }
 }

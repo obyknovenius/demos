@@ -1,8 +1,8 @@
 gui_wayland_sources = [
-    'wayland_display.cpp',
-    'wayland_pointer.cpp',
-    'wayland_seat.cpp',
-    'wayland_window.cpp',
+    'display.cpp',
+    'pointer.cpp',
+    'seat.cpp',
+    'window.cpp',
 ]
 
 gui_sources += files(gui_wayland_sources)
