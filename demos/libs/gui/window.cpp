@@ -20,11 +20,14 @@ auto window::close() -> void
 
 auto window::redraw(nonnull_ref_ptr<gfx::context> context) -> void
 {
-    context->fill_rect({{0, 0}, m_size}, gfx::color::white);
+    m_decoration_view->redraw(context);
+}
+
+auto window::decoration_view::redraw(nonnull_ref_ptr<gfx::context> context) -> void
+{
+    context->fill_rect(m_frame, gfx::color::white);
     int line_width = 2;
-    gfx::point origin = {line_width / 2, line_width / 2};
-    gfx::size size = m_size.inset(line_width, line_width);
-    context->stroke_rect({origin, size}, gfx::color::black, line_width);
+    context->stroke_rect(m_frame.inset(line_width / 2), gfx::color::black, line_width);
 }
 
 }
