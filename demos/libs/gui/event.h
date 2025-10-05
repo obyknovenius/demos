@@ -14,7 +14,11 @@ namespace gui
             button_released,
         };
 
-        event(type type, const ref_ptr<class window>& window) : type { type }, window { window } {}
+        event(type type, const ref_ptr<class window>& window) :
+            type { type },
+            window { window }
+        {
+        }
 
         type type;
         ref_ptr<class window> window;

@@ -35,7 +35,7 @@ namespace gui::wayland
         bool have_pointer = capabilities & WL_SEAT_CAPABILITY_POINTER;
 
         if (have_pointer && !m_pointer)
-            m_pointer = pointer::create(wl_seat_get_pointer(m_wl_seat), *this);
+            m_pointer = make_ref_counted<pointer>(wl_seat_get_pointer(m_wl_seat), *this);
         else if (!have_pointer && m_pointer)
             m_pointer = nullptr;
     }

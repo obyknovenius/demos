@@ -31,7 +31,7 @@ namespace gui::wayland
         wl_display* wl_display = wl_display_connect(nullptr);
         if (!wl_display)
             return nullptr;
-        return create(wl_display);
+        return adopt(*new display(wl_display));
     }
 
     display::display(wl_display* wl_display) : m_wl_display { wl_display }
@@ -69,7 +69,7 @@ namespace gui::wayland
 
     nonnull_ref_ptr<gui::window> display::create_window()
     {
-        return window::create(*this);
+        return make_ref_counted<window>(*this);
     }
 
     void display::on_registry_global(wl_registry* registry, uint32_t name, const char* interface, uint32_t version)
@@ -90,7 +90,7 @@ namespace gui::wayland
         else if (strcmp(interface, wl_seat_interface.name) == 0)
         {
             auto* wl_seat = reinterpret_cast<struct wl_seat*>(wl_registry_bind(registry, name, &wl_seat_interface, 7));
-            m_seat = seat::create(wl_seat, *this);
+            m_seat = make_ref_counted<seat>(wl_seat, *this);
         }
     }
 

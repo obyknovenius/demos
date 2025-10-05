@@ -88,7 +88,7 @@ namespace gui::wayland
             m_size.width, m_size.height, stride
         );
         auto* cr = cairo_create(cairo_surface);
-        auto context = gfx::cairo::context::create(cr);
+        auto context = make_ref_counted<gfx::cairo::context>(cr);
         redraw(context);
         cairo_surface_destroy(cairo_surface);
 

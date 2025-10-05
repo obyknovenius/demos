@@ -18,16 +18,11 @@ namespace gui::wayland
     class pointer final : public ref_counted
     {
     public:
-        static nonnull_ref_ptr<pointer> create(wl_pointer* wl_pointer, const nonnull_ref_ptr<seat>& seat)
-        {
-            return adopt(*new pointer(wl_pointer, seat));
-        }
+        pointer(wl_pointer* wl_pointer, const nonnull_ref_ptr<seat>& seat);
+        ~pointer();
 
     private:
         static const wl_pointer_listener s_wl_pointer_listener;
-
-        pointer(wl_pointer* wl_pointer, const nonnull_ref_ptr<seat>& seat);
-        ~pointer();
 
         void on_enter(uint32_t serial, wl_surface* surface, wl_fixed_t x, wl_fixed_t y);
         void on_leave(uint32_t serial, wl_surface* surface);

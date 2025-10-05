@@ -10,7 +10,7 @@ namespace gui
 {
     window::window(gfx::size const& size) :
         m_size { size },
-        m_decoration_view { decoration_view::create({ 0, 0, size.width, size.height }) }
+        m_decoration_view { make_ref_counted<decoration_view>(gfx::rect(0, 0, size.width, size.height)) }
     {
     }
 
@@ -29,7 +29,7 @@ namespace gui
 
     void window::redraw(nonnull_ref_ptr<gfx::context> context)
     {
-        context->fill_rect({{0, 0}, {m_size.width, m_size.height}}, gfx::color::white);
+        context->fill_rect({0, 0, m_size.width, m_size.height}, gfx::color::white);
         m_decoration_view->redraw(context);
     }
 }

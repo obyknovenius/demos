@@ -31,6 +31,13 @@ namespace core
 
         int m_ref_count { 1 };
     };
+
+    template<typename T, class... Args>
+    nonnull_ref_ptr<T> make_ref_counted(Args&&... args)
+    {
+        return adopt(*new T(std::forward<Args>(args)...));
+    }
 }
 
 using core::ref_counted;
+using core::make_ref_counted;

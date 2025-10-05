@@ -20,11 +20,6 @@ namespace gui::wayland
         wl_shm* get_wl_shm() { return m_wl_shm; }
 
     private:
-        static nonnull_ref_ptr<display> create(wl_display* wl_display)
-        {
-            return adopt(*new display(wl_display));
-        }
-
         display(wl_display* wl_display);
         ~display();
 
