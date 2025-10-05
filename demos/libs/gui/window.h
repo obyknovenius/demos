@@ -9,11 +9,11 @@
 namespace gfx {
     class context;
     struct rect;
+    struct size;
 }
 
 namespace gui {
 
-class decoration_view;
 struct event;
 
 class window : public ref_counted
@@ -26,29 +26,16 @@ public:
     std::function<void()> on_close;
 
 protected:
-    class decoration_view final : public view
-    {
-    public:
-        static auto create(const gfx::rect& frame) -> nonnull_ref_ptr<decoration_view>
-        {
-            return adopt(*new decoration_view(frame));
-        }
+    class decoration_view;
 
-        auto redraw(nonnull_ref_ptr<gfx::context> context) -> void override;
-
-    private:
-        decoration_view(const gfx::rect& frame) : view { frame } {}
-        ~decoration_view() = default;
-    };
-
-    window() = default;
-    ~window() = default;
+    window(const gfx::size& size = { 800, 600 });
+    ~window();
 
     auto redraw(nonnull_ref_ptr<gfx::context> context) -> void;
 
-    gfx::size m_size { 800, 600 };
+    gfx::size m_size;
 
-    nonnull_ref_ptr<decoration_view> m_decoration_view { decoration_view::create({ 0, 0, m_size.width, m_size.height }) };
+    nonnull_ref_ptr<decoration_view> m_decoration_view;
 };
 
 }
