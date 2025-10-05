@@ -16,18 +16,18 @@ namespace gui
 
     window::~window() = default;
 
-    auto window::dispatch_event(std::unique_ptr<const event> event) -> void
+    void window::dispatch_event(std::unique_ptr<const event> event)
     {
         close();
     }
 
-    auto window::close() -> void
+    void window::close()
     {
         if (on_close)
             on_close();
     }
 
-    auto window::redraw(nonnull_ref_ptr<gfx::context> context) -> void
+    void window::redraw(nonnull_ref_ptr<gfx::context> context)
     {
         context->fill_rect({{0, 0}, {m_size.width, m_size.height}}, gfx::color::white);
         m_decoration_view->redraw(context);

@@ -12,7 +12,7 @@ namespace core
             free(m_poll_fds);
     }
 
-    auto event_loop::add_source(source source) -> void
+    void event_loop::add_source(source source)
     {
         int n_poll_fds = m_sources.size();
         if (!m_poll_fds)
@@ -27,7 +27,7 @@ namespace core
         m_sources.push_back(source);
     }
 
-    auto event_loop::run() -> void
+    void event_loop::run()
     {
         m_running = true;
 
@@ -45,7 +45,7 @@ namespace core
         }
     }
 
-    auto event_loop::quit() -> void
+    void event_loop::quit()
     {
         m_running = false;
     }

@@ -12,14 +12,14 @@ namespace gui
     class wayland_seat final : public weakable
     {
     public:
-        static auto create(wl_seat* wl_seat, const nonnull_ref_ptr<wayland_display>& display) -> nonnull_ref_ptr<wayland_seat>
+        static nonnull_ref_ptr<wayland_seat> create(wl_seat* wl_seat, const nonnull_ref_ptr<wayland_display>& display)
         {
             return adopt(*new wayland_seat(wl_seat, display));
         }
 
-        auto get_display() -> ref_ptr<wayland_display> { return m_display.strong_ref(); }
+        ref_ptr<wayland_display> get_display() { return m_display.strong_ref(); }
 
-        auto get_wl_seat() -> wl_seat* { return m_wl_seat; }
+        wl_seat* get_wl_seat() { return m_wl_seat; }
 
     private:
         static const wl_seat_listener s_wl_seat_listener;
@@ -27,7 +27,7 @@ namespace gui
         wayland_seat(wl_seat* wl_seat, const nonnull_ref_ptr<wayland_display>& display);
         ~wayland_seat();
 
-        auto on_capabilities(uint32_t capabilities) -> void;
+        void on_capabilities(uint32_t capabilities);
 
         wl_seat* m_wl_seat {};
 

@@ -16,15 +16,15 @@ namespace core
             std::function<void()> dispatch;
         };
 
-        static auto get_main() -> event_loop& { return s_main; }
+        static event_loop& get_main() { return s_main; }
 
         event_loop() = default;
         ~event_loop();
 
-        auto add_source(source source) -> void;
+        void add_source(source source);
 
-        auto run() -> void;
-        auto quit() -> void;
+        void run();
+        void quit();
 
     private:
         static event_loop s_main;

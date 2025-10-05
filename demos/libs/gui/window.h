@@ -20,9 +20,9 @@ namespace gui
     class window : public ref_counted
     {
     public:
-        auto dispatch_event(std::unique_ptr<const event> event) -> void;
+        void dispatch_event(std::unique_ptr<const event> event);
 
-        virtual auto close() -> void;
+        virtual void close();
 
         std::function<void()> on_close;
 
@@ -32,7 +32,7 @@ namespace gui
         window(const gfx::size& size = { 800, 600 });
         ~window();
 
-        auto redraw(nonnull_ref_ptr<gfx::context> context) -> void;
+        void redraw(nonnull_ref_ptr<gfx::context> context);
 
         gfx::size m_size;
 

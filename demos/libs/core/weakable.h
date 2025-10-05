@@ -13,12 +13,12 @@ namespace core
         weak_link(weakable& ref) : m_ptr(&ref) {}
         ~weak_link() = default;
 
-        auto strong_ref() -> ref_ptr<weakable>
+        ref_ptr<weakable> strong_ref()
         {
             return m_ptr;
         }
 
-        auto reset() -> void
+        void reset()
         {
             m_ptr = nullptr;
         }

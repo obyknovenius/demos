@@ -5,7 +5,7 @@
 
 namespace gui
 {
-    auto window::decoration_view::redraw(nonnull_ref_ptr<gfx::context> context) -> void
+    void window::decoration_view::redraw(nonnull_ref_ptr<gfx::context> context)
     {
         int line_width = 2;
         context->stroke_rect(m_frame.inset(line_width / 2), gfx::color::black, line_width);

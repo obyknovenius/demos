@@ -75,7 +75,7 @@ namespace core
     };
 
     template<typename T>
-    auto adopt(T* ptr) -> ref_ptr<T>
+    ref_ptr<T> adopt(T* ptr)
     {
         return ref_ptr<T>(ref_ptr<T>::adopt, ptr);
     }

@@ -9,7 +9,7 @@ namespace gui
     class view : public ref_counted
     {
     public:
-        virtual auto redraw(nonnull_ref_ptr<gfx::context> context) -> void = 0;
+        virtual void redraw(nonnull_ref_ptr<gfx::context> context) = 0;
 
     protected:
         view(const gfx::rect& frame) : m_frame { frame } {}

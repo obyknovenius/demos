@@ -4,7 +4,7 @@
 #include <iostream>
 #include <unistd.h>
 
-auto main() -> int
+int main()
 {
     auto display = gui::display::connect();
     if (!display)

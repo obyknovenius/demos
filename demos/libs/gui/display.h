@@ -11,11 +11,11 @@ namespace gui
     class display : public weakable
     {
     public:
-        static auto connect() -> ref_ptr<display>;
+        static ref_ptr<display> connect();
 
-        virtual auto create_window() -> nonnull_ref_ptr<window> = 0;
+        virtual nonnull_ref_ptr<window> create_window() = 0;
 
-        auto dispatch_event(std::unique_ptr<const event> event) -> void;
+        void dispatch_event(std::unique_ptr<const event> event);
 
     protected:
         display() = default;

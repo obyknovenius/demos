@@ -6,12 +6,12 @@
 
 namespace gui
 {
-    auto display::connect() -> ref_ptr<display>
+    ref_ptr<display> display::connect()
     {
         return wayland_display::connect();
     }
 
-    auto display::dispatch_event(std::unique_ptr<const event> event) -> void
+    void display::dispatch_event(std::unique_ptr<const event> event)
     {
         auto window = event->window;
         if (window)

@@ -18,7 +18,7 @@ namespace core
         {
         }
 
-        auto strong_ref() -> ref_ptr<T>
+        ref_ptr<T> strong_ref()
         {
             if (m_link)
                 return m_link->strong_ref();

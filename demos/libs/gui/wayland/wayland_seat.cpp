@@ -30,7 +30,7 @@ namespace gui
         wl_seat_release(m_wl_seat);
     }
 
-    auto wayland_seat::on_capabilities(uint32_t capabilities) -> void
+    void wayland_seat::on_capabilities(uint32_t capabilities)
     {
         bool have_pointer = capabilities & WL_SEAT_CAPABILITY_POINTER;
 

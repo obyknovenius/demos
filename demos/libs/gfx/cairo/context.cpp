@@ -6,7 +6,7 @@
 
 namespace gfx::cairo
 {
-    auto context::stroke_line(const point& from, const point& to, const color& color, float line_width) -> void
+    void context::stroke_line(const point& from, const point& to, const color& color, float line_width)
     {
         cairo_save(m_cr);
         cairo_set_line_width(m_cr, line_width);
@@ -17,7 +17,7 @@ namespace gfx::cairo
         cairo_restore(m_cr);
     }
 
-    auto context::stroke_rect(const rect& rect, const color& color, float line_width) -> void
+    void context::stroke_rect(const rect& rect, const color& color, float line_width)
     {
         cairo_save(m_cr);
         cairo_set_line_width(m_cr, line_width);
@@ -27,7 +27,7 @@ namespace gfx::cairo
         cairo_restore(m_cr);
     }
 
-    auto context::fill_rect(const rect& rect, const color& color) -> void
+    void context::fill_rect(const rect& rect, const color& color)
     {
         cairo_save(m_cr);
         cairo_set_source_rgba(m_cr, color.r, color.g, color.b, color.a);

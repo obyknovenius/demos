@@ -67,21 +67,21 @@ namespace gui
         }
     };
 
-    auto wayland_pointer::on_enter(uint32_t serial, wl_surface* surface, wl_fixed_t x, wl_fixed_t y) -> void
+    void wayland_pointer::on_enter(uint32_t serial, wl_surface* surface, wl_fixed_t x, wl_fixed_t y)
     {
         m_window = reinterpret_cast<wayland_window*>(wl_surface_get_user_data(surface));
     }
 
-    auto wayland_pointer::on_leave(uint32_t serial, wl_surface* surface) -> void
+    void wayland_pointer::on_leave(uint32_t serial, wl_surface* surface)
     {
         m_window = nullptr;
     }
 
-    auto wayland_pointer::on_motion(uint32_t time, wl_fixed_t x, wl_fixed_t y) -> void
+    void wayland_pointer::on_motion(uint32_t time, wl_fixed_t x, wl_fixed_t y)
     {
     }
 
-    auto wayland_pointer::on_button(uint32_t serial, uint32_t time, uint32_t button, uint32_t state) -> void
+    void wayland_pointer::on_button(uint32_t serial, uint32_t time, uint32_t button, uint32_t state)
     {
         if (auto seat = m_seat.strong_ref())
         {
@@ -96,11 +96,11 @@ namespace gui
         m_event = std::make_unique<event>(type, m_window);
     }
 
-    auto wayland_pointer::on_axis(uint32_t time, uint32_t axis, wl_fixed_t value) -> void
+    void wayland_pointer::on_axis(uint32_t time, uint32_t axis, wl_fixed_t value)
     {
     }
 
-    auto wayland_pointer::on_frame() -> void
+    void wayland_pointer::on_frame()
     {
         if (m_event)
             if (auto seat = m_seat.strong_ref())
@@ -109,15 +109,15 @@ namespace gui
         m_event.reset();
     }
 
-    auto wayland_pointer::on_axis_source(uint32_t axis_source) -> void
+    void wayland_pointer::on_axis_source(uint32_t axis_source)
     {
     }
 
-    auto wayland_pointer::on_axis_stop(uint32_t time, uint32_t axis_stop) -> void
+    void wayland_pointer::on_axis_stop(uint32_t time, uint32_t axis_stop)
     {
     }
 
-    auto wayland_pointer::on_axis_discrete(uint32_t axis, int32_t discrete) -> void
+    void wayland_pointer::on_axis_discrete(uint32_t axis, int32_t discrete)
     {
     }
 }

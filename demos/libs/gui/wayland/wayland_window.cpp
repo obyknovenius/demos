@@ -43,7 +43,7 @@ namespace gui
         close();
     }
 
-    auto wayland_window::close() -> void
+    void wayland_window::close()
     {
         if (m_closed)
             return;
@@ -57,7 +57,7 @@ namespace gui
         window::close();
     }
 
-    auto wayland_window::on_surface_configure(xdg_surface* xdg_surface, uint32_t serial) -> void
+    void wayland_window::on_surface_configure(xdg_surface* xdg_surface, uint32_t serial)
     {
         xdg_surface_ack_configure(xdg_surface, serial);
 
@@ -99,7 +99,7 @@ namespace gui
         wl_surface_commit(m_wl_surface);
     }
 
-    auto wayland_window::on_buffer_release(wl_buffer* buffer) -> void
+    void wayland_window::on_buffer_release(wl_buffer* buffer)
     {
         wl_buffer_destroy(buffer);
     }

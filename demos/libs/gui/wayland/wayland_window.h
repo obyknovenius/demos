@@ -12,14 +12,14 @@ namespace gui
     class wayland_window final : public window
     {
     public:
-        static auto create(const nonnull_ref_ptr<wayland_display>& display) -> nonnull_ref_ptr<wayland_window>
+        static nonnull_ref_ptr<wayland_window> create(const nonnull_ref_ptr<wayland_display>& display)
         {
             return adopt(*new wayland_window(display));
         }
 
-        auto close() -> void override;
+        void close() override;
 
-        auto get_xdg_toplevel() -> xdg_toplevel* { return m_xdg_toplevel; }
+        xdg_toplevel* get_xdg_toplevel() { return m_xdg_toplevel; }
 
     private:
         static const xdg_surface_listener s_xdg_surface_listener;
@@ -28,8 +28,8 @@ namespace gui
         wayland_window(const nonnull_ref_ptr<wayland_display>& display);
         ~wayland_window();
 
-        auto on_surface_configure(xdg_surface* xdg_surface, uint32_t serial) -> void;
-        auto on_buffer_release(wl_buffer* buffer) -> void;
+        void on_surface_configure(xdg_surface* xdg_surface, uint32_t serial);
+        void on_buffer_release(wl_buffer* buffer);
 
         weak_ptr<wayland_display> m_display;
 

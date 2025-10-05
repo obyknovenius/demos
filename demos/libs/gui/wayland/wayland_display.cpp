@@ -26,7 +26,7 @@ namespace gui
         }
     };
 
-    auto wayland_display::connect() -> ref_ptr<wayland_display>
+    ref_ptr<wayland_display> wayland_display::connect()
     {
         wl_display* wl_display = wl_display_connect(nullptr);
         if (!wl_display)
@@ -67,12 +67,12 @@ namespace gui
         wl_display_disconnect(m_wl_display);
     }
 
-    auto wayland_display::create_window() -> nonnull_ref_ptr<window>
+    nonnull_ref_ptr<window> wayland_display::create_window()
     {
         return wayland_window::create(*this);
     }
 
-    auto wayland_display::on_registry_global(wl_registry* registry, uint32_t name, const char* interface, uint32_t version) -> void
+    void wayland_display::on_registry_global(wl_registry* registry, uint32_t name, const char* interface, uint32_t version)
     {
         if (strcmp(interface, wl_shm_interface.name) == 0)
         {
@@ -94,7 +94,7 @@ namespace gui
         }
     }
 
-    auto wayland_display::on_wm_ping(xdg_wm_base* xdg_wm_base, uint32_t serial) -> void
+    void wayland_display::on_wm_ping(xdg_wm_base* xdg_wm_base, uint32_t serial)
     {
         xdg_wm_base_pong(xdg_wm_base, serial);
     }

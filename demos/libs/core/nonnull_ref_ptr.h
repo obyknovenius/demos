@@ -62,7 +62,7 @@ namespace core
     };
 
     template<typename T>
-    auto adopt(T& ref) -> nonnull_ref_ptr<T>
+    nonnull_ref_ptr<T> adopt(T& ref)
     {
         return nonnull_ref_ptr<T>(nonnull_ref_ptr<T>::adopt, ref);
     }

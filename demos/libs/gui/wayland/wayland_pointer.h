@@ -14,7 +14,7 @@ namespace gui
     class wayland_pointer final : public ref_counted
     {
     public:
-        static auto create(wl_pointer* wl_pointer, const nonnull_ref_ptr<wayland_seat>& seat) -> nonnull_ref_ptr<wayland_pointer>
+        static nonnull_ref_ptr<wayland_pointer> create(wl_pointer* wl_pointer, const nonnull_ref_ptr<wayland_seat>& seat)
         {
             return adopt(*new wayland_pointer(wl_pointer, seat));
         }
@@ -25,15 +25,15 @@ namespace gui
         wayland_pointer(wl_pointer* wl_pointer, const nonnull_ref_ptr<wayland_seat>& seat);
         ~wayland_pointer();
 
-        auto on_enter(uint32_t serial, wl_surface* surface, wl_fixed_t x, wl_fixed_t y) -> void;
-        auto on_leave(uint32_t serial, wl_surface* surface) -> void;
-        auto on_motion(uint32_t time, wl_fixed_t x, wl_fixed_t y) -> void;
-        auto on_button(uint32_t serial, uint32_t time, uint32_t button, uint32_t state) -> void;
-        auto on_axis(uint32_t time, uint32_t axis, wl_fixed_t value) -> void;
-        auto on_frame() -> void;
-        auto on_axis_source(uint32_t axis_source) -> void;
-        auto on_axis_stop(uint32_t time, uint32_t axis_stop) -> void;
-        auto on_axis_discrete(uint32_t axis, int32_t discrete) -> void;
+        void on_enter(uint32_t serial, wl_surface* surface, wl_fixed_t x, wl_fixed_t y);
+        void on_leave(uint32_t serial, wl_surface* surface);
+        void on_motion(uint32_t time, wl_fixed_t x, wl_fixed_t y);
+        void on_button(uint32_t serial, uint32_t time, uint32_t button, uint32_t state);
+        void on_axis(uint32_t time, uint32_t axis, wl_fixed_t value);
+        void on_frame();
+        void on_axis_source(uint32_t axis_source);
+        void on_axis_stop(uint32_t time, uint32_t axis_stop);
+        void on_axis_discrete(uint32_t axis, int32_t discrete);
 
         wl_pointer* m_wl_pointer {};
 

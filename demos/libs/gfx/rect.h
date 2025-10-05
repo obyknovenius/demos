@@ -30,7 +30,7 @@ namespace gfx
         {
         }
 
-        auto inset(int d) const -> rect
+        rect inset(int d) const
         {
             return { x + d, y + d, width - 2 * d, height - 2 * d };
         }

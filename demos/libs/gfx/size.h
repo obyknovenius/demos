@@ -7,7 +7,7 @@ namespace gfx
         int width { 0 };
         int height { 0 };
 
-        auto inset(int x, int y) const -> size
+        size inset(int x, int y) const
         {
             return { width - x, height - y };
         }
