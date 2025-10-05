@@ -1,3 +1,11 @@
 FROM mcr.microsoft.com/devcontainers/base:noble
 
-RUN apt update && apt -y install build-essential meson libwayland-dev wayland-protocols pkg-config gdb
+RUN apt update && \
+    apt -y install \
+        build-essential \
+        meson \
+        libcairo2-dev \
+        libwayland-dev \
+        wayland-protocols \
+        pkg-config \
+        gdb

@@ -24,6 +24,7 @@ gui_deps = [
     core_dep,
     wayland_client_dep,
     xdg_shell_client_protocol_dep,
+    gfx_dep,
 ]
 
 gui_sources = [

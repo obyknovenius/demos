@@ -2,6 +2,7 @@
 
 #include "wayland_display.h"
 #include <cstring>
+#include <gfx/cairo/context.h>
 #include <iostream>
 #include <sys/mman.h>
 #include <unistd.h>
@@ -61,13 +62,11 @@ auto wayland_window::on_surface_configure(xdg_surface* xdg_surface, uint32_t ser
     xdg_surface_ack_configure(xdg_surface, serial);
 
     auto display = m_display.strong_ref();
-    if (!display) {
+    if (!display)
         return;
-    }
 
-    const int width = 640, height = 480;
-    const int stride = width * 4;
-    const int size = stride * height;
+    const int stride = m_size.width * 4;
+    const int size = stride * m_size.height;
 
     int fd = memfd_create("shm_pool", 0);
     ftruncate(fd, size);
@@ -80,11 +79,18 @@ auto wayland_window::on_surface_configure(xdg_surface* xdg_surface, uint32_t ser
     }
 
     wl_shm_pool* shm_pool = wl_shm_create_pool(display->get_wl_shm(), fd, size);
-    wl_buffer* wl_buffer = wl_shm_pool_create_buffer(shm_pool, 0, width, height, stride, WL_SHM_FORMAT_XRGB8888);
+    wl_buffer* wl_buffer = wl_shm_pool_create_buffer(shm_pool, 0, m_size.width, m_size.height, stride, WL_SHM_FORMAT_XRGB8888);
     wl_shm_pool_destroy(shm_pool);
     ::close(fd);
 
-    memset(pixels, 0, size);
+    auto* cairo_surface = cairo_image_surface_create_for_data(
+        reinterpret_cast<unsigned char*>(pixels), CAIRO_FORMAT_RGB24,
+        m_size.width, m_size.height, stride
+    );
+    auto* cr = cairo_create(cairo_surface);
+    auto context = make_ref_counted<gfx::cairo::context>(cr);
+    redraw(context);
+    cairo_surface_destroy(cairo_surface);
 
     munmap(pixels, size);
     wl_buffer_add_listener(wl_buffer, &s_wl_buffer_listener, this);

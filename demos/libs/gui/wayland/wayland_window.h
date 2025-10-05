@@ -1,6 +1,6 @@
 #pragma once
 
-#include "window.h"
+#include "../window.h"
 #include <core/weak_ptr.h>
 #include <wayland-client.h>
 #include <xdg-shell-client-protocol.h>

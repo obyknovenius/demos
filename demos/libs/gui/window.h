@@ -1,8 +1,13 @@
 #pragma once
 
 #include <core/ref_counted.h>
+#include <gfx/size.h>
 #include <functional>
 #include <memory>
+
+namespace gfx {
+    class context;
+}
 
 namespace gui {
 
@@ -20,6 +25,10 @@ public:
 protected:
     window() = default;
     virtual ~window() = default;
+
+    auto redraw(nonnull_ref_ptr<gfx::context> context) -> void;
+
+    gfx::size m_size { 800, 600 };
 };
 
 }
