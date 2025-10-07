@@ -70,6 +70,7 @@ namespace gui::wayland
     void pointer::on_enter(uint32_t serial, wl_surface* surface, wl_fixed_t x, wl_fixed_t y)
     {
         m_window = reinterpret_cast<window*>(wl_surface_get_user_data(surface));
+        m_position = { wl_fixed_to_int(x), wl_fixed_to_int(y) };
     }
 
     void pointer::on_leave(uint32_t serial, wl_surface* surface)
@@ -79,6 +80,7 @@ namespace gui::wayland
 
     void pointer::on_motion(uint32_t time, wl_fixed_t x, wl_fixed_t y)
     {
+        m_position = { wl_fixed_to_int(x), wl_fixed_to_int(y) };
     }
 
     void pointer::on_button(uint32_t serial, uint32_t time, uint32_t button, uint32_t state)
@@ -87,8 +89,11 @@ namespace gui::wayland
         {
             if (state == WL_POINTER_BUTTON_STATE_PRESSED)
             {
-                xdg_toplevel_move(m_window->get_xdg_toplevel(), seat->get_wl_seat(), serial);
-                return;
+                if (m_window->should_start_move(m_position))
+                {
+                    xdg_toplevel_move(m_window->get_xdg_toplevel(), seat->get_wl_seat(), serial);
+                    return;
+                }
             }
         }
 

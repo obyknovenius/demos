@@ -12,6 +12,11 @@ namespace gui
 
         ~decoration_view() = default;
 
+        nonnull_ref_ptr<title_bar> get_title_bar() { return m_title_bar; }
+
         void redraw(nonnull_ref_ptr<gfx::context> context) override;
+
+    private:
+        nonnull_ref_ptr<title_bar> m_title_bar;
     };
 }

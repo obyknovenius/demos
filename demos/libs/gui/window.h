@@ -23,6 +23,8 @@ namespace gui
         window(const gfx::size& size = { 800, 600 });
         ~window();
 
+        bool should_start_move(const gfx::point& pointer_position) const;
+
         void dispatch_event(std::unique_ptr<const event> event);
 
         virtual void close();

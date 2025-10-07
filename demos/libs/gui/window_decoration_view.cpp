@@ -6,10 +6,11 @@
 
 namespace gui
 {
-    window::decoration_view::decoration_view(const gfx::rect& frame) : view { frame }
+    window::decoration_view::decoration_view(const gfx::rect& frame) :
+        view { frame },
+        m_title_bar { make_ref_counted<window::title_bar>(gfx::rect { 0, 0, frame.width, 30 }) }
     {
-        auto title_bar = make_ref_counted<window::title_bar>(gfx::rect(0, 0, frame.width, 30));
-        add_subview(title_bar);
+        add_subview(m_title_bar);
     }
 
     void window::decoration_view::redraw(nonnull_ref_ptr<gfx::context> context)

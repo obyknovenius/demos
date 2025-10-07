@@ -30,6 +30,11 @@ namespace gfx
         {
         }
 
+        bool contains(const point& point) const
+        {
+            return point.x >= x && point.x < x + width && point.y >= y && point.y < y + height;
+        }
+
         rect inset(int d) const
         {
             return { x + d, y + d, width - 2 * d, height - 2 * d };
