@@ -29,8 +29,10 @@ gui_deps = [
 
 gui_sources = [
     'display.cpp',
+    'view.cpp',
+    'window_decoration_view.cpp',
+    'window_title_bar.cpp',
     'window.cpp',
-    'window_decoration_view.cpp'
 ]
 
 subdir('wayland')

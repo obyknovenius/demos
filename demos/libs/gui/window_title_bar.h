@@ -5,12 +5,14 @@
 
 namespace gui
 {
-    class window::decoration_view final : public view
+    class window::title_bar final : public view
     {
     public:
-        decoration_view(const gfx::rect& frame);
+        title_bar(const gfx::rect& frame) : view { frame }
+        {
+        }
 
-        ~decoration_view() = default;
+        ~title_bar() = default;
 
         void redraw(nonnull_ref_ptr<gfx::context> context) override;
     };

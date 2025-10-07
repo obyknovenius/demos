@@ -10,7 +10,10 @@ namespace core
     class weak_link : public ref_counted
     {
     public:
-        weak_link(weakable& ref) : m_ptr(&ref) {}
+        weak_link(weakable& ref) : m_ptr(&ref)
+        {
+        }
+
         ~weak_link() = default;
 
         ref_ptr<weakable> strong_ref()

@@ -31,6 +31,7 @@ namespace gui
 
     protected:
         class decoration_view;
+        class title_bar;
 
         void redraw(nonnull_ref_ptr<gfx::context> context);
 
