@@ -54,7 +54,7 @@ namespace gui::wayland
 
         m_closed = true;
 
-        window::close();
+        gui::window::close();
     }
 
     void window::on_surface_configure(xdg_surface* xdg_surface, uint32_t serial)
