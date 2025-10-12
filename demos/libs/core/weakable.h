@@ -38,7 +38,7 @@ namespace core
         friend class weak_ptr;
 
     public:
-        weakable() : m_weak_link(*new weak_link(*this))
+        weakable() : m_weak_link { adopt(new weak_link(*this)) }
         {
         }
 
