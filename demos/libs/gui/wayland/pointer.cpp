@@ -1,5 +1,6 @@
 #include "pointer.h"
 
+#include "cursor.h"
 #include "event.h"
 #include "display.h"
 #include "seat.h"
@@ -9,7 +10,8 @@ namespace gui::wayland
 {
     pointer::pointer(wl_pointer* wl_pointer, const nonnull_ref_ptr<seat>& seat) :
         m_wl_pointer { wl_pointer },
-        m_seat { seat }
+        m_seat { seat },
+        m_cursor { std::make_unique<cursor>(seat->get_display()) }
     {
         wl_pointer_add_listener(m_wl_pointer, &s_wl_pointer_listener, this);
     }
@@ -69,6 +71,8 @@ namespace gui::wayland
 
     void pointer::on_enter(uint32_t serial, wl_surface* surface, wl_fixed_t x, wl_fixed_t y)
     {
+        wl_pointer_set_cursor(m_wl_pointer, serial, m_cursor->get_wl_surface(), m_cursor->get_wl_cursor_image()->hotspot_x, m_cursor->get_wl_cursor_image()->hotspot_y);
+
         m_window = reinterpret_cast<window*>(wl_surface_get_user_data(surface));
         m_position = { wl_fixed_to_int(x), wl_fixed_to_int(y) };
     }

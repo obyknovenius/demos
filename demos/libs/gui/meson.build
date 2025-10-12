@@ -1,4 +1,5 @@
 wayland_client_dep = dependency('wayland-client')
+wayland_cursor_dep = dependency('wayland-cursor')
 
 wayland_scanner = find_program('wayland-scanner')
 xdg_shell_client_protocol_h = custom_target(
@@ -23,6 +24,7 @@ xdg_shell_client_protocol_dep = declare_dependency(
 gui_deps = [
     core_dep,
     wayland_client_dep,
+    wayland_cursor_dep,
     xdg_shell_client_protocol_dep,
     gfx_dep,
 ]

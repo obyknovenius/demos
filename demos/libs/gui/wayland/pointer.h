@@ -13,6 +13,7 @@ namespace gui
 
 namespace gui::wayland
 {
+    class cursor;
     class seat;
     class window;
 
@@ -38,6 +39,7 @@ namespace gui::wayland
         wl_pointer* m_wl_pointer {};
 
         weak_ptr<seat> m_seat;
+        std::unique_ptr<cursor> m_cursor;
 
         ref_ptr<window> m_window;
         gfx::point m_position;
