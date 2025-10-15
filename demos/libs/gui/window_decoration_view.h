@@ -14,6 +14,7 @@ namespace gui
 
         nonnull_ref_ptr<title_bar> get_title_bar() { return m_title_bar; }
 
+        void layout() override;
         void redraw(nonnull_ref_ptr<gfx::context> context) override;
 
     private:

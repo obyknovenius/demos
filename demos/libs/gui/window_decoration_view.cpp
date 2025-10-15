@@ -13,6 +13,13 @@ namespace gui
         add_subview(m_title_bar);
     }
 
+    void window::decoration_view::layout()
+    {
+        m_title_bar->set_frame({ 0, 0, m_frame.width, 30 });
+
+        view::layout();
+    }
+
     void window::decoration_view::redraw(nonnull_ref_ptr<gfx::context> context)
     {
         view::redraw(context);

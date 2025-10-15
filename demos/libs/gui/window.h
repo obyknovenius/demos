@@ -35,6 +35,7 @@ namespace gui
         class decoration_view;
         class title_bar;
 
+        void layout();
         void redraw(nonnull_ref_ptr<gfx::context> context);
 
         gfx::size m_size;

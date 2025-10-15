@@ -15,6 +15,7 @@ namespace gui
 
         inline void add_subview(nonnull_ref_ptr<view> subview);
 
+        virtual void layout();
         virtual void redraw(nonnull_ref_ptr<gfx::context> context);
 
     protected:

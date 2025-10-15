@@ -35,6 +35,12 @@ namespace gui
             on_close();
     }
 
+    void window::layout()
+    {
+        m_decoration_view->set_frame({ 0, 0, m_size.width, m_size.height });
+        m_decoration_view->layout();
+    }
+
     void window::redraw(nonnull_ref_ptr<gfx::context> context)
     {
         context->fill_rect({0, 0, m_size.width, m_size.height}, gfx::color::white);

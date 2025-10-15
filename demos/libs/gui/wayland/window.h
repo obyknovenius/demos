@@ -21,9 +21,11 @@ namespace gui::wayland
 
     private:
         static const xdg_surface_listener s_xdg_surface_listener;
+        static const xdg_toplevel_listener s_xdg_toplevel_listener;
         static const wl_buffer_listener s_wl_buffer_listener;
 
         void on_surface_configure(xdg_surface* xdg_surface, uint32_t serial);
+        void on_toplevel_configure(xdg_toplevel* xdg_toplevel, int32_t width, int32_t height, wl_array* states);
         void on_buffer_release(wl_buffer* buffer);
 
         weak_ptr<display> m_display;

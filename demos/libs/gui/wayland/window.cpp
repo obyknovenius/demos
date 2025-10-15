@@ -17,6 +17,17 @@ namespace gui::wayland
         }
     };
 
+    const xdg_toplevel_listener window::s_xdg_toplevel_listener = {
+        .configure = [](void* data, xdg_toplevel* xdg_toplevel, int32_t width, int32_t height, wl_array* states)
+        {
+            auto* window = reinterpret_cast<class window*>(data);
+            window->on_toplevel_configure(xdg_toplevel, width, height, states);
+        },
+        .close = nullptr,
+        .configure_bounds = nullptr,
+        .wm_capabilities = nullptr
+    };
+
     const wl_buffer_listener window::s_wl_buffer_listener = {
         .release = [](void* data, wl_buffer* buffer)
         {
@@ -35,6 +46,7 @@ namespace gui::wayland
 
         m_xdg_toplevel = xdg_surface_get_toplevel(m_xdg_surface);
         xdg_toplevel_set_title(m_xdg_toplevel, "Hello World");
+        xdg_toplevel_add_listener(m_xdg_toplevel, &s_xdg_toplevel_listener, this);
         wl_surface_commit(m_wl_surface);
     }
 
@@ -65,6 +77,12 @@ namespace gui::wayland
         if (!display)
             return;
 
+        if (m_wl_buffer)
+        {
+            wl_buffer_destroy(m_wl_buffer);
+            m_wl_buffer = nullptr;
+        }        
+
         const int stride = m_size.width * 4;
         const int size = stride * m_size.height;
 
@@ -83,6 +101,8 @@ namespace gui::wayland
         wl_shm_pool_destroy(shm_pool);
         ::close(fd);
 
+        layout();
+
         auto* cairo_surface = cairo_image_surface_create_for_data(
             reinterpret_cast<unsigned char*>(pixels), CAIRO_FORMAT_RGB24,
             m_size.width, m_size.height, stride
@@ -97,6 +117,14 @@ namespace gui::wayland
 
         wl_surface_attach(m_wl_surface, wl_buffer, 0, 0);
         wl_surface_commit(m_wl_surface);
+    }
+
+    void window::on_toplevel_configure(xdg_toplevel* xdg_toplevel, int32_t width, int32_t height, wl_array* states)
+    {
+        if (width == 0 || height == 0)
+            return;
+
+        m_size = { width, height };
     }
 
     void window::on_buffer_release(wl_buffer* buffer)
