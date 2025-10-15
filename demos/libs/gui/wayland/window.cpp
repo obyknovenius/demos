@@ -93,7 +93,7 @@ namespace gui::wayland
         int fd = memfd_create("shm_pool", 0);
         ftruncate(fd, size);
 
-        uint32_t *pixels = reinterpret_cast<uint32_t*>(mmap(NULL, size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0));
+        void* pixels = mmap(NULL, size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
         if (pixels == MAP_FAILED) {
             std::cerr << "mmap failed" << std::endl;
             ::close(fd);
@@ -102,8 +102,8 @@ namespace gui::wayland
 
         wl_shm_pool* shm_pool = wl_shm_create_pool(display->get_wl_shm(), fd, size);
         wl_buffer* wl_buffer = wl_shm_pool_create_buffer(shm_pool, 0, m_size.width, m_size.height, stride, WL_SHM_FORMAT_XRGB8888);
+        wl_buffer_add_listener(wl_buffer, &s_wl_buffer_listener, this);
         wl_shm_pool_destroy(shm_pool);
-        ::close(fd);
 
         layout();
 
@@ -116,11 +116,11 @@ namespace gui::wayland
         redraw(context);
         cairo_surface_destroy(cairo_surface);
 
-        munmap(pixels, size);
-        wl_buffer_add_listener(wl_buffer, &s_wl_buffer_listener, this);
-
         wl_surface_attach(m_wl_surface, wl_buffer, 0, 0);
         wl_surface_commit(m_wl_surface);
+
+        munmap(pixels, size);
+        ::close(fd);
     }
 
     void window::on_toplevel_configure(xdg_toplevel* xdg_toplevel, int32_t width, int32_t height, wl_array* states)
