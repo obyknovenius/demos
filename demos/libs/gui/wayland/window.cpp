@@ -23,7 +23,11 @@ namespace gui::wayland
             auto* window = reinterpret_cast<class window*>(data);
             window->on_toplevel_configure(xdg_toplevel, width, height, states);
         },
-        .close = nullptr,
+        .close = [](void* data, xdg_toplevel* xdg_toplevel)
+        {
+            auto* window = reinterpret_cast<class window*>(data);
+            window->on_toplevel_close(xdg_toplevel);
+        },
         .configure_bounds = nullptr,
         .wm_capabilities = nullptr
     };
@@ -125,6 +129,11 @@ namespace gui::wayland
             return;
 
         m_size = { width, height };
+    }
+
+    void window::on_toplevel_close(xdg_toplevel* xdg_toplevel)
+    {
+        close();
     }
 
     void window::on_buffer_release(wl_buffer* buffer)

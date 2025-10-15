@@ -26,6 +26,7 @@ namespace gui::wayland
 
         void on_surface_configure(xdg_surface* xdg_surface, uint32_t serial);
         void on_toplevel_configure(xdg_toplevel* xdg_toplevel, int32_t width, int32_t height, wl_array* states);
+        void on_toplevel_close(xdg_toplevel* xdg_toplevel);
         void on_buffer_release(wl_buffer* buffer);
 
         weak_ptr<display> m_display;
