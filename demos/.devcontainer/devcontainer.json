@@ -1,8 +1,11 @@
 {
-	"name": "Demos",
+	"name": "Ubuntu 25.10",
 	"build": {
 		"dockerfile": "Containerfile"
 	},
+	"runArgs": [
+		"--userns=keep-id"
+	],
 	"mounts": [
 		"source=${localEnv:XDG_RUNTIME_DIR}/${localEnv:WAYLAND_DISPLAY},target=${localEnv:XDG_RUNTIME_DIR}/${localEnv:WAYLAND_DISPLAY},type=bind"
 	],

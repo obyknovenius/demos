@@ -1,12 +1,15 @@
-FROM mcr.microsoft.com/devcontainers/base:noble
+FROM ubuntu:25.10
 
 RUN apt update && \
     apt -y install \
         build-essential \
         gdb \
+        git \
         libcairo2-dev \
         libwayland-dev \
         meson \
         pkg-config \
         valgrind \
-        wayland-protocols
+        wayland-protocols && \
+    apt -y clean && \
+    rm -rf /var/lib/apt/lists/*
