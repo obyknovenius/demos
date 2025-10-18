@@ -8,7 +8,7 @@ namespace gui
     class window::decoration_view final : public view
     {
     public:
-        decoration_view(const gfx::rect& frame);
+        decoration_view();
 
         ~decoration_view() = default;
 

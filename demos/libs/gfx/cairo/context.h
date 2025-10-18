@@ -17,6 +17,8 @@ namespace gfx::cairo
             cairo_destroy(m_cr);
         }
 
+        void translate(int dx, int dy) override;
+
         void stroke_line(const point& from, const point& to, const color& color, float line_width) override;
         void stroke_rect(const rect& rect, const color& color, float line_width) override;
         void fill_rect(const rect& rect, const color& color) override;

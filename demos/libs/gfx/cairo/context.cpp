@@ -6,6 +6,11 @@
 
 namespace gfx::cairo
 {
+    void context::translate(int dx, int dy)
+    {
+        cairo_translate(m_cr, dx, dy);
+    }
+
     void context::stroke_line(const point& from, const point& to, const color& color, float line_width)
     {
         cairo_save(m_cr);

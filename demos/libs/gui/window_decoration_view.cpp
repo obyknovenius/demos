@@ -6,25 +6,33 @@
 
 namespace gui
 {
-    window::decoration_view::decoration_view(const gfx::rect& frame) :
-        view { frame },
-        m_title_bar { make_ref_counted<window::title_bar>(gfx::rect { 0, 0, frame.width, 30 }) }
+    window::decoration_view::decoration_view() :
+        view {},
+        m_title_bar { make_ref_counted<window::title_bar>() }
     {
         add_subview(m_title_bar);
     }
 
     void window::decoration_view::layout()
     {
-        m_title_bar->set_frame({ 0, 0, m_frame.width, 30 });
+        m_title_bar->set_frame({ 6, 2, m_frame.width - 12, 30 });
 
         view::layout();
     }
 
     void window::decoration_view::redraw(nonnull_ref_ptr<gfx::context> context)
     {
-        view::redraw(context);
+        context->fill_rect(m_frame, m_background_color);
 
         int line_width = 2;
         context->stroke_rect(m_frame.inset(line_width / 2), gfx::color::black, line_width);
+
+        context->stroke_rect(m_frame.inset(line_width + 1 + 4), gfx::color::black, line_width);
+
+        for (auto& subview : m_subviews)
+        {
+            context->translate(subview->get_frame().x, subview->get_frame().y);
+            subview->redraw(context);
+        }
     }
 }

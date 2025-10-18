@@ -11,6 +11,8 @@ namespace gfx
     class context : public ref_counted
     {
     public:
+        virtual void translate(int dx, int dy) = 0;
+    
         virtual void stroke_line(const point& from, const point& to, const color& color, float line_width = 1.0f) = 0;
         virtual void stroke_rect(const rect& rect, const color& color, float line_width = 1.0f) = 0;
         virtual void fill_rect(const rect& rect, const color& color) = 0;
