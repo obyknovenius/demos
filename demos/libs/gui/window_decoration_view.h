@@ -8,7 +8,7 @@ namespace gui
     class window::decoration_view final : public view
     {
     public:
-        decoration_view(const gfx::rect& frame);
+        decoration_view();
 
         ~decoration_view() = default;
 
@@ -19,5 +19,7 @@ namespace gui
 
     private:
         nonnull_ref_ptr<title_bar> m_title_bar;
+
+        const int m_border_thickness { 4 };
     };
 }
