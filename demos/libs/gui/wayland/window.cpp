@@ -40,17 +40,14 @@ namespace gui::wayland
         }
     };
 
-    nonnull_ref_ptr<window> window::create()
+    nonnull_ref_ptr<window> window::make()
     {
-        return adopt(*new window());
+        auto display = display::get_default();
+        return adopt(*new window(*display));
     }
 
-    window::window()
+    window::window(const nonnull_ref_ptr<display>& display) : m_display { display }
     {
-        ref_ptr<display> display = display::get_default();
-        if (!display)
-            return;
-
         m_wl_surface = wl_compositor_create_surface(display->get_wl_compositor());
         wl_surface_set_user_data(m_wl_surface, this);
 
@@ -86,7 +83,7 @@ namespace gui::wayland
     {
         xdg_surface_ack_configure(xdg_surface, serial);
 
-        ref_ptr<display> display = display::get_default();
+        auto display = m_display.strong_ref();
         if (!display)
             return;
 

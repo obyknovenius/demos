@@ -104,7 +104,7 @@ namespace gui::wayland
         else if (strcmp(interface, wl_seat_interface.name) == 0)
         {
             auto* wl_seat = reinterpret_cast<struct wl_seat*>(wl_registry_bind(registry, name, &wl_seat_interface, 7));
-            m_seat = make_ref_counted<seat>(wl_seat, *this);
+            m_seat = seat::make(wl_seat, *this);
         }
     }
 

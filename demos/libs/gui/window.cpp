@@ -10,14 +10,14 @@
 
 namespace gui
 {
-    nonnull_ref_ptr<window> window::create()
+    nonnull_ref_ptr<window> window::make()
     {
-        return wayland::window::create();
+        return wayland::window::make();
     }
 
     window::window(gfx::size const& size) :
         m_size { size },
-        m_decoration_view { make_ref_counted<decoration_view>() }
+        m_decoration_view { decoration_view::make() }
     {
     }
 

@@ -20,7 +20,7 @@ namespace gui
     class window : public ref_counted
     {
     public:
-        static nonnull_ref_ptr<window> create();
+        static nonnull_ref_ptr<window> make();
 
         bool should_start_move(const gfx::point& pointer_position) const;
 

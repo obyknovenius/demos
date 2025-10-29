@@ -8,7 +8,7 @@ namespace gui
 {
     window::decoration_view::decoration_view() :
         view {},
-        m_title_bar { make_ref_counted<window::title_bar>() }
+        m_title_bar { title_bar::make() }
     {
         add_subview(m_title_bar);
     }

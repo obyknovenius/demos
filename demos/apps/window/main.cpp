@@ -5,7 +5,7 @@ int main()
 {
     auto& app = gui::application::get();
 
-    auto window = gui::window::create();
+    auto window = gui::window::make();
     window->on_close = [&app]()
     {
         app.quit();
