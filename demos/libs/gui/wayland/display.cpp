@@ -1,9 +1,11 @@
 #include "display.h"
 
+#include "event.h"
 #include "seat.h"
 #include "window.h"
 #include <core/event_loop.h>
 #include <cstring>
+#include <mutex>
 
 namespace gui::wayland
 {
@@ -26,12 +28,22 @@ namespace gui::wayland
         }
     };
 
-    ref_ptr<display> display::connect()
+    ref_ptr<display> display::s_default { nullptr };
+
+    ref_ptr<display> display::get_default()
     {
-        wl_display* wl_display = wl_display_connect(nullptr);
-        if (!wl_display)
-            return nullptr;
-        return adopt(*new display(wl_display));
+        static std::once_flag once;
+        std::call_once(once, []
+        {
+            if (!s_default)
+            {
+                wl_display* wl_display = wl_display_connect(nullptr);
+                if (!wl_display)
+                    return;
+                s_default = adopt(*new display(wl_display));
+            }
+        });
+        return s_default;
     }
 
     display::display(wl_display* wl_display) : m_wl_display { wl_display }
@@ -67,9 +79,11 @@ namespace gui::wayland
         wl_display_disconnect(m_wl_display);
     }
 
-    nonnull_ref_ptr<gui::window> display::create_window()
+    void display::dispatch_event(std::unique_ptr<const event> event)
     {
-        return make_ref_counted<window>();
+        auto window = event->window;
+        if (window)
+            window->dispatch_event(std::move(event));
     }
 
     void display::on_registry_global(wl_registry* registry, uint32_t name, const char* interface, uint32_t version)

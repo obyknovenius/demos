@@ -40,9 +40,14 @@ namespace gui::wayland
         }
     };
 
+    nonnull_ref_ptr<window> window::create()
+    {
+        return adopt(*new window());
+    }
+
     window::window()
     {
-        ref_ptr<display> display = gui::display::get_default();
+        ref_ptr<display> display = display::get_default();
         if (!display)
             return;
 
@@ -81,7 +86,7 @@ namespace gui::wayland
     {
         xdg_surface_ack_configure(xdg_surface, serial);
 
-        ref_ptr<display> display = gui::display::get_default();
+        ref_ptr<display> display = display::get_default();
         if (!display)
             return;
 

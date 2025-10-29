@@ -12,8 +12,7 @@ namespace gui::wayland
     class window final : public gui::window
     {
     public:
-        window();
-        ~window();
+        static nonnull_ref_ptr<window> create();
 
         void close() override;
 
@@ -23,6 +22,9 @@ namespace gui::wayland
         static const xdg_surface_listener s_xdg_surface_listener;
         static const xdg_toplevel_listener s_xdg_toplevel_listener;
         static const wl_buffer_listener s_wl_buffer_listener;
+
+        window();
+        ~window();
 
         void on_surface_configure(xdg_surface* xdg_surface, uint32_t serial);
         void on_toplevel_configure(xdg_toplevel* xdg_toplevel, int32_t width, int32_t height, wl_array* states);

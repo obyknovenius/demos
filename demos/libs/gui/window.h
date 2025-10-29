@@ -20,8 +20,7 @@ namespace gui
     class window : public ref_counted
     {
     public:
-        window(const gfx::size& size = { 800, 600 });
-        ~window();
+        static nonnull_ref_ptr<window> create();
 
         bool should_start_move(const gfx::point& pointer_position) const;
 
@@ -34,6 +33,9 @@ namespace gui
     protected:
         class decoration_view;
         class title_bar;
+
+        window(const gfx::size& size = { 800, 600 });
+        ~window();
 
         void layout();
         void redraw(nonnull_ref_ptr<gfx::context> context);

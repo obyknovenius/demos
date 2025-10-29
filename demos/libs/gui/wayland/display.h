@@ -1,25 +1,33 @@
 #pragma once
 
-#include "../display.h"
+#include <core/weakable.h>
+#include <memory>
 #include <wayland-client.h>
 #include <xdg-shell-client-protocol.h>
 
+namespace gui
+{
+    struct event;
+}
+
 namespace gui::wayland
-{   
+{
     class seat;
 
-    class display final : public gui::display
+    class display final : public weakable
     {
     public:
-        static ref_ptr<display> connect();
+        static ref_ptr<display> get_default();
 
-        nonnull_ref_ptr<gui::window> create_window() override;
-
+        void dispatch_event(std::unique_ptr<const event> event);
+    
         wl_compositor* get_wl_compositor() { return m_wl_compositor; }
         xdg_wm_base* get_xdg_wm_base() { return m_xdg_wm_base; }
         wl_shm* get_wl_shm() { return m_wl_shm; }
 
     private:
+        static ref_ptr<display> s_default;
+
         display(wl_display* wl_display);
         ~display();
 

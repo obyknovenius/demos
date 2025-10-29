@@ -31,7 +31,6 @@ gui_deps = [
 
 gui_sources = [
     'application.cpp',
-    'display.cpp',
     'view.cpp',
     'window_decoration_view.cpp',
     'window_title_bar.cpp',

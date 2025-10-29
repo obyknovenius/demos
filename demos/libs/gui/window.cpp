@@ -3,12 +3,18 @@
 #include "event.h"
 #include "window_decoration_view.h"
 #include "window_title_bar.h"
+#include "wayland/window.h"
 #include <gfx/color.h>
 #include <gfx/context.h>
 #include <gfx/rect.h>
 
 namespace gui
 {
+    nonnull_ref_ptr<window> window::create()
+    {
+        return wayland::window::create();
+    }
+
     window::window(gfx::size const& size) :
         m_size { size },
         m_decoration_view { make_ref_counted<decoration_view>() }
