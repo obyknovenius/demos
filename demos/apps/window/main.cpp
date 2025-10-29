@@ -1,4 +1,4 @@
-#include <core/event_loop.h>
+#include <gui/application.h>
 #include <gui/display.h>
 #include <gui/window.h>
 #include <iostream>
@@ -6,6 +6,8 @@
 
 int main()
 {
+    auto& app = gui::application::get();
+
     auto display = gui::display::connect();
     if (!display)
     {
@@ -14,12 +16,12 @@ int main()
     }
 
     auto window = display->create_window();
-    window->on_close = []()
+    window->on_close = [&app]()
     {
-        core::event_loop::get_main().quit();
+        app.quit();
     };
 
-    core::event_loop::get_main().run();
+    app.run();
 
     return 0;
 }
