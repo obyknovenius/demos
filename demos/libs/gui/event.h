@@ -1,6 +1,7 @@
 #pragma once
 
 #include <core/ref_ptr.h>
+#include <gfx/point.h>
 
 namespace gui
 {
@@ -14,13 +15,15 @@ namespace gui
             button_released,
         };
 
-        event(type type, const ref_ptr<class window>& window) :
+        event(type type, const gfx::point& position, const ref_ptr<gui::window>& window) :
             type { type },
+            position { position },
             window { window }
         {
         }
 
         type type;
-        ref_ptr<class window> window;
+        gfx::point position;
+        ref_ptr<gui::window> window;
     };
 }

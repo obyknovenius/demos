@@ -1,9 +1,9 @@
 #pragma once
 
 #include "view.h"
-#include <core/ref_counted.h>
-#include <gfx/size.h>
+#include <core/weakable.h>
 #include <functional>
+#include <gfx/size.h>
 #include <memory>
 
 namespace gfx
@@ -17,7 +17,7 @@ namespace gui
 {
     struct event;
 
-    class window : public ref_counted
+    class window : public weakable
     {
     public:
         static nonnull_ref_ptr<window> make();

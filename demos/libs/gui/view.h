@@ -1,13 +1,17 @@
 #pragma once
 
 #include <core/ref_counted.h>
+#include <core/ref_ptr.h>
 #include <gfx/color.h>
 #include <gfx/context.h>
 #include <gfx/rect.h>
+#include <memory>
 #include <vector>
 
 namespace gui
 {
+    class event;
+
     class view : public ref_counted
     {
     public:
@@ -20,6 +24,10 @@ namespace gui
 
         virtual void layout();
         virtual void redraw(nonnull_ref_ptr<gfx::context> context);
+
+        ref_ptr<view> hit_test(const gfx::point& point);
+
+        virtual void on_button_pressed(std::unique_ptr<const event> event) {};
 
     protected:
         view() = default;

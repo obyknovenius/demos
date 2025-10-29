@@ -17,7 +17,7 @@ namespace gui
 
     window::window(gfx::size const& size) :
         m_size { size },
-        m_decoration_view { decoration_view::make() }
+        m_decoration_view { decoration_view::make(*this) }
     {
     }
 
@@ -32,7 +32,18 @@ namespace gui
 
     void window::dispatch_event(std::unique_ptr<const event> event)
     {
-        close();
+        switch (event->type)
+        {
+            case event::type::button_pressed:
+            {
+                auto view = m_decoration_view->hit_test(event->position);
+                view->on_button_pressed(std::move(event));
+                break;
+            }
+
+            default:
+                break;
+        }
     }
 
     void window::close()

@@ -25,4 +25,17 @@ namespace gui
             context->restore();
         }
     }
+
+    ref_ptr<view> view::hit_test(const gfx::point& point)
+    {
+        for (const auto& subview : m_subviews)
+        {
+            if (subview->get_frame().contains(point))
+            {
+                auto local_point = gfx::point { point.x - subview->get_frame().origin.x, point.y - subview->get_frame().origin.y };
+                return subview->hit_test(local_point);
+            }
+        }
+        return this;
+    }
 }

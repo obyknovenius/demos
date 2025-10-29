@@ -6,8 +6,9 @@
 
 namespace gui
 {
-    window::decoration_view::decoration_view() :
+    window::decoration_view::decoration_view(nonnull_ref_ptr<window> window) :
         view {},
+        m_window { window },
         m_title_bar { title_bar::make() }
     {
         add_subview(m_title_bar);
@@ -36,5 +37,13 @@ namespace gui
 
         auto outer_border_rect = m_frame;
         context->stroke_rect(outer_border_rect.inset(line_width / 2), gfx::color::black, line_width);
+    }
+
+    void window::decoration_view::on_button_pressed(std::unique_ptr<const event> event)
+    {
+        if (auto window = m_window.strong_ref())
+        {
+            window->close();
+        }
     }
 }

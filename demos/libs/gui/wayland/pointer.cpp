@@ -102,7 +102,7 @@ namespace gui::wayland
         }
 
         auto type = state == WL_POINTER_BUTTON_STATE_PRESSED ? event::type::button_pressed : event::type::button_released;
-        m_event = std::make_unique<event>(type, m_window);
+        m_event = std::make_unique<event>(type, m_position, m_window);
     }
 
     void pointer::on_axis(uint32_t time, uint32_t axis, wl_fixed_t value)
