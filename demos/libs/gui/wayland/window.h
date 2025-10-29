@@ -12,7 +12,7 @@ namespace gui::wayland
     class window final : public gui::window
     {
     public:
-        window(const nonnull_ref_ptr<display>& display);
+        window();
         ~window();
 
         void close() override;
@@ -28,8 +28,6 @@ namespace gui::wayland
         void on_toplevel_configure(xdg_toplevel* xdg_toplevel, int32_t width, int32_t height, wl_array* states);
         void on_toplevel_close(xdg_toplevel* xdg_toplevel);
         void on_buffer_release(wl_buffer* buffer);
-
-        weak_ptr<display> m_display;
 
         wl_surface* m_wl_surface {};
 

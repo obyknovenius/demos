@@ -69,7 +69,7 @@ namespace gui::wayland
 
     nonnull_ref_ptr<gui::window> display::create_window()
     {
-        return make_ref_counted<window>(*this);
+        return make_ref_counted<window>();
     }
 
     void display::on_registry_global(wl_registry* registry, uint32_t name, const char* interface, uint32_t version)

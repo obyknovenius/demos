@@ -11,7 +11,7 @@ namespace gui
     class display : public weakable
     {
     public:
-        static ref_ptr<display> connect();
+        static ref_ptr<display> get_default();
 
         virtual nonnull_ref_ptr<window> create_window() = 0;
 
@@ -20,5 +20,8 @@ namespace gui
     protected:
         display() = default;
         virtual ~display() = default;
+
+    private:
+        static ref_ptr<display> s_default;
     };
 }
