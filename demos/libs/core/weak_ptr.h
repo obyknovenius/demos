@@ -10,13 +10,21 @@ namespace core
     class weak_ptr
     {
     public:
-        weak_ptr(const ref_ptr<T>& ptr) : m_link(ptr->m_weak_link)
+        weak_ptr() = default;
+
+        weak_ptr(const T* ptr)
         {
+            if (ptr)
+                m_link = ptr->m_weak_link;
         }
 
-        weak_ptr(const nonnull_ref_ptr<T>& ptr) : m_link(ptr->m_weak_link)
+        weak_ptr(const ref_ptr<T>& ptr)
         {
+            if (ptr)
+                m_link = ptr->m_weak_link;
         }
+
+        weak_ptr(const nonnull_ref_ptr<T>& ptr) : m_link { ptr->m_weak_link } {}
 
         ref_ptr<T> strong_ref()
         {
