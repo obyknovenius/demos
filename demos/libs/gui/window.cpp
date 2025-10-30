@@ -10,7 +10,7 @@
 
 namespace gui
 {
-    nonnull_ref_ptr<window> window::make()
+    NonnullRefPtr<window> window::make()
     {
         return wayland::window::make();
     }
@@ -58,7 +58,7 @@ namespace gui
         m_decoration_view->layout();
     }
 
-    void window::redraw(nonnull_ref_ptr<gfx::context> context)
+    void window::redraw(NonnullRefPtr<gfx::context> context)
     {
         context->fill_rect({0, 0, m_size.width, m_size.height}, gfx::color::white);
         m_decoration_view->redraw(context);

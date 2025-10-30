@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../window.h"
-#include <core/weak_ptr.h>
+#include <Core/WeakPtr.h>
 #include <wayland-client.h>
 #include <xdg-shell-client-protocol.h>
 
@@ -12,7 +12,7 @@ namespace gui::wayland
     class window final : public gui::window
     {
     public:
-        static nonnull_ref_ptr<window> make();
+        static NonnullRefPtr<window> make();
 
         void close() override;
 
@@ -23,7 +23,7 @@ namespace gui::wayland
         static const xdg_toplevel_listener s_xdg_toplevel_listener;
         static const wl_buffer_listener s_wl_buffer_listener;
 
-        window(const nonnull_ref_ptr<display>& display);
+        window(const NonnullRefPtr<display>& display);
         ~window();
 
         void on_surface_configure(xdg_surface* xdg_surface, uint32_t serial);
@@ -31,7 +31,7 @@ namespace gui::wayland
         void on_toplevel_close(xdg_toplevel* xdg_toplevel);
         void on_buffer_release(wl_buffer* buffer);
 
-        weak_ptr<display> m_display;
+        WeakPtr<display> m_display;
 
         wl_surface* m_wl_surface {};
 

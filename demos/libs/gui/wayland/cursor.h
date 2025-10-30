@@ -8,7 +8,7 @@ namespace gui::wayland
     class cursor
     {
     public:
-        cursor(const ref_ptr<display>& display);
+        cursor(const RefPtr<display>& display);
         ~cursor();
 
         wl_surface* get_wl_surface() const { return m_wl_surface; }

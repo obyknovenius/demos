@@ -1,9 +1,9 @@
 core_sources = [
-    'event_loop.cpp',
+    'EventLoop.cpp',
 ]
 
 core_lib = static_library(
-    'core',
+    'Core',
     sources: core_sources,
 )
 

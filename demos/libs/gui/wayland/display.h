@@ -1,6 +1,6 @@
 #pragma once
 
-#include <core/weakable.h>
+#include <Core/Weakable.h>
 #include <memory>
 #include <wayland-client.h>
 #include <xdg-shell-client-protocol.h>
@@ -14,10 +14,10 @@ namespace gui::wayland
 {
     class seat;
 
-    class display final : public weakable
+    class display final : public Weakable
     {
     public:
-        static ref_ptr<display> get_default();
+        static RefPtr<display> get_default();
 
         void dispatch_event(std::unique_ptr<const event> event);
     
@@ -26,7 +26,7 @@ namespace gui::wayland
         wl_shm* get_wl_shm() { return m_wl_shm; }
 
     private:
-        static ref_ptr<display> s_default;
+        static RefPtr<display> s_default;
 
         display(wl_display* wl_display);
         ~display();
@@ -43,6 +43,6 @@ namespace gui::wayland
         xdg_wm_base* m_xdg_wm_base {};
         wl_shm* m_wl_shm {};
 
-        ref_ptr<seat> m_seat;
+        RefPtr<seat> m_seat;
     };
 }

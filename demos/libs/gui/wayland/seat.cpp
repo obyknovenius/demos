@@ -16,7 +16,7 @@ namespace gui::wayland
         }
     };
 
-    seat::seat(wl_seat* wl_seat, const nonnull_ref_ptr<display>& display) :
+    seat::seat(wl_seat* wl_seat, const NonnullRefPtr<display>& display) :
         m_wl_seat { wl_seat },
         m_display { display }
     {

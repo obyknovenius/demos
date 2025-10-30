@@ -40,13 +40,13 @@ namespace gui::wayland
         }
     };
 
-    nonnull_ref_ptr<window> window::make()
+    NonnullRefPtr<window> window::make()
     {
         auto display = display::get_default();
         return adopt(*new window(*display));
     }
 
-    window::window(const nonnull_ref_ptr<display>& display) : m_display { display }
+    window::window(const NonnullRefPtr<display>& display) : m_display { display }
     {
         m_wl_surface = wl_compositor_create_surface(display->get_wl_compositor());
         wl_surface_set_user_data(m_wl_surface, this);
@@ -83,7 +83,7 @@ namespace gui::wayland
     {
         xdg_surface_ack_configure(xdg_surface, serial);
 
-        auto display = m_display.strong_ref();
+        auto display = m_display.strong();
         if (!display)
             return;
 
@@ -118,7 +118,7 @@ namespace gui::wayland
             m_size.width, m_size.height, stride
         );
         auto* cr = cairo_create(cairo_surface);
-        auto context = make_ref_counted<gfx::cairo::context>(cr);
+        auto context = gfx::cairo::context::make(cr);
         redraw(context);
         cairo_surface_destroy(cairo_surface);
 

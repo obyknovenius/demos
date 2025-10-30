@@ -3,7 +3,7 @@
 #include "event.h"
 #include "seat.h"
 #include "window.h"
-#include <core/event_loop.h>
+#include <Core/EventLoop.h>
 #include <cstring>
 #include <mutex>
 
@@ -28,9 +28,9 @@ namespace gui::wayland
         }
     };
 
-    ref_ptr<display> display::s_default { nullptr };
+    RefPtr<display> display::s_default { nullptr };
 
-    ref_ptr<display> display::get_default()
+    RefPtr<display> display::get_default()
     {
         static std::once_flag once;
         std::call_once(once, []
@@ -52,7 +52,7 @@ namespace gui::wayland
         wl_registry_add_listener(m_wl_registry, &s_wl_registry_listener, this);
         wl_display_roundtrip(m_wl_display);
 
-        core::event_loop::get_main().add_source({
+        Core::EventLoop::getMain().addSource({
             .fd = wl_display_get_fd(m_wl_display),
             .events = POLLIN,
             .prepare = [this]()

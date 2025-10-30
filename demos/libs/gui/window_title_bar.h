@@ -8,11 +8,11 @@ namespace gui
     class window::title_bar final : public view
     {
     public:
-        static nonnull_ref_ptr<title_bar> make();
+        static NonnullRefPtr<title_bar> make();
 
         gfx::size intrinsic_size() override { return { -1, m_height }; }
 
-        void redraw(nonnull_ref_ptr<gfx::context> context) override;
+        void redraw(NonnullRefPtr<gfx::context> context) override;
     
     private:
         title_bar() = default;
@@ -21,7 +21,7 @@ namespace gui
         int m_height = 32;
     };
 
-    inline nonnull_ref_ptr<window::title_bar> window::title_bar::make()
+    inline NonnullRefPtr<window::title_bar> window::title_bar::make()
     {
         return adopt(*new title_bar());
     }

@@ -14,7 +14,7 @@ namespace gui
             subview->layout();
     }
 
-    void view::redraw(nonnull_ref_ptr<gfx::context> context)
+    void view::redraw(NonnullRefPtr<gfx::context> context)
     {
         for (const auto& subview : m_subviews)
         {
@@ -26,7 +26,7 @@ namespace gui
         }
     }
 
-    ref_ptr<view> view::hit_test(const gfx::point& point)
+    RefPtr<view> view::hit_test(const gfx::point& point)
     {
         for (const auto& subview : m_subviews)
             if (subview->get_frame().contains(point))

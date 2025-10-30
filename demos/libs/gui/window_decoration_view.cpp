@@ -6,7 +6,7 @@
 
 namespace gui
 {
-    window::decoration_view::decoration_view(nonnull_ref_ptr<window> window) :
+    window::decoration_view::decoration_view(NonnullRefPtr<window> window) :
         view {},
         m_window { window },
         m_title_bar { title_bar::make() }
@@ -24,7 +24,7 @@ namespace gui
         view::layout();
     }
 
-    void window::decoration_view::redraw(nonnull_ref_ptr<gfx::context> context)
+    void window::decoration_view::redraw(NonnullRefPtr<gfx::context> context)
     {
         context->fill_rect(m_frame, gfx::color::white);
 
@@ -41,7 +41,7 @@ namespace gui
 
     void window::decoration_view::on_button_pressed(std::unique_ptr<const event> event)
     {
-        if (auto window = m_window.strong_ref())
+        if (auto window = m_window.strong())
         {
             window->close();
         }

@@ -5,7 +5,7 @@
 
 namespace gui
 {
-    void window::title_bar::redraw(nonnull_ref_ptr<gfx::context> context)
+    void window::title_bar::redraw(NonnullRefPtr<gfx::context> context)
     {
         context->fill_rect(m_bounds, gfx::color::white);
 

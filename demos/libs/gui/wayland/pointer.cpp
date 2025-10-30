@@ -8,7 +8,7 @@
 
 namespace gui::wayland
 {
-    pointer::pointer(wl_pointer* wl_pointer, const nonnull_ref_ptr<seat>& seat) :
+    pointer::pointer(wl_pointer* wl_pointer, const NonnullRefPtr<seat>& seat) :
         m_wl_pointer { wl_pointer },
         m_seat { seat },
         m_cursor { std::make_unique<cursor>(seat->get_display()) }
@@ -89,7 +89,7 @@ namespace gui::wayland
 
     void pointer::on_button(uint32_t serial, uint32_t time, uint32_t button, uint32_t state)
     {
-        if (auto seat = m_seat.strong_ref())
+        if (auto seat = m_seat.strong())
         {
             if (state == WL_POINTER_BUTTON_STATE_PRESSED)
             {
@@ -112,7 +112,7 @@ namespace gui::wayland
     void pointer::on_frame()
     {
         if (m_event)
-            if (auto seat = m_seat.strong_ref())
+            if (auto seat = m_seat.strong())
                 seat->get_display()->dispatch_event(std::move(m_event));
 
         m_event.reset();

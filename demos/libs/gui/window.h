@@ -1,7 +1,7 @@
 #pragma once
 
 #include "view.h"
-#include <core/weakable.h>
+#include <Core/Weakable.h>
 #include <functional>
 #include <gfx/size.h>
 #include <memory>
@@ -17,10 +17,10 @@ namespace gui
 {
     struct event;
 
-    class window : public weakable
+    class window : public Weakable
     {
     public:
-        static nonnull_ref_ptr<window> make();
+        static NonnullRefPtr<window> make();
 
         bool should_start_move(const gfx::point& pointer_position) const;
 
@@ -38,10 +38,10 @@ namespace gui
         ~window();
 
         void layout();
-        void redraw(nonnull_ref_ptr<gfx::context> context);
+        void redraw(NonnullRefPtr<gfx::context> context);
 
         gfx::size m_size;
 
-        nonnull_ref_ptr<decoration_view> m_decoration_view;
+        NonnullRefPtr<decoration_view> m_decoration_view;
     };
 }

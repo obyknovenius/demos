@@ -1,5 +1,5 @@
 libs_inc = include_directories('.')
 
-subdir('core')
+subdir('Core')
 subdir('gfx')
 subdir('gui')

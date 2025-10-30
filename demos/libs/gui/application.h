@@ -1,6 +1,6 @@
 #pragma once
 
-#include <core/event_loop.h>
+#include <Core/EventLoop.h>
 
 namespace gui
 {
@@ -18,7 +18,7 @@ namespace gui
     private:
         static application s_application;
 
-        core::event_loop& m_event_loop { core::event_loop::get_main() };
+        Core::EventLoop& m_event_loop { Core::EventLoop::getMain() };
     };
 
     void application::run()

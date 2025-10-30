@@ -1,7 +1,7 @@
 #pragma once
 
-#include <core/ref_counted.h>
-#include <core/weak_ptr.h>
+#include <Core/RefCounted.h>
+#include <Core/WeakPtr.h>
 #include <gfx/point.h>
 #include <memory>
 #include <wayland-client.h>
@@ -17,15 +17,15 @@ namespace gui::wayland
     class seat;
     class window;
 
-    class pointer final : public ref_counted
+    class pointer final : public RefCounted
     {
     public:
-        static nonnull_ref_ptr<pointer> make(wl_pointer* wl_pointer, const nonnull_ref_ptr<seat>& seat);
+        static NonnullRefPtr<pointer> make(wl_pointer* wl_pointer, const NonnullRefPtr<seat>& seat);
 
     private:
         static const wl_pointer_listener s_wl_pointer_listener;
 
-        pointer(wl_pointer* wl_pointer, const nonnull_ref_ptr<seat>& seat);
+        pointer(wl_pointer* wl_pointer, const NonnullRefPtr<seat>& seat);
         ~pointer();
 
         void on_enter(uint32_t serial, wl_surface* surface, wl_fixed_t x, wl_fixed_t y);
@@ -40,16 +40,16 @@ namespace gui::wayland
 
         wl_pointer* m_wl_pointer {};
 
-        weak_ptr<seat> m_seat;
+        WeakPtr<seat> m_seat;
         std::unique_ptr<cursor> m_cursor;
 
-        ref_ptr<window> m_window;
+        RefPtr<window> m_window;
         gfx::point m_position;
 
         std::unique_ptr<event> m_event;
     };
 
-    inline nonnull_ref_ptr<pointer> pointer::make(wl_pointer* wl_pointer, const nonnull_ref_ptr<seat>& seat)
+    inline NonnullRefPtr<pointer> pointer::make(wl_pointer* wl_pointer, const NonnullRefPtr<seat>& seat)
     {
         return adopt(*new pointer(wl_pointer, seat));
     }

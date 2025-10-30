@@ -2,7 +2,7 @@
 
 namespace gui::wayland
 {
-    cursor::cursor(const ref_ptr<display>& display)
+    cursor::cursor(const RefPtr<display>& display)
     {
         if (!display)
             return;
