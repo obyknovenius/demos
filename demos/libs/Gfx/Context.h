@@ -18,8 +18,8 @@ namespace Gfx
 
         virtual void clip(const Rect& rect) = 0;
 
-        virtual void strokeLine(const Point& from, const Point& to, const Color& color, float line_width = 1.0f) = 0;
-        virtual void strokeRect(const Rect& rect, const Color& color, float line_width = 1.0f) = 0;
+        virtual void strokeLine(const Point& from, const Point& to, const Color& color, float lineWidth = 1.0f) = 0;
+        virtual void strokeRect(const Rect& rect, const Color& color, float lineWidth = 1.0f) = 0;
         virtual void fillRect(const Rect& rect, const Color& color) = 0;
 
     protected:

@@ -30,17 +30,17 @@ gui_deps = [
 ]
 
 gui_sources = [
-    'application.cpp',
-    'view.cpp',
-    'window_decoration_view.cpp',
-    'window_title_bar.cpp',
-    'window.cpp',
+    'Application.cpp',
+    'View.cpp',
+    'WindowDecorationView.cpp',
+    'WindowTitleBar.cpp',
+    'Window.cpp',
 ]
 
-subdir('wayland')
+subdir('Wayland')
 
 gui_lib = static_library(
-    'gui',
+    'GUI',
     sources: gui_sources,
     dependencies: gui_deps,
 )

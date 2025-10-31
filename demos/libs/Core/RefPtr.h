@@ -8,7 +8,7 @@ namespace Core
     class RefPtr
     {
     public:
-        enum AdoptTag { Adopt };
+        enum AdoptTag { adopt };
 
         RefPtr(T* ptr = nullptr) : _ptr { ptr }
         {
@@ -76,7 +76,7 @@ namespace Core
     template<typename T>
     RefPtr<T> adopt(T* ptr)
     {
-        return RefPtr<T>(RefPtr<T>::Adopt, ptr);
+        return RefPtr<T>(RefPtr<T>::adopt, ptr);
     }
 }
 

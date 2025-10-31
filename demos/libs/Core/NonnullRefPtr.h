@@ -6,7 +6,7 @@ namespace Core
     class NonnullRefPtr
     {
     public:
-        enum AdoptTag { Adopt };
+        enum AdoptTag { adopt };
 
         NonnullRefPtr(T& ref) : _ptr { &ref }
         {
@@ -62,7 +62,7 @@ namespace Core
     template<typename T>
     NonnullRefPtr<T> adopt(T& ref)
     {
-        return NonnullRefPtr<T>(NonnullRefPtr<T>::Adopt, ref);
+        return NonnullRefPtr<T>(NonnullRefPtr<T>::adopt, ref);
     }
 }
 
