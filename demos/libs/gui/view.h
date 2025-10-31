@@ -3,9 +3,9 @@
 #include <Core/RefPtr.h>
 #include <Core/WeakPtr.h>
 #include <Core/Weakable.h>
-#include <gfx/color.h>
-#include <gfx/context.h>
-#include <gfx/rect.h>
+#include <Gfx/Color.h>
+#include <Gfx/Context.h>
+#include <Gfx/Rect.h>
 #include <memory>
 #include <vector>
 
@@ -19,15 +19,15 @@ namespace gui
         RefPtr<view> get_superview();
         void add_subview(NonnullRefPtr<view> subview);
 
-        void set_frame(const gfx::rect& frame);
-        gfx::rect get_frame() const { return m_frame; }
+        void set_frame(const Gfx::Rect& frame);
+        Gfx::Rect get_frame() const { return m_frame; }
 
-        virtual gfx::size intrinsic_size() { return { -1, -1 }; }
+        virtual Gfx::Size intrinsic_size() { return { -1, -1 }; }
 
         virtual void layout();
-        virtual void redraw(NonnullRefPtr<gfx::context> context);
+        virtual void redraw(NonnullRefPtr<Gfx::Context> context);
 
-        RefPtr<view> hit_test(const gfx::point& point);
+        RefPtr<view> hit_test(const Gfx::Point& point);
 
         virtual void on_button_pressed(std::unique_ptr<const event> event) {};
 
@@ -39,8 +39,8 @@ namespace gui
         WeakPtr<view> m_superview {};
         std::vector<NonnullRefPtr<view>> m_subviews {};
 
-        gfx::rect m_frame {};
-        gfx::rect m_bounds {};
+        Gfx::Rect m_frame {};
+        Gfx::Rect m_bounds {};
     };
 
     inline RefPtr<view> view::get_superview()

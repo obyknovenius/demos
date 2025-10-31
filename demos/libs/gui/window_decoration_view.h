@@ -14,7 +14,7 @@ namespace gui
         NonnullRefPtr<title_bar> get_title_bar() { return m_title_bar; }
 
         void layout() override;
-        void redraw(NonnullRefPtr<gfx::context> context) override;
+        void redraw(NonnullRefPtr<Gfx::Context> context) override;
 
         void on_button_pressed(std::unique_ptr<const event> event) override;
 

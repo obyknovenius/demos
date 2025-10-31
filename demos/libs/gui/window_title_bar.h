@@ -10,9 +10,9 @@ namespace gui
     public:
         static NonnullRefPtr<title_bar> make();
 
-        gfx::size intrinsic_size() override { return { -1, m_height }; }
+        Gfx::Size intrinsic_size() override { return { -1, m_height }; }
 
-        void redraw(NonnullRefPtr<gfx::context> context) override;
+        void redraw(NonnullRefPtr<Gfx::Context> context) override;
     
     private:
         title_bar() = default;

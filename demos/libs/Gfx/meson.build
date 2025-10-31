@@ -6,13 +6,13 @@ gfx_deps = [
 ]
 
 gfx_sources = [
-    'color.cpp',
+    'Color.cpp',
 ]
 
-subdir('cairo')
+subdir('Cairo')
 
 gfx_lib = static_library(
-    'gfx',
+    'Gfx',
     sources: gfx_sources,
     dependencies: gfx_deps,
 )

@@ -2,7 +2,7 @@
 
 #include "display.h"
 #include <cstring>
-#include <gfx/cairo/context.h>
+#include <Gfx/Cairo/Context.h>
 #include <iostream>
 #include <sys/mman.h>
 #include <unistd.h>
@@ -118,7 +118,7 @@ namespace gui::wayland
             m_size.width, m_size.height, stride
         );
         auto* cr = cairo_create(cairo_surface);
-        auto context = gfx::cairo::context::make(cr);
+        auto context = Gfx::Cairo::Context::make(cr);
         redraw(context);
         cairo_surface_destroy(cairo_surface);
 

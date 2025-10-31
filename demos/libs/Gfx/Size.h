@@ -1,13 +1,13 @@
 #pragma once
 
-namespace gfx
+namespace Gfx
 {
-    struct size
+    struct Size
     {
         int width { 0 };
         int height { 0 };
 
-        size inset(int x, int y) const
+        Size inset(int x, int y) const
         {
             return { width - x, height - y };
         }

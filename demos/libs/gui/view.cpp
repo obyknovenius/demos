@@ -2,7 +2,7 @@
 
 namespace gui
 {
-    void view::set_frame(const gfx::rect& frame)
+    void view::set_frame(const Gfx::Rect& frame)
     {
         m_frame = frame;
         m_bounds = { { 0, 0 }, frame.size };
@@ -14,7 +14,7 @@ namespace gui
             subview->layout();
     }
 
-    void view::redraw(NonnullRefPtr<gfx::context> context)
+    void view::redraw(NonnullRefPtr<Gfx::Context> context)
     {
         for (const auto& subview : m_subviews)
         {
@@ -26,7 +26,7 @@ namespace gui
         }
     }
 
-    RefPtr<view> view::hit_test(const gfx::point& point)
+    RefPtr<view> view::hit_test(const Gfx::Point& point)
     {
         for (const auto& subview : m_subviews)
             if (subview->get_frame().contains(point))

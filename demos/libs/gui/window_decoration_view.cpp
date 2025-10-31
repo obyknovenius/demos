@@ -1,8 +1,8 @@
 #include "window_decoration_view.h"
 
 #include "window_title_bar.h"
-#include <gfx/color.h>
-#include <gfx/context.h>
+#include <Gfx/Color.h>
+#include <Gfx/Context.h>
 
 namespace gui
 {
@@ -24,19 +24,19 @@ namespace gui
         view::layout();
     }
 
-    void window::decoration_view::redraw(NonnullRefPtr<gfx::context> context)
+    void window::decoration_view::redraw(NonnullRefPtr<Gfx::Context> context)
     {
-        context->fill_rect(m_frame, gfx::color::white);
+        context->fillRect(m_frame, Gfx::Color::white);
 
         int line_width = 2;
 
         auto inner_border_rect = m_frame.inset(m_border_thickness);
-        context->stroke_rect(inner_border_rect.inset(line_width / 2), gfx::color::black, line_width);
+        context->strokeRect(inner_border_rect.inset(line_width / 2), Gfx::Color::black, line_width);
 
         view::redraw(context);
 
         auto outer_border_rect = m_frame;
-        context->stroke_rect(outer_border_rect.inset(line_width / 2), gfx::color::black, line_width);
+        context->strokeRect(outer_border_rect.inset(line_width / 2), Gfx::Color::black, line_width);
     }
 
     void window::decoration_view::on_button_pressed(std::unique_ptr<const event> event)

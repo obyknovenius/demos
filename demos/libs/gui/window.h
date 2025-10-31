@@ -3,7 +3,7 @@
 #include "view.h"
 #include <Core/Weakable.h>
 #include <functional>
-#include <gfx/size.h>
+#include <Gfx/Size.h>
 #include <memory>
 
 namespace gfx
@@ -22,7 +22,7 @@ namespace gui
     public:
         static NonnullRefPtr<window> make();
 
-        bool should_start_move(const gfx::point& pointer_position) const;
+        bool should_start_move(const Gfx::Point& pointer_position) const;
 
         void dispatch_event(std::unique_ptr<const event> event);
 
@@ -34,13 +34,13 @@ namespace gui
         class decoration_view;
         class title_bar;
 
-        window(const gfx::size& size = { 800, 600 });
+        window(const Gfx::Size& size = { 800, 600 });
         ~window();
 
         void layout();
-        void redraw(NonnullRefPtr<gfx::context> context);
+        void redraw(NonnullRefPtr<Gfx::Context> context);
 
-        gfx::size m_size;
+        Gfx::Size m_size;
 
         NonnullRefPtr<decoration_view> m_decoration_view;
     };

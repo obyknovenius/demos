@@ -17,7 +17,7 @@ namespace Core
 
         ~WeakLink() = default;
 
-        RefPtr<Weakable> WeakLink::strong()
+        RefPtr<Weakable> strong()
         {
             return _ptr;
         }
@@ -32,7 +32,7 @@ namespace Core
         friend class WeakPtr;
 
     public:
-        Weakable::Weakable() : _weakLink { adopt(*new WeakLink(*this)) }
+        Weakable() : _weakLink { adopt(*new WeakLink(*this)) }
         {
         }
 

@@ -2,7 +2,7 @@
 
 #include <Core/RefCounted.h>
 #include <Core/WeakPtr.h>
-#include <gfx/point.h>
+#include <Gfx/Point.h>
 #include <memory>
 #include <wayland-client.h>
 
@@ -44,7 +44,7 @@ namespace gui::wayland
         std::unique_ptr<cursor> m_cursor;
 
         RefPtr<window> m_window;
-        gfx::point m_position;
+        Gfx::Point m_position;
 
         std::unique_ptr<event> m_event;
     };

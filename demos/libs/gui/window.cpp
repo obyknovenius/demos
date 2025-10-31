@@ -4,9 +4,9 @@
 #include "window_decoration_view.h"
 #include "window_title_bar.h"
 #include "wayland/window.h"
-#include <gfx/color.h>
-#include <gfx/context.h>
-#include <gfx/rect.h>
+#include <Gfx/Color.h>
+#include <Gfx/Context.h>
+#include <Gfx/Rect.h>
 
 namespace gui
 {
@@ -15,7 +15,7 @@ namespace gui
         return wayland::window::make();
     }
 
-    window::window(gfx::size const& size) :
+    window::window(Gfx::Size const& size) :
         m_size { size },
         m_decoration_view { decoration_view::make(*this) }
     {
@@ -23,7 +23,7 @@ namespace gui
 
     window::~window() = default;
 
-    bool window::should_start_move(const gfx::point& pointer_position) const
+    bool window::should_start_move(const Gfx::Point& pointer_position) const
     {
         if (m_decoration_view->get_title_bar()->get_frame().contains(pointer_position))
             return true;
@@ -58,9 +58,9 @@ namespace gui
         m_decoration_view->layout();
     }
 
-    void window::redraw(NonnullRefPtr<gfx::context> context)
+    void window::redraw(NonnullRefPtr<Gfx::Context> context)
     {
-        context->fill_rect({0, 0, m_size.width, m_size.height}, gfx::color::white);
+        context->fillRect({ 0, 0, m_size.width, m_size.height }, Gfx::Color::white);
         m_decoration_view->redraw(context);
     }
 }
