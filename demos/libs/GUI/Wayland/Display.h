@@ -4,6 +4,7 @@
 #include <memory>
 #include <wayland-client.h>
 #include <xdg-shell-client-protocol.h>
+#include <cursor-shape-v1-client-protocol.h>
 
 namespace GUI
 {
@@ -24,6 +25,7 @@ namespace GUI::Wayland
         wl_compositor* wlCompositor();
         xdg_wm_base* xdgWmBase();
         wl_shm* wlShm();
+        wp_cursor_shape_manager_v1* wpCursorShapeManagerV1();
 
     private:
         static RefPtr<Display> _defaultDisplay;
@@ -42,6 +44,7 @@ namespace GUI::Wayland
         wl_compositor* _wlCompositor {};
         xdg_wm_base* _xdgWmBase {};
         wl_shm* _wlShm {};
+        wp_cursor_shape_manager_v1* _wpCursorShapeManagerV1 {};
 
         RefPtr<Seat> _seat;
     };
@@ -59,5 +62,10 @@ namespace GUI::Wayland
     inline wl_shm* Display::wlShm()
     {
         return _wlShm;
+    }
+
+    inline wp_cursor_shape_manager_v1* Display::wpCursorShapeManagerV1()
+    {
+        return _wpCursorShapeManagerV1;
     }
 }

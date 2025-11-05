@@ -73,6 +73,7 @@ namespace GUI::Wayland
         xdg_wm_base_destroy(_xdgWmBase);
         wl_compositor_destroy(_wlCompositor);
         wl_shm_destroy(_wlShm);
+        wp_cursor_shape_manager_v1_destroy(_wpCursorShapeManagerV1);
 
         wl_registry_destroy(_wlRegistry);
 
@@ -105,6 +106,10 @@ namespace GUI::Wayland
         {
             auto* wl_seat = reinterpret_cast<struct wl_seat*>(wl_registry_bind(registry, name, &wl_seat_interface, 7));
             _seat = Seat::make(wl_seat, *this);
+        }
+        else if (strcmp(interface, "wp_cursor_shape_manager_v1") == 0)
+        {
+            _wpCursorShapeManagerV1 = reinterpret_cast<wp_cursor_shape_manager_v1*>(wl_registry_bind(registry, name, &wp_cursor_shape_manager_v1_interface, 2));
         }
     }
 

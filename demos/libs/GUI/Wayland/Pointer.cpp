@@ -1,6 +1,5 @@
 #include "Pointer.h"
 
-#include "Cursor.h"
 #include "Event.h"
 #include "Display.h"
 #include "Seat.h"
@@ -10,14 +9,17 @@ namespace GUI::Wayland
 {
     Pointer::Pointer(wl_pointer* wlPointer, const NonnullRefPtr<Seat>& seat) :
         _wlPointer { wlPointer },
-        _seat { seat },
-        _cursor { std::make_unique<Cursor>(seat->display()) }
+        _seat { seat }
     {
         wl_pointer_add_listener(_wlPointer, &_wlPointerListener, this);
+
+        if (auto display = seat->display())
+            _wpCursorShapeDeviceV1 = wp_cursor_shape_manager_v1_get_pointer(display->wpCursorShapeManagerV1(), _wlPointer);
     }
 
     Pointer::~Pointer()
     {
+        wp_cursor_shape_device_v1_destroy(_wpCursorShapeDeviceV1);
         wl_pointer_release(_wlPointer);
     }
 
@@ -71,7 +73,7 @@ namespace GUI::Wayland
 
     void Pointer::onEnter(uint32_t serial, wl_surface* surface, wl_fixed_t x, wl_fixed_t y)
     {
-        wl_pointer_set_cursor(_wlPointer, serial, _cursor->wlSurface(), _cursor->wlCursorImage()->hotspot_x, _cursor->wlCursorImage()->hotspot_y);
+        wp_cursor_shape_device_v1_set_shape(_wpCursorShapeDeviceV1, serial, WP_CURSOR_SHAPE_DEVICE_V1_SHAPE_DEFAULT);
 
         _window = reinterpret_cast<Window*>(wl_surface_get_user_data(surface));
         _position = { wl_fixed_to_int(x), wl_fixed_to_int(y) };

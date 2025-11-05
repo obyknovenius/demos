@@ -5,6 +5,7 @@
 #include <Gfx/Point.h>
 #include <memory>
 #include <wayland-client.h>
+#include <cursor-shape-v1-client-protocol.h>
 
 namespace GUI
 {
@@ -39,9 +40,9 @@ namespace GUI::Wayland
         void onAxisDiscrete(uint32_t axis, int32_t discrete);
 
         wl_pointer* _wlPointer {};
+        wp_cursor_shape_device_v1* _wpCursorShapeDeviceV1 {};
 
         WeakPtr<Seat> _seat;
-        std::unique_ptr<Cursor> _cursor;
 
         RefPtr<Window> _window;
         Gfx::Point _position;

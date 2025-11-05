@@ -8,7 +8,7 @@
             "name": "Window",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/${config:mesonbuild.buildFolder}/apps/window/window",
+            "program": "${workspaceFolder}/${config:mesonbuild.buildFolder}/apps/Window/window",
             "cwd": "${workspaceFolder}",
             "preLaunchTask": "Meson: Build all targets"
         }

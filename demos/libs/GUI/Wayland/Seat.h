@@ -26,7 +26,7 @@ namespace GUI::Wayland
 
         void onCapabilities(uint32_t capabilities);
 
-        wl_seat* _wl_seat {};
+        wl_seat* _wlSeat {};
 
         WeakPtr<Display> _display;
 
@@ -45,6 +45,6 @@ namespace GUI::Wayland
 
     inline wl_seat* Seat::wlSeat()
     {
-        return _wl_seat;
+        return _wlSeat;
     }
 }
