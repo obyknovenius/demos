@@ -14,9 +14,9 @@ namespace GUI::Wayland
     public:
         static NonnullRefPtr<Seat> make(wl_seat* wlSeat, const NonnullRefPtr<Display>& display);
 
-        RefPtr<Display> getDisplay();
+        RefPtr<Display> display();
 
-        wl_seat* getWlSeat();
+        wl_seat* wlSeat();
 
     private:
         static const wl_seat_listener _wlSeatListener;
@@ -38,12 +38,12 @@ namespace GUI::Wayland
         return adopt(*new Seat(wlSeat, display));
     }
 
-    inline RefPtr<Display> Seat::getDisplay()
+    inline RefPtr<Display> Seat::display()
     {
         return _display.strong();
     }
 
-    inline wl_seat* Seat::getWlSeat()
+    inline wl_seat* Seat::wlSeat()
     {
         return _wl_seat;
     }

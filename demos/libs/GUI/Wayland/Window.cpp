@@ -42,16 +42,16 @@ namespace GUI::Wayland
 
     NonnullRefPtr<Window> Window::make()
     {
-        auto display = Display::getDefault();
+        auto display = Display::defaultDisplay();
         return adopt(*new Window(*display));
     }
 
     Window::Window(const NonnullRefPtr<Display>& display) : _display { display }
     {
-        _wlSurface = wl_compositor_create_surface(display->getWlCompositor());
+        _wlSurface = wl_compositor_create_surface(display->wlCompositor());
         wl_surface_set_user_data(_wlSurface, this);
 
-        _xdgSurface = xdg_wm_base_get_xdg_surface(display->getXdgWmBase(), _wlSurface);
+        _xdgSurface = xdg_wm_base_get_xdg_surface(display->xdgWmBase(), _wlSurface);
         xdg_surface_add_listener(_xdgSurface, &_xdgSurfaceListener, this);
 
         _xdgToplevel = xdg_surface_get_toplevel(_xdgSurface);
@@ -106,7 +106,7 @@ namespace GUI::Wayland
             return;
         }
 
-        wl_shm_pool* shmPool = wl_shm_create_pool(display->getWlShm(), fd, size);
+        wl_shm_pool* shmPool = wl_shm_create_pool(display->wlShm(), fd, size);
         wl_buffer* wlBuffer = wl_shm_pool_create_buffer(shmPool, 0, _size.width, _size.height, stride, WL_SHM_FORMAT_XRGB8888);
         wl_buffer_add_listener(wlBuffer, &_wlBufferListener, this);
         wl_shm_pool_destroy(shmPool);

@@ -25,7 +25,7 @@ namespace GUI
 
     bool Window::shouldStartMove(const Gfx::Point& pointer_position) const
     {
-        if (_decorationView->getTitleBar()->getFrame().contains(pointer_position))
+        if (_decorationView->titleBar()->frame().contains(pointer_position))
             return true;
         return false;
     }

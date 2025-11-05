@@ -17,16 +17,16 @@ namespace GUI::Wayland
     class Display final : public Weakable
     {
     public:
-        static RefPtr<Display> getDefault();
+        static RefPtr<Display> defaultDisplay();
 
         void dispatchEvent(std::unique_ptr<const Event> event);
 
-        wl_compositor* getWlCompositor();
-        xdg_wm_base* getXdgWmBase();
-        wl_shm* getWlShm();
+        wl_compositor* wlCompositor();
+        xdg_wm_base* xdgWmBase();
+        wl_shm* wlShm();
 
     private:
-        static RefPtr<Display> _default;
+        static RefPtr<Display> _defaultDisplay;
 
         Display(wl_display* wlDisplay);
         ~Display();
@@ -46,17 +46,17 @@ namespace GUI::Wayland
         RefPtr<Seat> _seat;
     };
 
-    inline wl_compositor* Display::getWlCompositor()
+    inline wl_compositor* Display::wlCompositor()
     {
         return _wlCompositor;
     }
 
-    inline xdg_wm_base* Display::getXdgWmBase()
+    inline xdg_wm_base* Display::xdgWmBase()
     {
         return _xdgWmBase;
     }
 
-    inline wl_shm* Display::getWlShm()
+    inline wl_shm* Display::wlShm()
     {
         return _wlShm;
     }

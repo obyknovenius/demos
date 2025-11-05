@@ -11,8 +11,8 @@ namespace GUI::Wayland
         Cursor(const RefPtr<Display>& display);
         ~Cursor();
 
-        wl_surface* getWlSurface() const;
-        wl_cursor_image* getWlCursorImage() const;
+        wl_surface* wlSurface() const;
+        wl_cursor_image* wlCursorImage() const;
 
     private:
         wl_cursor_theme* _wlCursorTheme {};
@@ -20,12 +20,12 @@ namespace GUI::Wayland
         wl_surface* _wlSurface {};
     };
 
-    inline wl_surface* Cursor::getWlSurface() const
+    inline wl_surface* Cursor::wlSurface() const
     {
         return _wlSurface;
     }
 
-    inline wl_cursor_image* Cursor::getWlCursorImage() const
+    inline wl_cursor_image* Cursor::wlCursorImage() const
     {
         return _wlCursorImage;
     }

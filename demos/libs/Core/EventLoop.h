@@ -16,7 +16,7 @@ namespace Core
             std::function<void()> dispatch;
         };
 
-        static EventLoop& getMain() { return _main; }
+        static EventLoop& mainLoop() { return _mainLoop; }
 
         EventLoop() = default;
         ~EventLoop();
@@ -27,7 +27,7 @@ namespace Core
         void quit();
 
     private:
-        static EventLoop _main;
+        static EventLoop _mainLoop;
 
         bool _running { false };
 

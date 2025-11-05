@@ -4,7 +4,7 @@
 
 namespace Core
 {
-    EventLoop EventLoop::_main = EventLoop();
+    EventLoop EventLoop::_mainLoop = EventLoop();
 
     EventLoop::~EventLoop()
     {

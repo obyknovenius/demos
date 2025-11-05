@@ -11,7 +11,7 @@ namespace GUI::Wayland
     Pointer::Pointer(wl_pointer* wlPointer, const NonnullRefPtr<Seat>& seat) :
         _wlPointer { wlPointer },
         _seat { seat },
-        _cursor { std::make_unique<Cursor>(seat->getDisplay()) }
+        _cursor { std::make_unique<Cursor>(seat->display()) }
     {
         wl_pointer_add_listener(_wlPointer, &_wlPointerListener, this);
     }
@@ -71,7 +71,7 @@ namespace GUI::Wayland
 
     void Pointer::onEnter(uint32_t serial, wl_surface* surface, wl_fixed_t x, wl_fixed_t y)
     {
-        wl_pointer_set_cursor(_wlPointer, serial, _cursor->getWlSurface(), _cursor->getWlCursorImage()->hotspot_x, _cursor->getWlCursorImage()->hotspot_y);
+        wl_pointer_set_cursor(_wlPointer, serial, _cursor->wlSurface(), _cursor->wlCursorImage()->hotspot_x, _cursor->wlCursorImage()->hotspot_y);
 
         _window = reinterpret_cast<Window*>(wl_surface_get_user_data(surface));
         _position = { wl_fixed_to_int(x), wl_fixed_to_int(y) };
@@ -95,7 +95,7 @@ namespace GUI::Wayland
             {
                 if (_window->shouldStartMove(_position))
                 {
-                    xdg_toplevel_move(_window->getXdgToplevel(), seat->getWlSeat(), serial);
+                    xdg_toplevel_move(_window->xdgToplevel(), seat->wlSeat(), serial);
                     return;
                 }
             }
@@ -113,7 +113,7 @@ namespace GUI::Wayland
     {
         if (_event)
             if (auto seat = _seat.strong())
-                seat->getDisplay()->dispatchEvent(std::move(_event));
+                seat->display()->dispatchEvent(std::move(_event));
 
         _event.reset();
     }

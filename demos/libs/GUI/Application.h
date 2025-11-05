@@ -7,18 +7,18 @@ namespace GUI
     class Application
     {
     public:
-        static Application& get() { return _application; }
+        static Application& sharedApplication() { return _sharedApplication; }
 
         void run();
         void quit();
 
     private:
-        static Application _application;
+        static Application _sharedApplication;
 
         Application() = default;
         ~Application() = default;
 
-        Core::EventLoop& _event_loop { Core::EventLoop::getMain() };
+        Core::EventLoop& _event_loop { Core::EventLoop::mainLoop() };
     };
 
     inline void Application::run()

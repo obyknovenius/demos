@@ -11,7 +11,7 @@ namespace GUI
     public:
         static NonnullRefPtr<DecorationView> make(const NonnullRefPtr<Window>& window);
 
-        NonnullRefPtr<TitleBar> getTitleBar();
+        NonnullRefPtr<TitleBar> titleBar();
 
         void layout() override;
         void redraw(NonnullRefPtr<Gfx::Context> context) override;
@@ -34,7 +34,7 @@ namespace GUI
         return adopt(*new DecorationView(window));
     }
 
-    inline NonnullRefPtr<Window::TitleBar> Window::DecorationView::getTitleBar()
+    inline NonnullRefPtr<Window::TitleBar> Window::DecorationView::titleBar()
     {
         return _titleBar;
     }

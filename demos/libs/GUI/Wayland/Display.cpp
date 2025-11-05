@@ -28,22 +28,22 @@ namespace GUI::Wayland
         }
     };
 
-    RefPtr<Display> Display::_default { nullptr };
+    RefPtr<Display> Display::_defaultDisplay { nullptr };
 
-    RefPtr<Display> Display::getDefault()
+    RefPtr<Display> Display::defaultDisplay()
     {
         static std::once_flag once;
         std::call_once(once, []
         {
-            if (!_default)
+            if (!_defaultDisplay)
             {
                 wl_display* wlDisplay = wl_display_connect(nullptr);
                 if (!wlDisplay)
                     return;
-                _default = adopt(*new Display(wlDisplay));
+                _defaultDisplay = adopt(*new Display(wlDisplay));
             }
         });
-        return _default;
+        return _defaultDisplay;
     }
 
     Display::Display(wl_display* wlDisplay) : _wlDisplay { wlDisplay }
@@ -52,7 +52,7 @@ namespace GUI::Wayland
         wl_registry_add_listener(_wlRegistry, &_wlRegistryListener, this);
         wl_display_roundtrip(_wlDisplay);
 
-        Core::EventLoop::getMain().addSource({
+        Core::EventLoop::mainLoop().addSource({
             .fd = wl_display_get_fd(_wlDisplay),
             .events = POLLIN,
             .prepare = [this]()

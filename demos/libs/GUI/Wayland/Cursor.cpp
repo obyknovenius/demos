@@ -7,12 +7,12 @@ namespace GUI::Wayland
         if (!display)
             return;
 
-        _wlCursorTheme = wl_cursor_theme_load(nullptr, 32, display->getWlShm());
+        _wlCursorTheme = wl_cursor_theme_load(nullptr, 32, display->wlShm());
         wl_cursor* wlCursor = wl_cursor_theme_get_cursor(_wlCursorTheme, "left_ptr");
         _wlCursorImage = wlCursor->images[0];
         wl_buffer* wlBuffer = wl_cursor_image_get_buffer(_wlCursorImage);
 
-        _wlSurface = wl_compositor_create_surface(display->getWlCompositor());
+        _wlSurface = wl_compositor_create_surface(display->wlCompositor());
         wl_surface_attach(_wlSurface, wlBuffer, 0, 0);
         wl_surface_commit(_wlSurface);
     }

@@ -16,7 +16,7 @@ namespace GUI::Wayland
 
         void close() override;
 
-        xdg_toplevel* getXdgToplevel();
+        xdg_toplevel* xdgToplevel();
 
     private:
         static const xdg_surface_listener _xdgSurfaceListener;
@@ -45,7 +45,7 @@ namespace GUI::Wayland
         bool _closed { false };
     };
 
-    inline xdg_toplevel* GUI::Wayland::Window::getXdgToplevel()
+    inline xdg_toplevel* GUI::Wayland::Window::xdgToplevel()
     {
         return _xdgToplevel;
     }

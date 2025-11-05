@@ -25,8 +25,8 @@ namespace GUI
         for (const auto& subview : _subviews)
         {
             context->save();
-            context->clip(subview->getFrame());
-            context->translate(subview->getFrame().origin);
+            context->clip(subview->frame());
+            context->translate(subview->frame().origin);
             subview->redraw(context);
             context->restore();
         }
@@ -35,8 +35,8 @@ namespace GUI
     RefPtr<View> View::hitTest(const Gfx::Point& point)
     {
         for (const auto& subview : _subviews)
-            if (subview->getFrame().contains(point))
-                return subview->hitTest(point - subview->getFrame().origin);
+            if (subview->frame().contains(point))
+                return subview->hitTest(point - subview->frame().origin);
         return this;
     }
 }

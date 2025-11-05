@@ -2,5 +2,5 @@
 
 namespace GUI
 {
-    Application Application::_application = Application();
+    Application Application::_sharedApplication = Application();
 }

@@ -3,7 +3,7 @@
 
 int main()
 {
-    auto& app = GUI::Application::get();
+    auto& app = GUI::Application::sharedApplication();
 
     auto window = GUI::Window::make();
     window->onClose = [&app]()

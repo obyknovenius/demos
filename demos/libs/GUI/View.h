@@ -16,11 +16,11 @@ namespace GUI
     class View : public Weakable
     {
     public:
-        RefPtr<View> getSuperview();
+        RefPtr<View> superview();
         void addSubview(NonnullRefPtr<View> subview);
 
         void setFrame(const Gfx::Rect& frame);
-        const Gfx::Rect& getFrame() const;
+        const Gfx::Rect& frame() const;
 
         virtual Gfx::Size intrinsicSize() const;
 
@@ -43,12 +43,12 @@ namespace GUI
         Gfx::Rect _bounds {};
     };
 
-    inline RefPtr<View> View::getSuperview()
+    inline RefPtr<View> View::superview()
     {
         return _superview.strong();
     }
 
-    inline const Gfx::Rect& View::getFrame() const
+    inline const Gfx::Rect& View::frame() const
     {
         return _frame;
     }
