@@ -34,7 +34,7 @@ namespace GUI
     {
         switch (event->type)
         {
-            case Event::Type::buttonPressed:
+            case Event::Type::ButtonPressed:
             {
                 auto view = _decorationView->hitTest(event->position);
                 view->onButtonPressed(std::move(event));

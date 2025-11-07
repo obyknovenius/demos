@@ -1,9 +1,10 @@
 #include "Pointer.h"
 
-#include "Event.h"
 #include "Display.h"
 #include "Seat.h"
 #include "Window.h"
+#include "../Cursor.h"
+#include "../Event.h"
 
 namespace GUI::Wayland
 {
@@ -73,7 +74,13 @@ namespace GUI::Wayland
 
     void Pointer::onEnter(uint32_t serial, wl_surface* surface, wl_fixed_t x, wl_fixed_t y)
     {
-        wp_cursor_shape_device_v1_set_shape(_wpCursorShapeDeviceV1, serial, WP_CURSOR_SHAPE_DEVICE_V1_SHAPE_DEFAULT);
+        wp_cursor_shape_device_v1_shape shape = WP_CURSOR_SHAPE_DEVICE_V1_SHAPE_DEFAULT;
+
+        auto& currentCursor = GUI::Cursor::currentCursor();
+        if (&currentCursor == &GUI::Cursor::pointerCursor())
+            shape = WP_CURSOR_SHAPE_DEVICE_V1_SHAPE_POINTER;
+
+        wp_cursor_shape_device_v1_set_shape(_wpCursorShapeDeviceV1, serial, shape);
 
         _window = reinterpret_cast<Window*>(wl_surface_get_user_data(surface));
         _position = { wl_fixed_to_int(x), wl_fixed_to_int(y) };
@@ -103,7 +110,7 @@ namespace GUI::Wayland
             }
         }
 
-        auto type = state == WL_POINTER_BUTTON_STATE_PRESSED ? Event::Type::buttonPressed : Event::Type::buttonReleased;
+        auto type = state == WL_POINTER_BUTTON_STATE_PRESSED ? Event::Type::ButtonPressed : Event::Type::ButtonReleased;
         _event = std::make_unique<Event>(type, _position, _window);
     }
 

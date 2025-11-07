@@ -11,8 +11,8 @@ namespace GUI
     {
         enum class Type
         {
-            buttonPressed,
-            buttonReleased,
+            ButtonPressed,
+            ButtonReleased,
         };
 
         Event(Type type, const Gfx::Point& position, const RefPtr<GUI::Window>& window) :
