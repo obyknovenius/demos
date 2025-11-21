@@ -69,6 +69,14 @@ namespace Core
 
         operator bool() const { return _ptr; }
 
+        bool operator==(const RefPtr& other) const { return ptr() == other.ptr(); }
+        bool operator!=(const RefPtr& other) const { return ptr() != other.ptr(); }
+
+        template<typename U>
+        bool operator==(const NonnullRefPtr<U>& other) const { return ptr() == other.ptr(); }
+
+        bool operator==(T other) const { return ptr() == other; }
+
     private:
         T* _ptr { nullptr };
     };

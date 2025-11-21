@@ -2,6 +2,7 @@
 
 #include <Core/RefPtr.h>
 #include <Gfx/Point.h>
+#include <optional>
 
 namespace GUI
 {
@@ -11,11 +12,14 @@ namespace GUI
     {
         enum class Type
         {
-            ButtonPressed,
-            ButtonReleased,
+            PointerButtonPressed,
+            PointerButtonReleased,
+            PointerEntered,
+            PointerMoved,
+            PointerLeft,
         };
 
-        Event(Type type, const Gfx::Point& position, const RefPtr<GUI::Window>& window) :
+        Event(Type type, const std::optional<Gfx::Point>& position, const RefPtr<GUI::Window>& window) :
             type { type },
             position { position },
             window { window }
@@ -23,7 +27,7 @@ namespace GUI
         }
 
         Type type;
-        Gfx::Point position;
+        std::optional<Gfx::Point> position;
         RefPtr<GUI::Window> window;
     };
 }

@@ -16,7 +16,11 @@ namespace GUI
         void layout() override;
         void redraw(NonnullRefPtr<Gfx::Context> context) override;
 
-        void onButtonPressed(std::unique_ptr<const Event> event) override;
+        void onPointerButtonPressed() override;
+
+        void onPointerEntered() override;
+        void onPointerMoved() override;
+        void onPointerLeft() override;
 
     private:
         DecorationView(NonnullRefPtr<Window> window);

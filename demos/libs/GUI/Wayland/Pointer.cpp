@@ -84,16 +84,19 @@ namespace GUI::Wayland
 
         _window = reinterpret_cast<Window*>(wl_surface_get_user_data(surface));
         _position = { wl_fixed_to_int(x), wl_fixed_to_int(y) };
+        _event = std::make_unique<Event>(Event::Type::PointerEntered, _position, _window);
     }
 
     void Pointer::onLeave(uint32_t serial, wl_surface* surface)
     {
+        _event = std::make_unique<Event>(Event::Type::PointerLeft, std::nullopt, _window);
         _window = nullptr;
     }
 
     void Pointer::onMotion(uint32_t time, wl_fixed_t x, wl_fixed_t y)
     {
         _position = { wl_fixed_to_int(x), wl_fixed_to_int(y) };
+        _event = std::make_unique<Event>(Event::Type::PointerMoved, _position, _window);
     }
 
     void Pointer::onButton(uint32_t serial, uint32_t time, uint32_t button, uint32_t state)
@@ -110,7 +113,7 @@ namespace GUI::Wayland
             }
         }
 
-        auto type = state == WL_POINTER_BUTTON_STATE_PRESSED ? Event::Type::ButtonPressed : Event::Type::ButtonReleased;
+        auto type = state == WL_POINTER_BUTTON_STATE_PRESSED ? Event::Type::PointerButtonPressed : Event::Type::PointerButtonReleased;
         _event = std::make_unique<Event>(type, _position, _window);
     }
 

@@ -3,6 +3,7 @@
 #include "WindowTitleBar.h"
 #include <Gfx/Color.h>
 #include <Gfx/Context.h>
+#include <iostream>
 
 namespace GUI
 {
@@ -39,11 +40,26 @@ namespace GUI
         context->strokeRect(outerBorderRect.inset(lineWidth / 2), Gfx::Color::black, lineWidth);
     }
 
-    void Window::DecorationView::onButtonPressed(std::unique_ptr<const Event> event)
+    void Window::DecorationView::onPointerButtonPressed()
     {
         if (auto window = _window.strong())
         {
             window->close();
         }
+    }
+
+    void Window::DecorationView::onPointerEntered()
+    {
+        std::cout << "Pointer entered decoration view" << std::endl;
+    }
+
+    void Window::DecorationView::onPointerMoved()
+    {
+        //std::cout << "Pointer moved within decoration view" << std::endl;
+    }
+
+    void Window::DecorationView::onPointerLeft()
+    {
+        std::cout << "Pointer left decoration view" << std::endl;
     }
 }

@@ -29,7 +29,11 @@ namespace GUI
 
         RefPtr<View> hitTest(const Gfx::Point& point);
 
-        virtual void onButtonPressed(std::unique_ptr<const Event> event);
+        virtual void onPointerButtonPressed();
+        virtual void onPointerButtonReleased();
+        virtual void onPointerEntered();
+        virtual void onPointerMoved();
+        virtual void onPointerLeft();
 
     protected:
         View() = default;
@@ -58,7 +62,23 @@ namespace GUI
         return { -1, -1 };
     }
 
-    inline void View::onButtonPressed(std::unique_ptr<const Event> event)
+    inline void View::onPointerButtonPressed()
+    {
+    }
+
+    inline void View::onPointerButtonReleased()
+    {
+    }
+
+    inline void View::onPointerEntered()
+    {
+    }
+
+    inline void View::onPointerMoved()
+    {
+    }
+
+    inline void View::onPointerLeft()
     {
     }
 }

@@ -13,6 +13,10 @@ namespace GUI
         Gfx::Size intrinsicSize() const override;
 
         void redraw(NonnullRefPtr<Gfx::Context> context) override;
+
+        void onPointerEntered() override;
+        void onPointerMoved() override;
+        void onPointerLeft() override;
     
     private:
         TitleBar() = default;

@@ -2,6 +2,7 @@
 
 #include "View.h"
 #include <Core/Weakable.h>
+#include <Core/WeakPtr.h>
 #include <functional>
 #include <Gfx/Size.h>
 #include <memory>
@@ -43,5 +44,7 @@ namespace GUI
         Gfx::Size _size;
 
         NonnullRefPtr<DecorationView> _decorationView;
+
+        WeakPtr<View> _viewUnderPointer;
     };
 }
