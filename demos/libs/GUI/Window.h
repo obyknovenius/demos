@@ -1,11 +1,13 @@
 #pragma once
 
+#include "Cursor.h"
 #include "View.h"
 #include <Core/Weakable.h>
 #include <Core/WeakPtr.h>
 #include <functional>
 #include <Gfx/Size.h>
 #include <memory>
+#include <optional>
 
 namespace Gfx
 {
@@ -31,6 +33,9 @@ namespace GUI
 
         std::function<void()> onClose;
 
+        void setCursor(const Cursor& cursor) { _currentCursor = &cursor; }
+        const Cursor& currentCursor() const { return *_currentCursor; }
+
     protected:
         class DecorationView;
         class TitleBar;
@@ -44,6 +49,8 @@ namespace GUI
         Gfx::Size _size;
 
         NonnullRefPtr<DecorationView> _decorationView;
+
+        const Cursor* _currentCursor { &Cursor::defaultCursor() };
 
         WeakPtr<View> _viewUnderPointer;
     };

@@ -72,6 +72,7 @@ gui_wayland_deps = [
 gui_deps += gui_wayland_deps
 
 gui_wayland_sources = [
+    'Cursor.cpp',
     'Display.cpp',
     'Pointer.cpp',
     'Seat.cpp',
