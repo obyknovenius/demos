@@ -30,6 +30,11 @@ namespace GUI::Wayland
         wl_seat_release(_wlSeat);
     }
 
+    RefPtr<Pointer> Seat::pointer()
+    {
+        return _pointer;
+    }
+
     void Seat::onCapabilities(uint32_t capabilities)
     {
         bool havePointer = capabilities & WL_SEAT_CAPABILITY_POINTER;

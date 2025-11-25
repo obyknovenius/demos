@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../Cursor.h"
 #include <Core/RefCounted.h>
 #include <Core/WeakPtr.h>
 #include <Gfx/Point.h>
@@ -21,6 +22,8 @@ namespace GUI::Wayland
     {
     public:
         static NonnullRefPtr<Pointer> make(wl_pointer* wlPointer, const NonnullRefPtr<Seat>& seat);
+
+        void setCursor(Cursor cursor);
 
     private:
         static const wl_pointer_listener _wlPointerListener;
@@ -47,6 +50,8 @@ namespace GUI::Wayland
         Gfx::Point _position;
 
         std::unique_ptr<Event> _event;
+
+        uint32_t _lastEnterSerial { 0 };
     };
 
     inline NonnullRefPtr<Pointer> Pointer::make(wl_pointer* wlPointer, const NonnullRefPtr<Seat>& seat)

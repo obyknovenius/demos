@@ -2,7 +2,6 @@
 
 #include <Gfx/Color.h>
 #include <Gfx/Context.h>
-#include <iostream>
 
 namespace GUI
 {
@@ -20,16 +19,13 @@ namespace GUI
 
     void Window::TitleBar::onPointerEntered()
     {
-        std::cout << "Pointer entered title bar" << std::endl;
     }
 
     void Window::TitleBar::onPointerMoved()
     {
-        //std::cout << "Pointer moved within title bar" << std::endl;
     }
 
     void Window::TitleBar::onPointerLeft()
     {
-        std::cout << "Pointer left title bar" << std::endl;
     }
 }

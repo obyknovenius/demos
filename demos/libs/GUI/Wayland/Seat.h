@@ -18,6 +18,8 @@ namespace GUI::Wayland
 
         wl_seat* wlSeat();
 
+        RefPtr<Pointer> pointer();
+
     private:
         static const wl_seat_listener _wlSeatListener;
 

@@ -33,8 +33,8 @@ namespace GUI
 
         std::function<void()> onClose;
 
-        void setCursor(Cursor cursor) { _currentCursor = cursor; }
-        Cursor currentCursor() const { return _currentCursor; }
+        virtual void setCursor(Cursor cursor);
+        Cursor currentCursor() const;
 
     protected:
         class DecorationView;
@@ -54,4 +54,14 @@ namespace GUI
 
         WeakPtr<View> _viewUnderPointer;
     };
+
+    inline void Window::setCursor(Cursor cursor)
+    {
+        _currentCursor = cursor;
+    }
+
+    inline Cursor Window::currentCursor() const
+    {
+        return _currentCursor;
+    }
 }

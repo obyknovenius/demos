@@ -27,6 +27,8 @@ namespace GUI::Wayland
         wl_shm* wlShm();
         wp_cursor_shape_manager_v1* wpCursorShapeManagerV1();
 
+        RefPtr<Seat> seat();
+
     private:
         static RefPtr<Display> _defaultDisplay;
 
@@ -67,5 +69,10 @@ namespace GUI::Wayland
     inline wp_cursor_shape_manager_v1* Display::wpCursorShapeManagerV1()
     {
         return _wpCursorShapeManagerV1;
+    }
+
+    inline RefPtr<Seat> Display::seat()
+    {
+        return _seat;
     }
 }

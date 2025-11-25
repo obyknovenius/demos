@@ -1,8 +1,10 @@
 #include "Window.h"
 
 #include "Display.h"
-#include <cstring>
+#include "Pointer.h"
+#include "Seat.h"
 #include <Gfx/Cairo/Context.h>
+#include <cstring>
 #include <iostream>
 #include <sys/mman.h>
 #include <unistd.h>
@@ -77,6 +79,16 @@ namespace GUI::Wayland
         _closed = true;
 
         GUI::Window::close();
+    }
+
+    void Window::setCursor(Cursor cursor)
+    {
+        GUI::Window::setCursor(cursor);
+
+        if (auto display = _display.strong())
+            if (auto seat = display->seat())
+                if (auto pointer = seat->pointer())
+                    pointer->setCursor(cursor);
     }
 
     void Window::onSurfaceConfigure(xdg_surface* xdgSurface, uint32_t serial)

@@ -7,7 +7,6 @@
 #include <Gfx/Color.h>
 #include <Gfx/Context.h>
 #include <Gfx/Rect.h>
-#include <iostream>
 #include <memory>
 
 namespace GUI
@@ -60,35 +59,26 @@ namespace GUI
 
             case Event::Type::PointerMoved:
             {
-                //std::cout << "Pointer moved to " << event->position->x << ", " << event->position->y << std::endl;
-
                 auto view = _decorationView->hitTest(*event->position);
 
                 if (auto viewUnderPointer = _viewUnderPointer.strong())
                 {
                     if (viewUnderPointer != view)
                     {
-                        //std::cout << "View under pointer changed" << std::endl;
                         viewUnderPointer->onPointerLeft();
                         view->onPointerEntered();
                         _viewUnderPointer = view;
                     }
                     else
                     {
-                        //std::cout << "Pointer moved within the same view" << std::endl;
                         view->onPointerMoved();
                     }
-                }
-                else
-                {
-                    //std::cout << "No view under pointer, but received PointerMoved event" << std::endl;
                 }
                 break;
             }
 
             case Event::Type::PointerLeft:
             {
-                std::cout << "Pointer left window" << std::endl;
                 if (auto viewUnderPointer = _viewUnderPointer.strong())
                 {
                     viewUnderPointer->onPointerLeft();

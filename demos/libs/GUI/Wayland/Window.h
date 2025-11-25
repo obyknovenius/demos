@@ -16,6 +16,8 @@ namespace GUI::Wayland
 
         void close() override;
 
+        void setCursor(Cursor cursor) override;
+
         xdg_toplevel* xdgToplevel();
 
     private:

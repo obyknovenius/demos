@@ -24,6 +24,20 @@ namespace GUI::Wayland
         wl_pointer_release(_wlPointer);
     }
 
+    void Pointer::setCursor(Cursor cursor)
+    {
+        uint32_t shape;
+        switch (cursor)
+        {
+            case Cursor::Pointer:
+                shape = WP_CURSOR_SHAPE_DEVICE_V1_SHAPE_POINTER;
+                break;
+            default:
+                shape = WP_CURSOR_SHAPE_DEVICE_V1_SHAPE_DEFAULT;
+        }
+        wp_cursor_shape_device_v1_set_shape(_wpCursorShapeDeviceV1, _lastEnterSerial, shape);
+    }
+
     const wl_pointer_listener Pointer::_wlPointerListener = {
         .enter = [](void* data, wl_pointer* wlPointer, uint32_t serial, wl_surface* surface, wl_fixed_t x, wl_fixed_t y)
         {
@@ -78,17 +92,8 @@ namespace GUI::Wayland
         _position = { wl_fixed_to_int(x), wl_fixed_to_int(y) };
         _event = std::make_unique<Event>(Event::Type::PointerEntered, _position, _window);
 
-        uint32_t shape = WP_CURSOR_SHAPE_DEVICE_V1_SHAPE_DEFAULT;
-        switch (_window->currentCursor())
-        {
-            case Cursor::Default:
-                shape = WP_CURSOR_SHAPE_DEVICE_V1_SHAPE_DEFAULT;
-                break;
-            case Cursor::Pointer:
-                shape = WP_CURSOR_SHAPE_DEVICE_V1_SHAPE_POINTER;
-                break;
-        }
-        wp_cursor_shape_device_v1_set_shape(_wpCursorShapeDeviceV1, serial, shape);
+        _lastEnterSerial = serial;
+        setCursor(_window->currentCursor());
     }
 
     void Pointer::onLeave(uint32_t serial, wl_surface* surface)
