@@ -42,15 +42,13 @@ namespace GUI
     void Window::DecorationView::onPointerButtonPressed()
     {
         if (auto window = _window.strong())
-        {
             window->close();
-        }
     }
 
     void Window::DecorationView::onPointerEntered()
     {
         if (auto window = _window.strong())
-            window->setCursor(Cursor::Pointer);
+            window->pushCursor(Cursor::Pointer);
     }
 
     void Window::DecorationView::onPointerMoved()
@@ -60,6 +58,6 @@ namespace GUI
     void Window::DecorationView::onPointerLeft()
     {
         if (auto window = _window.strong())
-            window->setCursor(Cursor::Default);
+            window->popCursor();
     }
 }

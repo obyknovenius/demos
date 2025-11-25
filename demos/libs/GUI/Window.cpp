@@ -109,4 +109,19 @@ namespace GUI
         context->fillRect({ 0, 0, _size.width, _size.height }, Gfx::Color::white);
         _decorationView->redraw(context);
     }
+
+    void Window::pushCursor(Cursor cursor)
+    {
+        _cursorStack.push_back(_currentCursor);
+        setCursor(cursor);
+    }
+
+    void Window::popCursor()
+    {
+        if (!_cursorStack.empty())
+        {
+            setCursor(_cursorStack.back());
+            _cursorStack.pop_back();
+        }
+    }
 }

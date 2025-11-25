@@ -4,10 +4,11 @@
 #include "View.h"
 #include <Core/Weakable.h>
 #include <Core/WeakPtr.h>
-#include <functional>
 #include <Gfx/Size.h>
+#include <functional>
 #include <memory>
 #include <optional>
+#include <vector>
 
 namespace Gfx
 {
@@ -34,6 +35,8 @@ namespace GUI
         std::function<void()> onClose;
 
         virtual void setCursor(Cursor cursor);
+        void pushCursor(Cursor cursor);
+        void popCursor();
         Cursor currentCursor() const;
 
     protected:
@@ -51,6 +54,7 @@ namespace GUI
         NonnullRefPtr<DecorationView> _decorationView;
 
         Cursor _currentCursor { Cursor::Default };
+        std::vector<Cursor> _cursorStack;
 
         WeakPtr<View> _viewUnderPointer;
     };
