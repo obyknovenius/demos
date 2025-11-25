@@ -9,9 +9,9 @@ namespace GUI
 {
     Window::DecorationView::DecorationView(NonnullRefPtr<Window> window) :
         View {},
-        _window { window },
         _titleBar { TitleBar::make() }
     {
+        _window = window;
         addSubview(_titleBar);
     }
 

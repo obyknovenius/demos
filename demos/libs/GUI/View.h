@@ -11,11 +11,14 @@
 
 namespace GUI
 {
+    class Window;
     struct Event;
 
     class View : public Weakable
     {
     public:
+        RefPtr<Window> window();
+
         RefPtr<View> superview();
         void addSubview(NonnullRefPtr<View> subview);
 
@@ -39,7 +42,8 @@ namespace GUI
         View() = default;
         virtual ~View() = default;
 
-    protected:
+        WeakPtr<Window> _window {};
+
         WeakPtr<View> _superview {};
         std::vector<NonnullRefPtr<View>> _subviews {};
 

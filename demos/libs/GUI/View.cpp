@@ -1,7 +1,14 @@
 #include "View.h"
 
+#include "Window.h"
+
 namespace GUI
 {
+    RefPtr<Window> View::window()
+    {
+        return _window.strong();
+    }
+
     void View::addSubview(NonnullRefPtr<View> subview)
     {
         subview->_superview = this;

@@ -2,7 +2,6 @@
 
 #include "View.h"
 #include "Window.h"
-#include <Core/WeakPtr.h>
 
 namespace GUI
 {
@@ -25,8 +24,6 @@ namespace GUI
     private:
         DecorationView(NonnullRefPtr<Window> window);
         ~DecorationView() = default;
-
-        WeakPtr<Window> _window;
 
         NonnullRefPtr<TitleBar> _titleBar;
 
