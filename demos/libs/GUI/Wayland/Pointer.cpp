@@ -1,6 +1,5 @@
 #include "Pointer.h"
 
-#include "Cursor.h"
 #include "Display.h"
 #include "Seat.h"
 #include "Window.h"
@@ -79,8 +78,17 @@ namespace GUI::Wayland
         _position = { wl_fixed_to_int(x), wl_fixed_to_int(y) };
         _event = std::make_unique<Event>(Event::Type::PointerEntered, _position, _window);
 
-        const auto& currentCursor = static_cast<const Cursor&>(_window->currentCursor());
-        wp_cursor_shape_device_v1_set_shape(_wpCursorShapeDeviceV1, serial, currentCursor.shape());
+        uint32_t shape = WP_CURSOR_SHAPE_DEVICE_V1_SHAPE_DEFAULT;
+        switch (_window->currentCursor())
+        {
+            case Cursor::Default:
+                shape = WP_CURSOR_SHAPE_DEVICE_V1_SHAPE_DEFAULT;
+                break;
+            case Cursor::Pointer:
+                shape = WP_CURSOR_SHAPE_DEVICE_V1_SHAPE_POINTER;
+                break;
+        }
+        wp_cursor_shape_device_v1_set_shape(_wpCursorShapeDeviceV1, serial, shape);
     }
 
     void Pointer::onLeave(uint32_t serial, wl_surface* surface)

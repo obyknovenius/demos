@@ -14,7 +14,6 @@ namespace GUI
 
 namespace GUI::Wayland
 {
-    class Cursor;
     class Seat;
     class Window;
 

@@ -33,8 +33,8 @@ namespace GUI
 
         std::function<void()> onClose;
 
-        void setCursor(const Cursor& cursor) { _currentCursor = &cursor; }
-        const Cursor& currentCursor() const { return *_currentCursor; }
+        void setCursor(Cursor cursor) { _currentCursor = cursor; }
+        Cursor currentCursor() const { return _currentCursor; }
 
     protected:
         class DecorationView;
@@ -50,7 +50,7 @@ namespace GUI
 
         NonnullRefPtr<DecorationView> _decorationView;
 
-        const Cursor* _currentCursor { &Cursor::defaultCursor() };
+        Cursor _currentCursor { Cursor::Default };
 
         WeakPtr<View> _viewUnderPointer;
     };

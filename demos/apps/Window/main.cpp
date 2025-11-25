@@ -7,7 +7,7 @@ int main()
     auto& app = GUI::Application::sharedApplication();
 
     auto window = GUI::Window::make();
-    window->setCursor(GUI::Cursor::pointerCursor());
+    window->setCursor(GUI::Cursor::Pointer);
     window->onClose = [&app]()
     {
         app.quit();

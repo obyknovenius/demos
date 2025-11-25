@@ -2,14 +2,9 @@
 
 namespace GUI
 {
-    class Cursor
+    enum class Cursor
     {
-    public:
-        static const Cursor& defaultCursor();
-        static const Cursor& pointerCursor();
-
-    protected:
-        Cursor() = default;
-        virtual ~Cursor() = default;
+        Default,
+        Pointer,
     };
 }
