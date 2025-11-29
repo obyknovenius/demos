@@ -53,7 +53,8 @@ namespace GUI
     void Window::DecorationView::onPointerButtonPressed(const Event& event)
     {
         if (auto window = _window.strong())
-            window->close();
+            if (auto edge = resizeEdgeForPosition(*event.position))
+                window->beginResize(*edge);
     }
 
     void Window::DecorationView::onPointerEntered(const Event& event)
@@ -80,16 +81,37 @@ namespace GUI
             window->popCursor();
     }
 
-    Cursor Window::DecorationView::cursorForPosition(const Gfx::Point& position) const
+    std::optional<Window::Edge> Window::DecorationView::resizeEdgeForPosition(const Gfx::Point& position) const
     {
         if (position.y < _borderThickness)
-            return Cursor::NorthResize;
+            return Window::Edge::Top;
         if (position.y >= _frame.size.height - _borderThickness)
-            return Cursor::SouthResize;
+            return Window::Edge::Bottom;
         if (position.x < _borderThickness)
-            return Cursor::WestResize;
+            return Window::Edge::Left;
         if (position.x >= _frame.size.width - _borderThickness)
-            return Cursor::EastResize;
-        return Cursor::Default;
+            return Window::Edge::Right;
+        return std::nullopt;
+    }
+
+    Cursor Window::DecorationView::cursorForPosition(const Gfx::Point& position) const
+    {
+        auto edge = resizeEdgeForPosition(position);
+        if (!edge)
+            return Cursor::Default;
+
+        switch (*edge)
+        {
+            case Window::Edge::Top:
+                return Cursor::NorthResize;
+            case Window::Edge::Bottom:
+                return Cursor::SouthResize;
+            case Window::Edge::Left:
+                return Cursor::WestResize;
+            case Window::Edge::Right:
+                return Cursor::EastResize;
+            default:
+                return Cursor::Default;
+        }
     }
 }

@@ -24,7 +24,16 @@ namespace GUI
     class Window : public Weakable
     {
     public:
+        enum class Edge {
+            Top,
+            Bottom,
+            Left,
+            Right,
+        };
+
         static NonnullRefPtr<Window> make();
+
+        virtual void beginResize(Edge edge) = 0;
 
         bool shouldStartMove(const Gfx::Point& pointer_position) const;
 

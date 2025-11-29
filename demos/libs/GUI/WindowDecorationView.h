@@ -25,6 +25,7 @@ namespace GUI
         DecorationView(NonnullRefPtr<Window> window);
         ~DecorationView() = default;
 
+        std::optional<Window::Edge> resizeEdgeForPosition(const Gfx::Point& position) const;
         Cursor cursorForPosition(const Gfx::Point& position) const;
 
         NonnullRefPtr<TitleBar> _titleBar;

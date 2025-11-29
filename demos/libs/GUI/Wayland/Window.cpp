@@ -67,6 +67,30 @@ namespace GUI::Wayland
         close();
     }
 
+    void Window::beginResize(Edge edge)
+    {
+        if (auto display = _display.strong())
+            if (auto seat = display->seat())
+                if (auto pointer = seat->pointer()) {
+                    uint32_t edges = 0;
+                    switch (edge) {
+                        case Edge::Top:
+                            edges = XDG_TOPLEVEL_RESIZE_EDGE_TOP;
+                            break;
+                        case Edge::Bottom:
+                            edges = XDG_TOPLEVEL_RESIZE_EDGE_BOTTOM;
+                            break;
+                        case Edge::Left:
+                            edges = XDG_TOPLEVEL_RESIZE_EDGE_LEFT;
+                            break;
+                        case Edge::Right:
+                            edges = XDG_TOPLEVEL_RESIZE_EDGE_RIGHT;
+                            break;
+                    }
+                    xdg_toplevel_resize(_xdgToplevel, seat->wlSeat(), pointer->lastSerial(), edges);
+                }
+    }
+
     void Window::close()
     {
         if (_closed)

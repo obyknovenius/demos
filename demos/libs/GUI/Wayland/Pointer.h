@@ -25,6 +25,8 @@ namespace GUI::Wayland
 
         void setCursor(Cursor cursor);
 
+        uint32_t lastSerial() const;
+
     private:
         static const wl_pointer_listener _wlPointerListener;
 
@@ -51,11 +53,17 @@ namespace GUI::Wayland
 
         std::unique_ptr<Event> _event;
 
+        uint32_t _lastSerial { 0 };
         uint32_t _lastEnterSerial { 0 };
     };
 
     inline NonnullRefPtr<Pointer> Pointer::make(wl_pointer* wlPointer, const NonnullRefPtr<Seat>& seat)
     {
         return adopt(*new Pointer(wlPointer, seat));
+    }
+
+    inline uint32_t Pointer::lastSerial() const
+    {
+        return _lastSerial;
     }
 }

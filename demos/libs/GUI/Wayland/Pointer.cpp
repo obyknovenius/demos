@@ -104,6 +104,8 @@ namespace GUI::Wayland
         _position = { wl_fixed_to_int(x), wl_fixed_to_int(y) };
         _event = std::make_unique<Event>(Event::Type::PointerEntered, _position, _window);
 
+        _lastSerial = serial;
+
         _lastEnterSerial = serial;
         setCursor(_window->currentCursor());
     }
@@ -112,6 +114,8 @@ namespace GUI::Wayland
     {
         _event = std::make_unique<Event>(Event::Type::PointerLeft, std::nullopt, _window);
         _window = nullptr;
+
+        _lastSerial = serial;
     }
 
     void Pointer::onMotion(uint32_t time, wl_fixed_t x, wl_fixed_t y)
@@ -136,6 +140,8 @@ namespace GUI::Wayland
 
         auto type = state == WL_POINTER_BUTTON_STATE_PRESSED ? Event::Type::PointerButtonPressed : Event::Type::PointerButtonReleased;
         _event = std::make_unique<Event>(type, _position, _window);
+
+        _lastSerial = serial;
     }
 
     void Pointer::onAxis(uint32_t time, uint32_t axis, wl_fixed_t value)
