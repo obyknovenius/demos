@@ -1,5 +1,4 @@
 #include <GUI/Application.h>
-#include <GUI/Cursor.h>
 #include <GUI/Window.h>
 
 int main()

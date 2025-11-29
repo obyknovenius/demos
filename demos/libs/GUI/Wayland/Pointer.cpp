@@ -126,18 +126,6 @@ namespace GUI::Wayland
 
     void Pointer::onButton(uint32_t serial, uint32_t time, uint32_t button, uint32_t state)
     {
-        if (auto seat = _seat.strong())
-        {
-            if (state == WL_POINTER_BUTTON_STATE_PRESSED)
-            {
-                if (_window->shouldStartMove(_position))
-                {
-                    xdg_toplevel_move(_window->xdgToplevel(), seat->wlSeat(), serial);
-                    return;
-                }
-            }
-        }
-
         auto type = state == WL_POINTER_BUTTON_STATE_PRESSED ? Event::Type::PointerButtonPressed : Event::Type::PointerButtonReleased;
         _event = std::make_unique<Event>(type, _position, _window);
 

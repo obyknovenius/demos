@@ -14,6 +14,8 @@ namespace GUI
 
         void redraw(NonnullRefPtr<Gfx::Context> context) override;
 
+        void onPointerButtonPressed(const Event& event) override;
+
     private:
         TitleBar() = default;
         ~TitleBar() = default;

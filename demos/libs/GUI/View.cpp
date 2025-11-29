@@ -11,6 +11,7 @@ namespace GUI
 
     void View::addSubview(NonnullRefPtr<View> subview)
     {
+        subview->_window = _window;
         subview->_superview = this;
         _subviews.push_back(subview);
     }

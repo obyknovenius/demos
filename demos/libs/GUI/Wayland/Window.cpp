@@ -67,6 +67,14 @@ namespace GUI::Wayland
         close();
     }
 
+    void Window::beginMove()
+    {
+        if (auto display = _display.strong())
+            if (auto seat = display->seat())
+                if (auto pointer = seat->pointer())
+                    xdg_toplevel_move(_xdgToplevel, seat->wlSeat(), pointer->lastSerial());
+    }
+
     void Window::beginResize(Edge edge)
     {
         if (auto display = _display.strong())

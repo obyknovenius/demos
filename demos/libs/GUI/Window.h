@@ -33,6 +33,7 @@ namespace GUI
 
         static NonnullRefPtr<Window> make();
 
+        virtual void beginMove() = 0;
         virtual void beginResize(Edge edge) = 0;
 
         bool shouldStartMove(const Gfx::Point& pointer_position) const;
