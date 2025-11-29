@@ -8,17 +8,24 @@ namespace GUI
 {
     Window::DecorationView::DecorationView(NonnullRefPtr<Window> window) :
         View {},
-        _titleBar { TitleBar::make() }
+        _titleBar { TitleBar::make() },
+        _contentView { View::make() }
     {
         _window = window;
         addSubview(_titleBar);
+        addSubview(_contentView);
     }
 
     void Window::DecorationView::layout()
     {
+        auto titleBarHeight = _titleBar->intrinsicSize().height;
         _titleBar->setFrame({
-            { 0, 0 },
-            { _frame.size.width, _titleBar->intrinsicSize().height }
+            origin: { _borderThickness, _borderThickness },
+            size: { _frame.size.width - 2 * _borderThickness, titleBarHeight }
+        });
+        _contentView->setFrame({
+            origin: { _borderThickness, titleBarHeight },
+            size: { _frame.size.width - 2 * _borderThickness, _frame.size.height - titleBarHeight - _borderThickness }
         });
 
         View::layout();
@@ -26,38 +33,63 @@ namespace GUI
 
     void Window::DecorationView::redraw(NonnullRefPtr<Gfx::Context> context)
     {
-        context->fillRect(_frame, Gfx::Color::white);
+        context->fillRect(_bounds, Gfx::Color::white);
 
         int lineWidth = 2;
+        auto titleBarHeight = _titleBar->intrinsicSize().height;
 
-        auto innerBorderRect = _frame.inset(_borderThickness);
+        Gfx::Rect innerBorderRect = {
+            origin: { _borderThickness, _borderThickness + titleBarHeight },
+            size: { _bounds.size.width - 2 * _borderThickness, _bounds.size.height - titleBarHeight - 2 * _borderThickness }
+        };
         context->strokeRect(innerBorderRect.inset(lineWidth / 2), Gfx::Color::black, lineWidth);
 
-        View::redraw(context);
-
-        auto outerBorderRect = _frame;
+        auto outerBorderRect = _bounds;
         context->strokeRect(outerBorderRect.inset(lineWidth / 2), Gfx::Color::black, lineWidth);
+
+        View::redraw(context);
     }
 
-    void Window::DecorationView::onPointerButtonPressed()
+    void Window::DecorationView::onPointerButtonPressed(const Event& event)
     {
         if (auto window = _window.strong())
             window->close();
     }
 
-    void Window::DecorationView::onPointerEntered()
+    void Window::DecorationView::onPointerEntered(const Event& event)
     {
         if (auto window = _window.strong())
-            window->pushCursor(Cursor::Pointer);
+        {
+            auto cursor = cursorForPosition(*event.position);
+            window->pushCursor(cursor);
+        }
     }
 
-    void Window::DecorationView::onPointerMoved()
+    void Window::DecorationView::onPointerMoved(const Event& event)
     {
+        if (auto window = _window.strong())
+        {
+            auto cursor = cursorForPosition(*event.position);
+            window->setCursor(cursor);
+        }
     }
 
-    void Window::DecorationView::onPointerLeft()
+    void Window::DecorationView::onPointerLeft(const Event& event)
     {
         if (auto window = _window.strong())
             window->popCursor();
+    }
+
+    Cursor Window::DecorationView::cursorForPosition(const Gfx::Point& position) const
+    {
+        if (position.y < _borderThickness)
+            return Cursor::NorthResize;
+        if (position.y >= _frame.size.height - _borderThickness)
+            return Cursor::SouthResize;
+        if (position.x < _borderThickness)
+            return Cursor::WestResize;
+        if (position.x >= _frame.size.width - _borderThickness)
+            return Cursor::EastResize;
+        return Cursor::Default;
     }
 }

@@ -6,5 +6,9 @@ namespace GUI
     {
         Default,
         Pointer,
+        NorthResize,
+        EastResize,
+        SouthResize,
+        WestResize,
     };
 }

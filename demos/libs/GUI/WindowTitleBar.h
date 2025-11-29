@@ -14,15 +14,11 @@ namespace GUI
 
         void redraw(NonnullRefPtr<Gfx::Context> context) override;
 
-        void onPointerEntered() override;
-        void onPointerMoved() override;
-        void onPointerLeft() override;
-    
     private:
         TitleBar() = default;
         ~TitleBar() = default;
 
-        int _height = 32;
+        int _height = 26;
     };
 
     inline NonnullRefPtr<Window::TitleBar> Window::TitleBar::make()

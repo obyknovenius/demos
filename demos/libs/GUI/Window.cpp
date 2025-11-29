@@ -38,21 +38,21 @@ namespace GUI
             case Event::Type::PointerButtonPressed:
             {
                 auto view = _decorationView->hitTest(*event->position);
-                view->onPointerButtonPressed();
+                view->onPointerButtonPressed(*event);
                 break;
             }
 
             case Event::Type::PointerButtonReleased:
             {
                 auto view = _decorationView->hitTest(*event->position);
-                view->onPointerButtonReleased();
+                view->onPointerButtonReleased(*event);
                 break;
             }
 
             case Event::Type::PointerEntered:
             {
                 auto view = _decorationView->hitTest(*event->position);
-                view->onPointerEntered();
+                view->onPointerEntered(*event);
                 _viewUnderPointer = view;
                 break;
             }
@@ -65,13 +65,13 @@ namespace GUI
                 {
                     if (viewUnderPointer != view)
                     {
-                        viewUnderPointer->onPointerLeft();
-                        view->onPointerEntered();
+                        viewUnderPointer->onPointerLeft(*event);
+                        view->onPointerEntered(*event);
                         _viewUnderPointer = view;
                     }
                     else
                     {
-                        view->onPointerMoved();
+                        view->onPointerMoved(*event);
                     }
                 }
                 break;
@@ -81,7 +81,7 @@ namespace GUI
             {
                 if (auto viewUnderPointer = _viewUnderPointer.strong())
                 {
-                    viewUnderPointer->onPointerLeft();
+                    viewUnderPointer->onPointerLeft(*event);
                     _viewUnderPointer = nullptr;
                 }
                 break;

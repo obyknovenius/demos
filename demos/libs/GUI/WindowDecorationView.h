@@ -11,21 +11,24 @@ namespace GUI
         static NonnullRefPtr<DecorationView> make(const NonnullRefPtr<Window>& window);
 
         NonnullRefPtr<TitleBar> titleBar();
+        NonnullRefPtr<View> contentView();
 
         void layout() override;
         void redraw(NonnullRefPtr<Gfx::Context> context) override;
 
-        void onPointerButtonPressed() override;
-
-        void onPointerEntered() override;
-        void onPointerMoved() override;
-        void onPointerLeft() override;
+        void onPointerButtonPressed(const Event& event) override;
+        void onPointerEntered(const Event& event) override;
+        void onPointerMoved(const Event& event) override;
+        void onPointerLeft(const Event& event) override;
 
     private:
         DecorationView(NonnullRefPtr<Window> window);
         ~DecorationView() = default;
 
+        Cursor cursorForPosition(const Gfx::Point& position) const;
+
         NonnullRefPtr<TitleBar> _titleBar;
+        NonnullRefPtr<View> _contentView;
 
         const int _borderThickness { 4 };
     };
@@ -38,5 +41,10 @@ namespace GUI
     inline NonnullRefPtr<Window::TitleBar> Window::DecorationView::titleBar()
     {
         return _titleBar;
+    }
+
+    inline NonnullRefPtr<View> Window::DecorationView::contentView()
+    {
+        return _contentView;
     }
 }
