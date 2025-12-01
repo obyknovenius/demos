@@ -10,5 +10,9 @@ namespace GUI
         EastResize,
         SouthResize,
         WestResize,
+        NorthEastResize,
+        NorthWestResize,
+        SouthEastResize,
+        SouthWestResize,
     };
 }

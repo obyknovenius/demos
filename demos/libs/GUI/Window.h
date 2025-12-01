@@ -2,6 +2,7 @@
 
 #include "Cursor.h"
 #include "View.h"
+#include <Core/OptionSet.h>
 #include <Core/Weakable.h>
 #include <Core/WeakPtr.h>
 #include <Gfx/Size.h>
@@ -25,16 +26,18 @@ namespace GUI
     {
     public:
         enum class Edge {
-            Top,
-            Bottom,
-            Left,
-            Right,
+            Top = 1 << 0,
+            Bottom = 1 << 1,
+            Left = 1 << 2,
+            Right = 1 << 3,
         };
+
+        using Edges = OptionSet<Edge>;
 
         static NonnullRefPtr<Window> make();
 
         virtual void beginMove() = 0;
-        virtual void beginResize(Edge edge) = 0;
+        virtual void beginResize(Edges edges) = 0;
 
         bool shouldStartMove(const Gfx::Point& pointer_position) const;
 

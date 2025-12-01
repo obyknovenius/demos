@@ -44,6 +44,18 @@ namespace GUI::Wayland
             case Cursor::WestResize:
                 shape = WP_CURSOR_SHAPE_DEVICE_V1_SHAPE_W_RESIZE;
                 break;
+            case Cursor::NorthEastResize:
+                shape = WP_CURSOR_SHAPE_DEVICE_V1_SHAPE_NE_RESIZE;
+                break;
+            case Cursor::NorthWestResize:
+                shape = WP_CURSOR_SHAPE_DEVICE_V1_SHAPE_NW_RESIZE;
+                break;
+            case Cursor::SouthEastResize:
+                shape = WP_CURSOR_SHAPE_DEVICE_V1_SHAPE_SE_RESIZE;
+                break;
+            case Cursor::SouthWestResize:
+                shape = WP_CURSOR_SHAPE_DEVICE_V1_SHAPE_SW_RESIZE;
+                break;
             default:
                 shape = WP_CURSOR_SHAPE_DEVICE_V1_SHAPE_DEFAULT;
         }

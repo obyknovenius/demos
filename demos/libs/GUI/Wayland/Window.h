@@ -15,7 +15,7 @@ namespace GUI::Wayland
         static NonnullRefPtr<Window> make();
 
         void beginMove() override;
-        void beginResize(Edge edge) override;
+        void beginResize(Edges edges) override;
 
         void close() override;
 

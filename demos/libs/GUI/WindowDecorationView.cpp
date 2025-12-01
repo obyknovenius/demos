@@ -53,8 +53,8 @@ namespace GUI
     void Window::DecorationView::onPointerButtonPressed(const Event& event)
     {
         if (auto window = _window.strong())
-            if (auto edge = resizeEdgeForPosition(*event.position))
-                window->beginResize(*edge);
+            if (auto edges = resizeEdgesForPosition(*event.position))
+                window->beginResize(edges);
     }
 
     void Window::DecorationView::onPointerEntered(const Event& event)
@@ -81,37 +81,39 @@ namespace GUI
             window->popCursor();
     }
 
-    std::optional<Window::Edge> Window::DecorationView::resizeEdgeForPosition(const Gfx::Point& position) const
+    Window::Edges Window::DecorationView::resizeEdgesForPosition(const Gfx::Point& position) const
     {
+        Window::Edges edges;
         if (position.y < _borderThickness)
-            return Window::Edge::Top;
+            edges |= Window::Edge::Top;
         if (position.y >= _frame.size.height - _borderThickness)
-            return Window::Edge::Bottom;
+            edges |= Window::Edge::Bottom;
         if (position.x < _borderThickness)
-            return Window::Edge::Left;
+            edges |= Window::Edge::Left;
         if (position.x >= _frame.size.width - _borderThickness)
-            return Window::Edge::Right;
-        return std::nullopt;
+            edges |= Window::Edge::Right;
+        return edges;
     }
 
     Cursor Window::DecorationView::cursorForPosition(const Gfx::Point& position) const
     {
-        auto edge = resizeEdgeForPosition(position);
-        if (!edge)
-            return Cursor::Default;
-
-        switch (*edge)
-        {
-            case Window::Edge::Top:
-                return Cursor::NorthResize;
-            case Window::Edge::Bottom:
-                return Cursor::SouthResize;
-            case Window::Edge::Left:
-                return Cursor::WestResize;
-            case Window::Edge::Right:
-                return Cursor::EastResize;
-            default:
-                return Cursor::Default;
-        }
+        auto edges = resizeEdgesForPosition(position);
+        if (edges == Window::Edge::Top)
+            return Cursor::NorthResize;
+        if (edges == Window::Edge::Bottom)
+            return Cursor::SouthResize;
+        if (edges == Window::Edge::Left)
+            return Cursor::WestResize;
+        if (edges == Window::Edge::Right)
+            return Cursor::EastResize;
+        if (edges == (Window::Edge::Top | Window::Edge::Left))
+            return Cursor::NorthWestResize;
+        if (edges == (Window::Edge::Top | Window::Edge::Right))
+            return Cursor::NorthEastResize;
+        if (edges == (Window::Edge::Bottom | Window::Edge::Left))
+            return Cursor::SouthWestResize;
+        if (edges == (Window::Edge::Bottom | Window::Edge::Right))
+            return Cursor::SouthEastResize;
+        return Cursor::Default;
     }
 }
