@@ -11,6 +11,29 @@
 
 namespace GUI::Wayland
 {
+    const wl_surface_listener Window::_wlSurfaceListener = {
+        .enter = [](void* data, wl_surface* wlSurface, wl_output* output)
+        {
+            auto* window = reinterpret_cast<Window*>(data);
+            window->onSurfaceEnter(wlSurface, output);
+        },
+        .leave = [](void* data, wl_surface* wlSurface, wl_output* output)
+        {
+            auto* window = reinterpret_cast<Window*>(data);
+            window->onSurfaceLeave(wlSurface, output);
+        },
+        .preferred_buffer_scale = [](void* data, wl_surface* wlSurface, int32_t scale)
+        {
+            auto* window = reinterpret_cast<Window*>(data);
+            window->onSurfacePreferredBufferScale(wlSurface, scale);
+        },
+        .preferred_buffer_transform = [](void* data, wl_surface* wlSurface, uint32_t transform)
+        {
+            auto* window = reinterpret_cast<Window*>(data);
+            window->onSurfacePreferredBufferTransform(wlSurface, transform);
+        }
+    };
+
     const xdg_surface_listener Window::_xdgSurfaceListener = {
         .configure = [](void* data, xdg_surface* xdgSurface, uint32_t serial)
         {
@@ -52,6 +75,7 @@ namespace GUI::Wayland
     {
         _wlSurface = wl_compositor_create_surface(display->wlCompositor());
         wl_surface_set_user_data(_wlSurface, this);
+        wl_surface_add_listener(_wlSurface, &_wlSurfaceListener, this);
 
         _xdgSurface = xdg_wm_base_get_xdg_surface(display->xdgWmBase(), _wlSurface);
         xdg_surface_add_listener(_xdgSurface, &_xdgSurfaceListener, this);
@@ -119,6 +143,23 @@ namespace GUI::Wayland
                     pointer->setCursor(cursor);
     }
 
+    void Window::onSurfaceEnter(wl_surface* wlSurface, wl_output* output)
+    {
+    }
+
+    void Window::onSurfaceLeave(wl_surface* wlSurface, wl_output* output)
+    {
+    }
+
+    void Window::onSurfacePreferredBufferScale(wl_surface* wlSurface, int32_t scale)
+    {
+        _scaleFactor = scale;
+    }
+
+    void Window::onSurfacePreferredBufferTransform(wl_surface* wlSurface, uint32_t transform)
+    {
+    }
+
     void Window::onSurfaceConfigure(xdg_surface* xdgSurface, uint32_t serial)
     {
         xdg_surface_ack_configure(xdgSurface, serial);
@@ -133,8 +174,8 @@ namespace GUI::Wayland
             _wlBuffer = nullptr;
         }
 
-        const int stride = _size.width * 4;
-        const int size = stride * _size.height;
+        const int stride = _size.width * _scaleFactor * 4;
+        const int size = stride * _size.height * _scaleFactor;
 
         int fd = memfd_create("shm_pool", 0);
         ftruncate(fd, size);
@@ -147,7 +188,7 @@ namespace GUI::Wayland
         }
 
         wl_shm_pool* shmPool = wl_shm_create_pool(display->wlShm(), fd, size);
-        wl_buffer* wlBuffer = wl_shm_pool_create_buffer(shmPool, 0, _size.width, _size.height, stride, WL_SHM_FORMAT_XRGB8888);
+        wl_buffer* wlBuffer = wl_shm_pool_create_buffer(shmPool, 0, _size.width * _scaleFactor, _size.height * _scaleFactor, stride, WL_SHM_FORMAT_XRGB8888);
         wl_buffer_add_listener(wlBuffer, &_wlBufferListener, this);
         wl_shm_pool_destroy(shmPool);
 
@@ -155,14 +196,16 @@ namespace GUI::Wayland
 
         auto* cairoSurface = cairo_image_surface_create_for_data(
             reinterpret_cast<unsigned char*>(pixels), CAIRO_FORMAT_RGB24,
-            _size.width, _size.height, stride
+            _size.width * _scaleFactor, _size.height * _scaleFactor, stride
         );
         auto* cr = cairo_create(cairoSurface);
+        cairo_scale(cr, _scaleFactor, _scaleFactor);
         auto context = Gfx::Cairo::Context::make(cr);
         redraw(context);
         cairo_surface_destroy(cairoSurface);
 
         wl_surface_attach(_wlSurface, wlBuffer, 0, 0);
+        wl_surface_set_buffer_scale(_wlSurface, _scaleFactor);
         wl_surface_commit(_wlSurface);
 
         munmap(pixels, size);

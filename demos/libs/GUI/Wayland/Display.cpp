@@ -95,7 +95,7 @@ namespace GUI::Wayland
         }
         else if (strcmp(interface, wl_compositor_interface.name) == 0)
         {
-            _wlCompositor = reinterpret_cast<wl_compositor*>(wl_registry_bind(registry, name, &wl_compositor_interface, 4));
+            _wlCompositor = reinterpret_cast<wl_compositor*>(wl_registry_bind(registry, name, &wl_compositor_interface, 6));
         }
         else if (strcmp(interface, xdg_wm_base_interface.name) == 0)
         {
