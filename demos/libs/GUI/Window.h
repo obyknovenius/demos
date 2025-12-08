@@ -55,6 +55,7 @@ namespace GUI
     protected:
         class DecorationView;
         class TitleBar;
+        class CloseButton;
 
         Window(const Gfx::Size& size = { 800, 600 });
         ~Window();

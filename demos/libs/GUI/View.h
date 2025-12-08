@@ -51,6 +51,9 @@ namespace GUI
 
         Gfx::Rect _frame {};
         Gfx::Rect _bounds {};
+
+    private:
+        void _willBeMovedToWindow(const RefPtr<Window>& window);
     };
 
     inline NonnullRefPtr<View> View::make()

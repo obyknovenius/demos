@@ -12,15 +12,18 @@ namespace GUI
 
         Gfx::Size intrinsicSize() const override;
 
+        void layout() override;
         void redraw(NonnullRefPtr<Gfx::Context> context) override;
 
         void onPointerButtonPressed(const Event& event) override;
 
     private:
-        TitleBar() = default;
-        ~TitleBar() = default;
+        TitleBar();
+        ~TitleBar();
 
-        int _height = 26;
+        NonnullRefPtr<CloseButton> _closeButton;
+
+        int _height { 26 };
     };
 
     inline NonnullRefPtr<Window::TitleBar> Window::TitleBar::make()

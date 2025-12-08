@@ -6,6 +6,7 @@ gui_deps = [
 gui_sources = [
     'Application.cpp',
     'View.cpp',
+    'WindowCloseButton.cpp',
     'WindowDecorationView.cpp',
     'WindowTitleBar.cpp',
     'Window.cpp',

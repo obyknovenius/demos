@@ -11,7 +11,7 @@ namespace GUI
 
     void View::addSubview(NonnullRefPtr<View> subview)
     {
-        subview->_window = _window;
+        subview->_willBeMovedToWindow(_window.strong());
         subview->_superview = this;
         _subviews.push_back(subview);
     }
@@ -46,5 +46,13 @@ namespace GUI
             if (subview->frame().contains(point))
                 return subview->hitTest(point - subview->frame().origin);
         return this;
+    }
+
+    void View::_willBeMovedToWindow(const RefPtr<Window>& window)
+    {
+        // TODO: Compare with existing window and early return if unchanged
+        _window = window;
+        for (const auto& subview : _subviews)
+            subview->_willBeMovedToWindow(window);
     }
 }
