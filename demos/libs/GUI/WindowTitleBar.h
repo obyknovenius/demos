@@ -23,7 +23,7 @@ namespace GUI
 
         NonnullRefPtr<CloseButton> _closeButton;
 
-        int _height { 26 };
+        int _height { 28 };
     };
 
     inline NonnullRefPtr<Window::TitleBar> Window::TitleBar::make()

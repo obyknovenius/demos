@@ -30,7 +30,7 @@ namespace GUI
 
         auto closeButtonWidth = _closeButton->intrinsicSize().width;
         auto closeButtonMargin = 4;
-        for (int i = 0, y = 2; i < 6; ++i, y += 4)
+        for (int i = 0, y = 1; i < 6; ++i, y += 4)
             context->strokeLine({ closeButtonWidth + closeButtonMargin, y }, { _bounds.size.width, y }, Gfx::Color::black, 2.0f);
 
         View::redraw(context);
