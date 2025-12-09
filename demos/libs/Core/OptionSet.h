@@ -1,6 +1,7 @@
 #pragma once
 
 #include <initializer_list>
+#include <type_traits>
 
 namespace Core
 {
@@ -21,20 +22,55 @@ namespace Core
                 _value |= static_cast<UT>(option);
         }
 
-        OptionSet& operator|=(T option)
+        void add(T option)
         {
             _value |= static_cast<UT>(option);
-            return *this;
         }
 
-        OptionSet operator&(T option) const
+        void remove(T option)
         {
-            return { _value & static_cast<UT>(option) };
+            _value &= ~static_cast<UT>(option);
         }
 
-        bool operator==(const OptionSet& other) const
+        bool contains(T option) const
         {
-            return _value == other._value;
+            return _value & static_cast<UT>(option);
+        }
+
+        bool containsAny(OptionSet<T> options) const
+        {
+            return _value & options._value;
+        }
+
+        bool containsOnly(OptionSet<T> options) const
+        {
+            return _value == options._value;
+        }
+
+        bool containsAll(OptionSet<T> options) const
+        {
+            return (_value & options._value) == options._value;
+        }
+
+        template<typename... Args>
+        requires (std::is_same_v<T, Args> && ...)
+        bool containsAny(Args... optons) const
+        {
+            return containsAny({ optons... });
+        }
+
+        template<typename... Args>
+        requires (std::is_same_v<T, Args> && ...)
+        bool containsOnly(Args... optons) const
+        {
+            return containsOnly({ optons... });
+        }
+
+        template<typename... Args>
+        requires (std::is_same_v<T, Args> && ...)
+        bool containsAll(Args... optons) const
+        {
+            return containsAll({ optons... });
         }
 
         operator bool() const
@@ -49,14 +85,6 @@ namespace Core
 
         UT _value { 0 };
     };
-
-    template<typename T>
-    requires std::is_enum_v<T>
-    OptionSet<T> operator|(T lhs, T rhs)
-    {
-        return { lhs, rhs };
-    }
 }
 
 using Core::OptionSet;
-using Core::operator|;

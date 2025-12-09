@@ -1,5 +1,6 @@
 #pragma once
 
+#include <Core/OptionSet.h>
 #include <Core/RefPtr.h>
 #include <Gfx/Point.h>
 #include <optional>
@@ -19,15 +20,18 @@ namespace GUI
             PointerLeft,
         };
 
-        Event(Type type, const std::optional<Gfx::Point>& position, const RefPtr<GUI::Window>& window) :
-            type { type },
-            position { position },
-            window { window }
+        enum class PointerButton
         {
-        }
+            MouseLeft = 1 << 0,
+            MouseRight = 1 << 1,
+            MouseMiddle = 1 << 2,
+        };
+
+        using PointerButtons = OptionSet<PointerButton>;
 
         Type type;
+        RefPtr<Window> window;
         std::optional<Gfx::Point> position;
-        RefPtr<GUI::Window> window;
+        PointerButtons pressedPointerButtons;
     };
 }

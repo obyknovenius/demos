@@ -104,18 +104,19 @@ namespace GUI::Wayland
         if (auto display = _display.strong())
             if (auto seat = display->seat())
                 if (auto pointer = seat->pointer()) {
-                    uint32_t xdgEdges = 0;
+                    uint32_t xdgEdges = XDG_TOPLEVEL_RESIZE_EDGE_NONE;
 
-                    if (edges & Edge::Top)
+                    if (edges.contains(Window::Edge::Top))
                         xdgEdges |= XDG_TOPLEVEL_RESIZE_EDGE_TOP;
-                    if (edges & Edge::Bottom)
+                    if (edges.contains(Window::Edge::Bottom))
                         xdgEdges |= XDG_TOPLEVEL_RESIZE_EDGE_BOTTOM;
-                    if (edges & Edge::Left)
+                    if (edges.contains(Window::Edge::Left))
                         xdgEdges |= XDG_TOPLEVEL_RESIZE_EDGE_LEFT;
-                    if (edges & Edge::Right)
+                    if (edges.contains(Window::Edge::Right))
                         xdgEdges |= XDG_TOPLEVEL_RESIZE_EDGE_RIGHT;
 
-                    xdg_toplevel_resize(_xdgToplevel, seat->wlSeat(), pointer->lastSerial(), xdgEdges);
+                    if (xdgEdges != XDG_TOPLEVEL_RESIZE_EDGE_NONE)
+                        xdg_toplevel_resize(_xdgToplevel, seat->wlSeat(), pointer->lastSerial(), xdgEdges);
                 }
     }
 

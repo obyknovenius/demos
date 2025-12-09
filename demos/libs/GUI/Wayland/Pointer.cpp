@@ -4,7 +4,7 @@
 #include "Seat.h"
 #include "Window.h"
 #include "../Cursor.h"
-#include "../Event.h"
+#include <linux/input-event-codes.h>
 
 namespace GUI::Wayland
 {
@@ -114,7 +114,8 @@ namespace GUI::Wayland
     {
         _window = reinterpret_cast<Window*>(wl_surface_get_user_data(surface));
         _position = { wl_fixed_to_int(x), wl_fixed_to_int(y) };
-        _event = std::make_unique<Event>(Event::Type::PointerEntered, _position, _window);
+        _pressedButtons = {};
+        _event = std::make_unique<Event>(Event::Type::PointerEntered, _window, _position, _pressedButtons);
 
         _lastSerial = serial;
 
@@ -124,7 +125,7 @@ namespace GUI::Wayland
 
     void Pointer::onLeave(uint32_t serial, wl_surface* surface)
     {
-        _event = std::make_unique<Event>(Event::Type::PointerLeft, std::nullopt, _window);
+        _event = std::make_unique<Event>(Event::Type::PointerLeft, _window, std::nullopt, _pressedButtons);
         _window = nullptr;
 
         _lastSerial = serial;
@@ -133,13 +134,37 @@ namespace GUI::Wayland
     void Pointer::onMotion(uint32_t time, wl_fixed_t x, wl_fixed_t y)
     {
         _position = { wl_fixed_to_int(x), wl_fixed_to_int(y) };
-        _event = std::make_unique<Event>(Event::Type::PointerMoved, _position, _window);
+        _event = std::make_unique<Event>(Event::Type::PointerMoved, _window, _position, _pressedButtons);
     }
 
     void Pointer::onButton(uint32_t serial, uint32_t time, uint32_t button, uint32_t state)
     {
-        auto type = state == WL_POINTER_BUTTON_STATE_PRESSED ? Event::Type::PointerButtonPressed : Event::Type::PointerButtonReleased;
-        _event = std::make_unique<Event>(type, _position, _window);
+        Event::Type type;
+
+        if (state == WL_POINTER_BUTTON_STATE_PRESSED)
+        {
+            type = Event::Type::PointerButtonPressed;
+
+            if (button == BTN_LEFT)
+                _pressedButtons.add(Event::PointerButton::MouseLeft);
+            else if (button == BTN_RIGHT)
+                _pressedButtons.add(Event::PointerButton::MouseRight);
+            else if (button == BTN_MIDDLE)
+                _pressedButtons.add(Event::PointerButton::MouseMiddle);
+        }
+        else
+        {
+            type = Event::Type::PointerButtonReleased;
+
+            if (button == BTN_LEFT)
+                _pressedButtons.remove(Event::PointerButton::MouseLeft);
+            else if (button == BTN_RIGHT)
+                _pressedButtons.remove(Event::PointerButton::MouseRight);
+            else if (button == BTN_MIDDLE)
+                _pressedButtons.remove(Event::PointerButton::MouseMiddle);
+        }
+
+        _event = std::make_unique<Event>(type, _window, _position, _pressedButtons);
 
         _lastSerial = serial;
     }

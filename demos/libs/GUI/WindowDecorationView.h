@@ -17,6 +17,7 @@ namespace GUI
         void redraw(NonnullRefPtr<Gfx::Context> context) override;
 
         void onPointerButtonPressed(const Event& event) override;
+        void onPointerButtonReleased(const Event& event) override;
         void onPointerEntered(const Event& event) override;
         void onPointerMoved(const Event& event) override;
         void onPointerLeft(const Event& event) override;

@@ -1,17 +1,13 @@
 #pragma once
 
 #include "../Cursor.h"
+#include "../Event.h"
 #include <Core/RefCounted.h>
 #include <Core/WeakPtr.h>
 #include <Gfx/Point.h>
 #include <memory>
 #include <wayland-client.h>
 #include <cursor-shape-v1-client-protocol.h>
-
-namespace GUI
-{
-    struct Event;
-}
 
 namespace GUI::Wayland
 {
@@ -49,9 +45,10 @@ namespace GUI::Wayland
         WeakPtr<Seat> _seat;
 
         RefPtr<Window> _window;
-        Gfx::Point _position;
+        Gfx::Point _position {};
+        Event::PointerButtons _pressedButtons {};
 
-        std::unique_ptr<Event> _event;
+        std::unique_ptr<Event> _event {};
 
         uint32_t _lastSerial { 0 };
         uint32_t _lastEnterSerial { 0 };
