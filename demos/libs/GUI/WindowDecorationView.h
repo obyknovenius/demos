@@ -32,7 +32,7 @@ namespace GUI
         NonnullRefPtr<TitleBar> _titleBar;
         NonnullRefPtr<View> _contentView;
 
-        const int _borderThickness { 8 };
+        const int _borderThickness { 6 };
     };
 
     inline NonnullRefPtr<Window::DecorationView> Window::DecorationView::make(const NonnullRefPtr<Window>& window)

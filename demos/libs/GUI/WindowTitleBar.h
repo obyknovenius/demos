@@ -24,7 +24,7 @@ namespace GUI
         NonnullRefPtr<CloseButton> _closeButton;
         NonnullRefPtr<MaximizeButton> _maximizeButton;
 
-        int _height { 28 };
+        int _height { 26 };
     };
 
     inline NonnullRefPtr<Window::TitleBar> Window::TitleBar::make()
