@@ -94,34 +94,34 @@ namespace GUI
     {
         Window::Edges edges;
         if (position.y < _borderThickness)
-            edges.add(Window::Edge::Top);
+            edges.add(Window::Edge::top);
         if (position.y >= _frame.size.height - _borderThickness)
-            edges.add(Window::Edge::Bottom);
+            edges.add(Window::Edge::bottom);
         if (position.x < _borderThickness)
-            edges.add(Window::Edge::Left);
+            edges.add(Window::Edge::left);
         if (position.x >= _frame.size.width - _borderThickness)
-            edges.add(Window::Edge::Right);
+            edges.add(Window::Edge::right);
         return edges;
     }
 
     Cursor Window::DecorationView::cursorForPosition(const Gfx::Point& position) const
     {
         auto edges = resizeEdgesForPosition(position);
-        if (edges.containsOnly(Window::Edge::Top))
+        if (edges.containsOnly(Window::Edge::top))
             return Cursor::NorthResize;
-        if (edges.containsOnly(Window::Edge::Bottom))
+        if (edges.containsOnly(Window::Edge::bottom))
             return Cursor::SouthResize;
-        if (edges.containsOnly(Window::Edge::Left))
+        if (edges.containsOnly(Window::Edge::left))
             return Cursor::WestResize;
-        if (edges.containsOnly(Window::Edge::Right))
+        if (edges.containsOnly(Window::Edge::right))
             return Cursor::EastResize;
-        if (edges.containsOnly(Window::Edge::Top, Window::Edge::Left))
+        if (edges.containsOnly(Window::Edge::top, Window::Edge::left))
             return Cursor::NorthWestResize;
-        if (edges.containsOnly(Window::Edge::Top, Window::Edge::Right))
+        if (edges.containsOnly(Window::Edge::top, Window::Edge::right))
             return Cursor::NorthEastResize;
-        if (edges.containsOnly(Window::Edge::Bottom, Window::Edge::Left))
+        if (edges.containsOnly(Window::Edge::bottom, Window::Edge::left))
             return Cursor::SouthWestResize;
-        if (edges.containsOnly(Window::Edge::Bottom, Window::Edge::Right))
+        if (edges.containsOnly(Window::Edge::bottom, Window::Edge::right))
             return Cursor::SouthEastResize;
         return Cursor::Default;
     }

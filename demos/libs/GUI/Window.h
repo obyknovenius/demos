@@ -25,11 +25,12 @@ namespace GUI
     class Window : public Weakable
     {
     public:
-        enum class Edge {
-            Top = 1 << 0,
-            Bottom = 1 << 1,
-            Left = 1 << 2,
-            Right = 1 << 3,
+        enum class Edge
+        {
+            top = 1 << 0,
+            bottom = 1 << 1,
+            left = 1 << 2,
+            right = 1 << 3,
         };
 
         using Edges = OptionSet<Edge>;
