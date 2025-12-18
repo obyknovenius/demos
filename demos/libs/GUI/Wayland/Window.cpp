@@ -91,6 +91,33 @@ namespace GUI::Wayland
         close();
     }
 
+    void Window::setMaximized(bool maximized)
+    {
+        if (auto display = _display.strong())
+        {
+            if (maximized)
+                xdg_toplevel_set_maximized(_xdgToplevel);
+            else
+                xdg_toplevel_unset_maximized(_xdgToplevel);
+        }
+
+        GUI::Window::setMaximized(maximized);
+    }
+
+    void Window::close()
+    {
+        if (_closed)
+            return;
+
+        xdg_toplevel_destroy(_xdgToplevel);
+        xdg_surface_destroy(_xdgSurface);
+        wl_surface_destroy(_wlSurface);
+
+        _closed = true;
+
+        GUI::Window::close();
+    }
+
     void Window::beginMove()
     {
         if (auto display = _display.strong())
@@ -118,33 +145,6 @@ namespace GUI::Wayland
                     if (xdgEdges != XDG_TOPLEVEL_RESIZE_EDGE_NONE)
                         xdg_toplevel_resize(_xdgToplevel, seat->wlSeat(), pointer->lastSerial(), xdgEdges);
                 }
-    }
-
-    void Window::setMaximized(bool maximized)
-    {
-        if (auto display = _display.strong())
-        {
-            if (maximized)
-                xdg_toplevel_set_maximized(_xdgToplevel);
-            else
-                xdg_toplevel_unset_maximized(_xdgToplevel);
-        }
-
-        GUI::Window::setMaximized(maximized);
-    }
-
-    void Window::close()
-    {
-        if (_closed)
-            return;
-
-        xdg_toplevel_destroy(_xdgToplevel);
-        xdg_surface_destroy(_xdgSurface);
-        wl_surface_destroy(_wlSurface);
-
-        _closed = true;
-
-        GUI::Window::close();
     }
 
     void Window::setCursor(Cursor cursor)

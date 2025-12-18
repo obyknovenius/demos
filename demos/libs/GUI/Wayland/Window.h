@@ -14,12 +14,12 @@ namespace GUI::Wayland
     public:
         static NonnullRefPtr<Window> make();
 
-        void beginMove() override;
-        void beginResize(Edges edges) override;
-
         void setMaximized(bool maximized) override;
 
         void close() override;
+
+        void beginMove() override;
+        void beginResize(Edges edges) override;
 
         void setCursor(Cursor cursor) override;
 

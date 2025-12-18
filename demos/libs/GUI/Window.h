@@ -36,19 +36,17 @@ namespace GUI
 
         static NonnullRefPtr<Window> make();
 
-        virtual void beginMove() = 0;
-        virtual void beginResize(Edges edges) = 0;
-
-        bool shouldStartMove(const Gfx::Point& pointer_position) const;
-
-        void dispatchEvent(std::unique_ptr<const Event> event);
-
         virtual void setMaximized(bool maximized);
         bool maximized() const;
 
         virtual void close();
 
         std::function<void()> onClose;
+
+        virtual void beginMove() = 0;
+        virtual void beginResize(Edges edges) = 0;
+
+        void dispatchEvent(std::unique_ptr<const Event> event);
 
         virtual void setCursor(Cursor cursor);
         void pushCursor(Cursor cursor);

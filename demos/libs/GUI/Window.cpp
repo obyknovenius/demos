@@ -24,13 +24,6 @@ namespace GUI
 
     Window::~Window() = default;
 
-    bool Window::shouldStartMove(const Gfx::Point& pointer_position) const
-    {
-        if (_decorationView->titleBar()->frame().contains(pointer_position))
-            return true;
-        return false;
-    }
-
     void Window::dispatchEvent(std::unique_ptr<const Event> event)
     {
         switch (event->type)
