@@ -22,6 +22,7 @@ namespace GUI
         ~TitleBar();
 
         NonnullRefPtr<CloseButton> _closeButton;
+        NonnullRefPtr<MaximizeButton> _maximizeButton;
 
         int _height { 28 };
     };

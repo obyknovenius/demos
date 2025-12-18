@@ -17,6 +17,8 @@ namespace GUI::Wayland
         void beginMove() override;
         void beginResize(Edges edges) override;
 
+        void setMaximized(bool maximized) override;
+
         void close() override;
 
         void setCursor(Cursor cursor) override;

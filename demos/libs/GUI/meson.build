@@ -9,6 +9,7 @@ gui_sources = [
     'Window.cpp',
     'WindowCloseButton.cpp',
     'WindowDecorationView.cpp',
+    'WindowMaximizeButton.cpp',
     'WindowTitleBar.cpp',
 ]
 

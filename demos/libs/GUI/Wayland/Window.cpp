@@ -120,6 +120,19 @@ namespace GUI::Wayland
                 }
     }
 
+    void Window::setMaximized(bool maximized)
+    {
+        if (auto display = _display.strong())
+        {
+            if (maximized)
+                xdg_toplevel_set_maximized(_xdgToplevel);
+            else
+                xdg_toplevel_unset_maximized(_xdgToplevel);
+        }
+
+        GUI::Window::setMaximized(maximized);
+    }
+
     void Window::close()
     {
         if (_closed)

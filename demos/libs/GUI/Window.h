@@ -43,6 +43,9 @@ namespace GUI
 
         void dispatchEvent(std::unique_ptr<const Event> event);
 
+        virtual void setMaximized(bool maximized);
+        bool maximized() const;
+
         virtual void close();
 
         std::function<void()> onClose;
@@ -56,6 +59,7 @@ namespace GUI
         class DecorationView;
         class TitleBar;
         class CloseButton;
+        class MaximizeButton;
 
         Window(const Gfx::Size& size = { 800, 600 });
         ~Window();
@@ -65,6 +69,8 @@ namespace GUI
 
         Gfx::Size _size;
 
+        bool _maximized { false };
+
         NonnullRefPtr<DecorationView> _decorationView;
 
         Cursor _currentCursor { Cursor::Default };
@@ -72,6 +78,16 @@ namespace GUI
 
         WeakPtr<View> _viewUnderPointer;
     };
+
+    inline void Window::setMaximized(bool maximized)
+    {
+        _maximized = maximized;
+    }
+
+    inline bool Window::maximized() const
+    {
+        return _maximized;
+    }
 
     inline void Window::setCursor(Cursor cursor)
     {

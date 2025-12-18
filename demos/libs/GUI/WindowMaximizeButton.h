@@ -5,10 +5,10 @@
 
 namespace GUI
 {
-    class Window::CloseButton final : public View
+    class Window::MaximizeButton final : public View
     {
     public:
-        static NonnullRefPtr<CloseButton> make();
+        static NonnullRefPtr<MaximizeButton> make();
 
         void redraw(NonnullRefPtr<Gfx::Context> context) override;
 
@@ -16,14 +16,14 @@ namespace GUI
         void onPointerButtonReleased(const Event& event) override;
 
     private:
-        CloseButton() = default;
-        ~CloseButton() = default;
+        MaximizeButton() = default;
+        ~MaximizeButton() = default;
 
         bool _pressed { false };
     };
 
-    inline NonnullRefPtr<Window::CloseButton> Window::CloseButton::make()
+    inline NonnullRefPtr<Window::MaximizeButton> Window::MaximizeButton::make()
     {
-        return adopt(*new CloseButton());
+        return adopt(*new MaximizeButton());
     }
 }
