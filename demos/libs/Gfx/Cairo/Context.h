@@ -2,14 +2,14 @@
 
 #include "../Context.h"
 #include <cairo/cairo.h>
-#include <Core/NonnullRefPtr.h>
+#include <Core/RefPtr.h>
 
 namespace Gfx::Cairo
 {
     class Context final : public Gfx::Context
     {
     public:
-        static NonnullRefPtr<Context> make(cairo_t* cr);
+        static RefPtr<Context> make(cairo_t* cr);
 
         inline void save() override;
         inline void restore() override;
@@ -29,9 +29,9 @@ namespace Gfx::Cairo
         cairo_t* _cr;
     };
 
-    inline NonnullRefPtr<Context> Context::make(cairo_t* cr)
+    inline RefPtr<Context> Context::make(cairo_t* cr)
     {
-        return adopt(*new Context(cr));
+        return adopt(new Context(cr));
     }
 
     inline Context::Context(cairo_t* cr) : _cr { cr }

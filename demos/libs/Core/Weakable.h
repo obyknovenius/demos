@@ -1,6 +1,5 @@
 #pragma once
 
-#include "NonnullRefPtr.h"
 #include "RefCounted.h"
 #include "RefPtr.h"
 
@@ -32,14 +31,14 @@ namespace Core
         friend class WeakPtr;
 
     public:
-        Weakable() : _weakLink { adopt(*new WeakLink(*this)) }
+        Weakable() : _weakLink { adopt(new WeakLink(*this)) }
         {
         }
 
         ~Weakable() = default;
 
     private:
-        NonnullRefPtr<WeakLink> _weakLink;
+        RefPtr<WeakLink> _weakLink;
     };
 }
 

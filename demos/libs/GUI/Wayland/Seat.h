@@ -12,7 +12,7 @@ namespace GUI::Wayland
     class Seat final : public Weakable
     {
     public:
-        static NonnullRefPtr<Seat> make(wl_seat* wlSeat, const NonnullRefPtr<Display>& display);
+        static RefPtr<Seat> make(wl_seat* wlSeat, const RefPtr<Display>& display);
 
         RefPtr<Display> display();
 
@@ -23,7 +23,7 @@ namespace GUI::Wayland
     private:
         static const wl_seat_listener _wlSeatListener;
 
-        Seat(wl_seat* wlSeat, const NonnullRefPtr<Display>& display);
+        Seat(wl_seat* wlSeat, const RefPtr<Display>& display);
         ~Seat();
 
         void onCapabilities(uint32_t capabilities);
@@ -35,9 +35,9 @@ namespace GUI::Wayland
         RefPtr<Pointer> _pointer;
     };
 
-    inline NonnullRefPtr<Seat> Seat::make(wl_seat* wlSeat, const NonnullRefPtr<Display>& display)
+    inline RefPtr<Seat> Seat::make(wl_seat* wlSeat, const RefPtr<Display>& display)
     {
-        return adopt(*new Seat(wlSeat, display));
+        return adopt(new Seat(wlSeat, display));
     }
 
     inline RefPtr<Display> Seat::display()

@@ -40,7 +40,7 @@ namespace GUI::Wayland
                 wl_display* wlDisplay = wl_display_connect(nullptr);
                 if (!wlDisplay)
                     return;
-                _defaultDisplay = adopt(*new Display(wlDisplay));
+                _defaultDisplay = adopt(new Display(wlDisplay));
             }
         });
         return _defaultDisplay;
@@ -105,7 +105,7 @@ namespace GUI::Wayland
         else if (strcmp(interface, wl_seat_interface.name) == 0)
         {
             auto* wl_seat = reinterpret_cast<struct wl_seat*>(wl_registry_bind(registry, name, &wl_seat_interface, 7));
-            _seat = Seat::make(wl_seat, *this);
+            _seat = Seat::make(wl_seat, this);
         }
         else if (strcmp(interface, "wp_cursor_shape_manager_v1") == 0)
         {

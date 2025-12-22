@@ -12,7 +12,7 @@ namespace GUI::Wayland
     class Window final : public GUI::Window
     {
     public:
-        static NonnullRefPtr<Window> make();
+        static RefPtr<Window> make();
 
         void setMaximized(bool maximized) override;
 
@@ -31,7 +31,7 @@ namespace GUI::Wayland
         static const xdg_toplevel_listener _xdgToplevelListener;
         static const wl_buffer_listener _wlBufferListener;
 
-        Window(const NonnullRefPtr<Display>& display);
+        Window(const RefPtr<Display>& display);
         ~Window();
 
         void onSurfaceEnter(wl_surface* wlSurface, wl_output* output);

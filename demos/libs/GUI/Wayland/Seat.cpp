@@ -16,7 +16,7 @@ namespace GUI::Wayland
         }
     };
 
-    Seat::Seat(wl_seat* wlSeat, const NonnullRefPtr<Display>& display) :
+    Seat::Seat(wl_seat* wlSeat, const RefPtr<Display>& display) :
         _wlSeat { wlSeat },
         _display { display }
     {
@@ -40,7 +40,7 @@ namespace GUI::Wayland
         bool havePointer = capabilities & WL_SEAT_CAPABILITY_POINTER;
 
         if (havePointer && !_pointer)
-            _pointer = Pointer::make(wl_seat_get_pointer(_wlSeat), *this);
+            _pointer = Pointer::make(wl_seat_get_pointer(_wlSeat), this);
         else if (!havePointer && _pointer)
             _pointer = nullptr;
     }

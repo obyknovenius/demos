@@ -6,7 +6,7 @@
 
 namespace GUI
 {
-    Window::DecorationView::DecorationView(NonnullRefPtr<Window> window) :
+    Window::DecorationView::DecorationView(RefPtr<Window> window) :
         View {},
         _titleBar { TitleBar::make() },
         _contentView { View::make() }
@@ -31,7 +31,7 @@ namespace GUI
         View::layout();
     }
 
-    void Window::DecorationView::redraw(NonnullRefPtr<Gfx::Context> context)
+    void Window::DecorationView::redraw(RefPtr<Gfx::Context> context)
     {
         context->fillRect(_bounds, Gfx::Color::white);
 

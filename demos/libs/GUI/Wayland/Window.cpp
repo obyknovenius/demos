@@ -65,13 +65,13 @@ namespace GUI::Wayland
         }
     };
 
-    NonnullRefPtr<Window> Window::make()
+    RefPtr<Window> Window::make()
     {
         auto display = Display::defaultDisplay();
-        return adopt(*new Window(*display));
+        return adopt(new Window(display));
     }
 
-    Window::Window(const NonnullRefPtr<Display>& display) : _display { display }
+    Window::Window(const RefPtr<Display>& display) : _display { display }
     {
         _wlSurface = wl_compositor_create_surface(display->wlCompositor());
         wl_surface_set_user_data(_wlSurface, this);

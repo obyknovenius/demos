@@ -18,12 +18,12 @@ namespace GUI
     class View : public Weakable
     {
     public:
-        static NonnullRefPtr<View> make();
+        static RefPtr<View> make();
 
         RefPtr<Window> window();
 
         RefPtr<View> superview();
-        void addSubview(NonnullRefPtr<View> subview);
+        void addSubview(RefPtr<View> subview);
 
         void setFrame(const Gfx::Rect& frame);
         const Gfx::Rect& frame() const;
@@ -31,7 +31,7 @@ namespace GUI
         virtual Gfx::Size intrinsicSize() const;
 
         virtual void layout();
-        virtual void redraw(NonnullRefPtr<Gfx::Context> context);
+        virtual void redraw(RefPtr<Gfx::Context> context);
 
         RefPtr<View> hitTest(const Gfx::Point& point);
 
@@ -47,7 +47,7 @@ namespace GUI
         WeakPtr<Window> _window {};
 
         WeakPtr<View> _superview {};
-        std::vector<NonnullRefPtr<View>> _subviews {};
+        std::vector<RefPtr<View>> _subviews {};
 
         Gfx::Rect _frame {};
         Gfx::Rect _bounds {};
@@ -56,9 +56,9 @@ namespace GUI
         void _willBeMovedToWindow(const RefPtr<Window>& window);
     };
 
-    inline NonnullRefPtr<View> View::make()
+    inline RefPtr<View> View::make()
     {
-        return adopt(*new View());
+        return adopt(new View());
     }
 
     inline RefPtr<View> View::superview()

@@ -8,13 +8,13 @@ namespace GUI
     class Window::DecorationView final : public View
     {
     public:
-        static NonnullRefPtr<DecorationView> make(const NonnullRefPtr<Window>& window);
+        static RefPtr<DecorationView> make(const RefPtr<Window>& window);
 
-        NonnullRefPtr<TitleBar> titleBar();
-        NonnullRefPtr<View> contentView();
+        RefPtr<TitleBar> titleBar();
+        RefPtr<View> contentView();
 
         void layout() override;
-        void redraw(NonnullRefPtr<Gfx::Context> context) override;
+        void redraw(RefPtr<Gfx::Context> context) override;
 
         void onPointerButtonPressed(const Event& event) override;
         void onPointerButtonReleased(const Event& event) override;
@@ -23,29 +23,29 @@ namespace GUI
         void onPointerLeft(const Event& event) override;
 
     private:
-        DecorationView(NonnullRefPtr<Window> window);
+        DecorationView(RefPtr<Window> window);
         ~DecorationView() = default;
 
         Window::Edges resizeEdgesForPosition(const Gfx::Point& position) const;
         Cursor cursorForPosition(const Gfx::Point& position) const;
 
-        NonnullRefPtr<TitleBar> _titleBar;
-        NonnullRefPtr<View> _contentView;
+        RefPtr<TitleBar> _titleBar;
+        RefPtr<View> _contentView;
 
         const int _borderThickness { 6 };
     };
 
-    inline NonnullRefPtr<Window::DecorationView> Window::DecorationView::make(const NonnullRefPtr<Window>& window)
+    inline RefPtr<Window::DecorationView> Window::DecorationView::make(const RefPtr<Window>& window)
     {
-        return adopt(*new DecorationView(window));
+        return adopt(new DecorationView(window));
     }
 
-    inline NonnullRefPtr<Window::TitleBar> Window::DecorationView::titleBar()
+    inline RefPtr<Window::TitleBar> Window::DecorationView::titleBar()
     {
         return _titleBar;
     }
 
-    inline NonnullRefPtr<View> Window::DecorationView::contentView()
+    inline RefPtr<View> Window::DecorationView::contentView()
     {
         return _contentView;
     }

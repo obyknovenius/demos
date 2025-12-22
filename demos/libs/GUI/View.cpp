@@ -9,7 +9,7 @@ namespace GUI
         return _window.strong();
     }
 
-    void View::addSubview(NonnullRefPtr<View> subview)
+    void View::addSubview(RefPtr<View> subview)
     {
         subview->_willBeMovedToWindow(_window.strong());
         subview->_superview = this;
@@ -28,7 +28,7 @@ namespace GUI
             subview->layout();
     }
 
-    void View::redraw(NonnullRefPtr<Gfx::Context> context)
+    void View::redraw(RefPtr<Gfx::Context> context)
     {
         for (const auto& subview : _subviews)
         {

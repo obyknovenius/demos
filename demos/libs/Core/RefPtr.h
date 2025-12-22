@@ -1,7 +1,5 @@
 #pragma once
 
-#include "NonnullRefPtr.h"
-
 namespace Core
 {
     template <typename T>
@@ -33,17 +31,6 @@ namespace Core
                 _ptr->ref();
         }
 
-        RefPtr(const NonnullRefPtr<T>& other) : _ptr { other.ptr() }
-        {
-            _ptr->ref();
-        }
-
-        template<typename U>
-        RefPtr(const NonnullRefPtr<U>& other) : _ptr { static_cast<T*>(other.ptr()) }
-        {
-            _ptr->ref();
-        }
-
         ~RefPtr()
         {
             if (_ptr)
@@ -73,7 +60,7 @@ namespace Core
         bool operator!=(const RefPtr& other) const { return ptr() != other.ptr(); }
 
         template<typename U>
-        bool operator==(const NonnullRefPtr<U>& other) const { return ptr() == other.ptr(); }
+        bool operator==(const RefPtr<U>& other) const { return ptr() == other.ptr(); }
 
         bool operator==(T other) const { return ptr() == other; }
 
