@@ -2,7 +2,7 @@
 
 namespace GUI
 {
-    void Window::CloseButton::redraw(RefPtr<Gfx::Context> context)
+    void Window::CloseButton::redraw(NonNull<RefPtr<Gfx::Context>> context)
     {
         context->fillRect(_bounds, Gfx::Color::white);
 

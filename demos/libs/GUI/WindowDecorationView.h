@@ -8,13 +8,13 @@ namespace GUI
     class Window::DecorationView final : public View
     {
     public:
-        static RefPtr<DecorationView> make(const RefPtr<Window>& window);
+        static NonNull<RefPtr<DecorationView>> make(const RefPtr<Window>& window);
 
         RefPtr<TitleBar> titleBar();
         RefPtr<View> contentView();
 
         void layout() override;
-        void redraw(RefPtr<Gfx::Context> context) override;
+        void redraw(NonNull<RefPtr<Gfx::Context>> context) override;
 
         void onPointerButtonPressed(const Event& event) override;
         void onPointerButtonReleased(const Event& event) override;
@@ -35,7 +35,7 @@ namespace GUI
         const int _borderThickness { 6 };
     };
 
-    inline RefPtr<Window::DecorationView> Window::DecorationView::make(const RefPtr<Window>& window)
+    inline NonNull<RefPtr<Window::DecorationView>> Window::DecorationView::make(const RefPtr<Window>& window)
     {
         return adopt(new DecorationView(window));
     }

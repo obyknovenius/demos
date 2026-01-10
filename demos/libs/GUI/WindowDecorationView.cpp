@@ -31,7 +31,7 @@ namespace GUI
         View::layout();
     }
 
-    void Window::DecorationView::redraw(RefPtr<Gfx::Context> context)
+    void Window::DecorationView::redraw(NonNull<RefPtr<Gfx::Context>> context)
     {
         context->fillRect(_bounds, Gfx::Color::white);
 

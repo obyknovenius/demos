@@ -12,7 +12,7 @@ namespace GUI::Wayland
     class Window final : public GUI::Window
     {
     public:
-        static RefPtr<Window> make();
+        static NonNull<RefPtr<Window>> make();
 
         void setMaximized(bool maximized) override;
 

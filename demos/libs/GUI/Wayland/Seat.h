@@ -1,5 +1,6 @@
 #pragma once
 
+#include <Core/NonNull.h>
 #include <Core/Weakable.h>
 #include <Core/WeakPtr.h>
 #include <wayland-client.h>
@@ -12,30 +13,29 @@ namespace GUI::Wayland
     class Seat final : public Weakable
     {
     public:
-        static RefPtr<Seat> make(wl_seat* wlSeat, const RefPtr<Display>& display);
+        static NonNull<RefPtr<Seat>> make(NonNull<wl_seat*> wlSeat, const RefPtr<Display>& display);
 
         RefPtr<Display> display();
 
-        wl_seat* wlSeat();
-
+        NonNull<wl_seat*> wlSeat();
         RefPtr<Pointer> pointer();
 
     private:
         static const wl_seat_listener _wlSeatListener;
 
-        Seat(wl_seat* wlSeat, const RefPtr<Display>& display);
+        Seat(NonNull<wl_seat*> wlSeat, const RefPtr<Display>& display);
         ~Seat();
 
         void onCapabilities(uint32_t capabilities);
 
-        wl_seat* _wlSeat {};
+        NonNull<wl_seat*> _wlSeat;
 
         WeakPtr<Display> _display;
 
         RefPtr<Pointer> _pointer;
     };
 
-    inline RefPtr<Seat> Seat::make(wl_seat* wlSeat, const RefPtr<Display>& display)
+    inline NonNull<RefPtr<Seat>> Seat::make(NonNull<wl_seat*> wlSeat, const RefPtr<Display>& display)
     {
         return adopt(new Seat(wlSeat, display));
     }
@@ -45,7 +45,7 @@ namespace GUI::Wayland
         return _display.strong();
     }
 
-    inline wl_seat* Seat::wlSeat()
+    inline NonNull<wl_seat*> Seat::wlSeat()
     {
         return _wlSeat;
     }

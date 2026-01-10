@@ -1,15 +1,16 @@
 #pragma once
 
 #include "../Context.h"
-#include <cairo/cairo.h>
+#include <Core/NonNull.h>
 #include <Core/RefPtr.h>
+#include <cairo/cairo.h>
 
 namespace Gfx::Cairo
 {
     class Context final : public Gfx::Context
     {
     public:
-        static RefPtr<Context> make(cairo_t* cr);
+        static NonNull<RefPtr<Context>> make(cairo_t* cr);
 
         inline void save() override;
         inline void restore() override;
@@ -29,7 +30,7 @@ namespace Gfx::Cairo
         cairo_t* _cr;
     };
 
-    inline RefPtr<Context> Context::make(cairo_t* cr)
+    inline NonNull<RefPtr<Context>> Context::make(cairo_t* cr)
     {
         return adopt(new Context(cr));
     }

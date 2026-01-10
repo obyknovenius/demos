@@ -2,6 +2,7 @@
 
 #include "../Cursor.h"
 #include "../Event.h"
+#include <Core/NonNull.h>
 #include <Core/RefCounted.h>
 #include <Core/WeakPtr.h>
 #include <Gfx/Point.h>
@@ -17,7 +18,7 @@ namespace GUI::Wayland
     class Pointer final : public RefCounted
     {
     public:
-        static RefPtr<Pointer> make(wl_pointer* wlPointer, const RefPtr<Seat>& seat);
+        static NonNull<RefPtr<Pointer>> make(NonNull<wl_pointer*> wlPointer, const RefPtr<Seat>& seat);
 
         void setCursor(Cursor cursor);
 
@@ -26,7 +27,7 @@ namespace GUI::Wayland
     private:
         static const wl_pointer_listener _wlPointerListener;
 
-        Pointer(wl_pointer* wlPointer, const RefPtr<Seat>& seat);
+        Pointer(NonNull<wl_pointer*> wlPointer, const RefPtr<Seat>& seat);
         ~Pointer();
 
         void onEnter(uint32_t serial, wl_surface* surface, wl_fixed_t x, wl_fixed_t y);
@@ -39,8 +40,8 @@ namespace GUI::Wayland
         void onAxisStop(uint32_t time, uint32_t axisStop);
         void onAxisDiscrete(uint32_t axis, int32_t discrete);
 
-        wl_pointer* _wlPointer {};
-        wp_cursor_shape_device_v1* _wpCursorShapeDeviceV1 {};
+        NonNull<wl_pointer*> _wlPointer;
+        wp_cursor_shape_device_v1* _wpCursorShapeDeviceV1;
 
         WeakPtr<Seat> _seat;
 
@@ -54,7 +55,7 @@ namespace GUI::Wayland
         uint32_t _lastEnterSerial { 0 };
     };
 
-    inline RefPtr<Pointer> Pointer::make(wl_pointer* wlPointer, const RefPtr<Seat>& seat)
+    inline NonNull<RefPtr<Pointer>> Pointer::make(NonNull<wl_pointer*> wlPointer, const RefPtr<Seat>& seat)
     {
         return adopt(new Pointer(wlPointer, seat));
     }

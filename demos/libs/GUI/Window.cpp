@@ -11,7 +11,7 @@
 
 namespace GUI
 {
-    RefPtr<Window> Window::make()
+    NonNull<RefPtr<Window>> Window::make()
     {
         return Wayland::Window::make();
     }
@@ -97,7 +97,7 @@ namespace GUI
         _decorationView->layout();
     }
 
-    void Window::redraw(RefPtr<Gfx::Context> context)
+    void Window::redraw(NonNull<RefPtr<Gfx::Context>> context)
     {
         context->fillRect({ 0, 0, _size.width, _size.height }, Gfx::Color::white);
         _decorationView->redraw(context);

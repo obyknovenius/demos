@@ -8,9 +8,9 @@ namespace GUI
     class Window::MaximizeButton final : public View
     {
     public:
-        static RefPtr<MaximizeButton> make();
+        static NonNull<RefPtr<MaximizeButton>> make();
 
-        void redraw(RefPtr<Gfx::Context> context) override;
+        void redraw(NonNull<RefPtr<Gfx::Context>> context) override;
 
         void onPointerButtonPressed(const Event& event) override;
         void onPointerButtonReleased(const Event& event) override;
@@ -22,7 +22,7 @@ namespace GUI
         bool _pressed { false };
     };
 
-    inline RefPtr<Window::MaximizeButton> Window::MaximizeButton::make()
+    inline NonNull<RefPtr<Window::MaximizeButton>> Window::MaximizeButton::make()
     {
         return adopt(new MaximizeButton());
     }

@@ -2,6 +2,7 @@
 
 #include "Cursor.h"
 #include "View.h"
+#include <Core/NonNull.h>
 #include <Core/OptionSet.h>
 #include <Core/Weakable.h>
 #include <Core/WeakPtr.h>
@@ -35,7 +36,7 @@ namespace GUI
 
         using Edges = OptionSet<Edge>;
 
-        static RefPtr<Window> make();
+        static NonNull<RefPtr<Window>> make();
 
         virtual void setMaximized(bool maximized);
         bool maximized() const;
@@ -64,13 +65,13 @@ namespace GUI
         ~Window();
 
         void layout();
-        void redraw(RefPtr<Gfx::Context> context);
+        void redraw(NonNull<RefPtr<Gfx::Context>> context);
 
         Gfx::Size _size;
 
         bool _maximized { false };
 
-        RefPtr<DecorationView> _decorationView;
+        NonNull<RefPtr<DecorationView>> _decorationView;
 
         Cursor _currentCursor { Cursor::Default };
         std::vector<Cursor> _cursorStack;

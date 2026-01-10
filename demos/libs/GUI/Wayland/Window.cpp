@@ -65,7 +65,7 @@ namespace GUI::Wayland
         }
     };
 
-    RefPtr<Window> Window::make()
+    NonNull<RefPtr<Window>> Window::make()
     {
         auto display = Display::defaultDisplay();
         return adopt(new Window(display));

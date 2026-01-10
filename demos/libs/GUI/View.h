@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Event.h"
+#include <Core/NonNull.h>
 #include <Core/RefPtr.h>
 #include <Core/WeakPtr.h>
 #include <Core/Weakable.h>
@@ -18,7 +19,7 @@ namespace GUI
     class View : public Weakable
     {
     public:
-        static RefPtr<View> make();
+        static NonNull<RefPtr<View>> make();
 
         RefPtr<Window> window();
 
@@ -31,7 +32,7 @@ namespace GUI
         virtual Gfx::Size intrinsicSize() const;
 
         virtual void layout();
-        virtual void redraw(RefPtr<Gfx::Context> context);
+        virtual void redraw(NonNull<RefPtr<Gfx::Context>> context);
 
         RefPtr<View> hitTest(const Gfx::Point& point);
 
@@ -56,7 +57,7 @@ namespace GUI
         void _willBeMovedToWindow(const RefPtr<Window>& window);
     };
 
-    inline RefPtr<View> View::make()
+    inline NonNull<RefPtr<View>> View::make()
     {
         return adopt(new View());
     }

@@ -8,7 +8,7 @@
 
 namespace GUI::Wayland
 {
-    Pointer::Pointer(wl_pointer* wlPointer, const RefPtr<Seat>& seat) :
+    Pointer::Pointer(NonNull<wl_pointer*> wlPointer, const RefPtr<Seat>& seat) :
         _wlPointer { wlPointer },
         _seat { seat }
     {

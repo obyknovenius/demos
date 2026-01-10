@@ -46,7 +46,7 @@ namespace GUI::Wayland
         return _defaultDisplay;
     }
 
-    Display::Display(wl_display* wlDisplay) : _wlDisplay { wlDisplay }
+    Display::Display(NonNull<wl_display*> wlDisplay) : _wlDisplay { wlDisplay }
     {
         _wlRegistry = wl_display_get_registry(_wlDisplay);
         wl_registry_add_listener(_wlRegistry, &_wlRegistryListener, this);
