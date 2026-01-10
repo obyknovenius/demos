@@ -52,7 +52,7 @@ namespace GUI::Wayland
         wl_registry_add_listener(_wlRegistry, &_wlRegistryListener, this);
         wl_display_roundtrip(_wlDisplay);
 
-        Core::EventLoop::mainLoop().addSource({
+        Core::EventLoop::mainLoop()->addSource({
             .fd = wl_display_get_fd(_wlDisplay),
             .events = POLLIN,
             .prepare = [this]()

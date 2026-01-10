@@ -16,12 +16,12 @@ namespace GUI
         context->strokeRect(innerRect.inset(lineWidth / 2), Gfx::Color::black, 2.0f);
     }
 
-    void Window::MaximizeButton::onPointerButtonPressed(const Event& event)
+    void Window::MaximizeButton::onPointerButtonPressed(Event event)
     {
         _pressed = true;
     }
 
-    void Window::MaximizeButton::onPointerButtonReleased(const Event& event)
+    void Window::MaximizeButton::onPointerButtonReleased(Event event)
     {
         if (_pressed) {
             if (auto window = _window.strong())

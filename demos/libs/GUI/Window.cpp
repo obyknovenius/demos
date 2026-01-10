@@ -16,7 +16,7 @@ namespace GUI
         return Wayland::Window::make();
     }
 
-    Window::Window(Gfx::Size const& size) :
+    Window::Window(Gfx::Size size) :
         _size { size },
         _decorationView { DecorationView::make(this) }
     {

@@ -26,21 +26,21 @@ namespace GUI
         RefPtr<View> superview();
         void addSubview(RefPtr<View> subview);
 
-        void setFrame(const Gfx::Rect& frame);
-        const Gfx::Rect& frame() const;
+        void setFrame(Gfx::Rect frame);
+        Gfx::Rect frame() const;
 
         virtual Gfx::Size intrinsicSize() const;
 
         virtual void layout();
         virtual void redraw(NonNull<RefPtr<Gfx::Context>> context);
 
-        RefPtr<View> hitTest(const Gfx::Point& point);
+        RefPtr<View> hitTest(Gfx::Point point);
 
-        virtual void onPointerButtonPressed(const Event& event);
-        virtual void onPointerButtonReleased(const Event& event);
-        virtual void onPointerEntered(const Event& event);
-        virtual void onPointerMoved(const Event& event);
-        virtual void onPointerLeft(const Event& event);
+        virtual void onPointerButtonPressed(Event event);
+        virtual void onPointerButtonReleased(Event event);
+        virtual void onPointerEntered(Event event);
+        virtual void onPointerMoved(Event event);
+        virtual void onPointerLeft(Event event);
     protected:
         View() = default;
         virtual ~View() = default;
@@ -54,7 +54,7 @@ namespace GUI
         Gfx::Rect _bounds {};
 
     private:
-        void _willBeMovedToWindow(const RefPtr<Window>& window);
+        void _willBeMovedToWindow(RefPtr<Window> window);
     };
 
     inline NonNull<RefPtr<View>> View::make()
@@ -67,7 +67,7 @@ namespace GUI
         return _superview.strong();
     }
 
-    inline const Gfx::Rect& View::frame() const
+    inline Gfx::Rect View::frame() const
     {
         return _frame;
     }
@@ -77,23 +77,23 @@ namespace GUI
         return { -1, -1 };
     }
 
-    inline void View::onPointerButtonPressed(const Event& event)
+    inline void View::onPointerButtonPressed(Event event)
     {
     }
 
-    inline void View::onPointerButtonReleased(const Event& event)
+    inline void View::onPointerButtonReleased(Event event)
     {
     }
 
-    inline void View::onPointerEntered(const Event& event)
+    inline void View::onPointerEntered(Event event)
     {
     }
 
-    inline void View::onPointerMoved(const Event& event)
+    inline void View::onPointerMoved(Event event)
     {
     }
 
-    inline void View::onPointerLeft(const Event& event)
+    inline void View::onPointerLeft(Event event)
     {
     }
 }

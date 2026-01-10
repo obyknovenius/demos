@@ -16,7 +16,7 @@ namespace GUI
         _subviews.push_back(subview);
     }
 
-    void View::setFrame(const Gfx::Rect& frame)
+    void View::setFrame(Gfx::Rect frame)
     {
         _frame = frame;
         _bounds = { { 0, 0 }, frame.size };
@@ -40,7 +40,7 @@ namespace GUI
         }
     }
 
-    RefPtr<View> View::hitTest(const Gfx::Point& point)
+    RefPtr<View> View::hitTest(Gfx::Point point)
     {
         for (const auto& subview : _subviews)
             if (subview->frame().contains(point))
@@ -48,7 +48,7 @@ namespace GUI
         return this;
     }
 
-    void View::_willBeMovedToWindow(const RefPtr<Window>& window)
+    void View::_willBeMovedToWindow(RefPtr<Window> window)
     {
         // TODO: Compare with existing window and early return if unchanged
         _window = window;

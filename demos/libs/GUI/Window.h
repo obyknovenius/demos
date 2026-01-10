@@ -61,7 +61,7 @@ namespace GUI
         class CloseButton;
         class MaximizeButton;
 
-        Window(const Gfx::Size& size = { 800, 600 });
+        Window(Gfx::Size size = { 800, 600 });
         ~Window();
 
         void layout();

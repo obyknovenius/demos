@@ -1,5 +1,6 @@
 #pragma once
 
+#include "NonNull.h"
 #include <functional>
 #include <poll.h>
 
@@ -16,7 +17,7 @@ namespace Core
             std::function<void()> dispatch;
         };
 
-        static EventLoop& mainLoop() { return _mainLoop; }
+        static NonNull<EventLoop*> mainLoop() { return &_mainLoop; }
 
         EventLoop() = default;
         ~EventLoop();

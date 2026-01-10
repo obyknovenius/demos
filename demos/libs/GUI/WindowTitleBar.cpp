@@ -52,7 +52,7 @@ namespace GUI
         View::redraw(context);
     }
 
-    void Window::TitleBar::onPointerButtonPressed(const Event& event)
+    void Window::TitleBar::onPointerButtonPressed(Event event)
     {
         if (auto window = _window.strong())
             window->beginMove();

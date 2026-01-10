@@ -12,8 +12,8 @@ namespace GUI
 
         void redraw(NonNull<RefPtr<Gfx::Context>> context) override;
 
-        void onPointerButtonPressed(const Event& event) override;
-        void onPointerButtonReleased(const Event& event) override;
+        void onPointerButtonPressed(Event event) override;
+        void onPointerButtonReleased(Event event) override;
 
     private:
         CloseButton() = default;

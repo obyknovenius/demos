@@ -16,7 +16,7 @@ namespace GUI::Wayland
         }
     };
 
-    Seat::Seat(NonNull<wl_seat*> wlSeat, const RefPtr<Display>& display) :
+    Seat::Seat(NonNull<wl_seat*> wlSeat, RefPtr<Display> display) :
         _wlSeat { wlSeat },
         _display { display }
     {

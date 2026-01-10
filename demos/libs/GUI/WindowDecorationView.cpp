@@ -50,14 +50,14 @@ namespace GUI
         View::redraw(context);
     }
 
-    void Window::DecorationView::onPointerButtonPressed(const Event& event)
+    void Window::DecorationView::onPointerButtonPressed(Event event)
     {
         if (auto window = _window.strong())
             if (auto edges = resizeEdgesForPosition(*event.position))
                 window->beginResize(edges);
     }
 
-    void Window::DecorationView::onPointerButtonReleased(const Event& event)
+    void Window::DecorationView::onPointerButtonReleased(Event event)
     {
         if (auto window = _window.strong())
         {
@@ -66,7 +66,7 @@ namespace GUI
         }
     }
 
-    void Window::DecorationView::onPointerEntered(const Event& event)
+    void Window::DecorationView::onPointerEntered(Event event)
     {
         if (auto window = _window.strong())
         {
@@ -75,7 +75,7 @@ namespace GUI
         }
     }
 
-    void Window::DecorationView::onPointerMoved(const Event& event)
+    void Window::DecorationView::onPointerMoved(Event event)
     {
         if (auto window = _window.strong())
         {
@@ -84,7 +84,7 @@ namespace GUI
         }
     }
 
-    void Window::DecorationView::onPointerLeft(const Event& event)
+    void Window::DecorationView::onPointerLeft(Event event)
     {
         if (auto window = _window.strong())
             window->popCursor();

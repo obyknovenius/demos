@@ -8,7 +8,7 @@ namespace GUI
     class Window::DecorationView final : public View
     {
     public:
-        static NonNull<RefPtr<DecorationView>> make(const RefPtr<Window>& window);
+        static NonNull<RefPtr<DecorationView>> make(RefPtr<Window> window);
 
         RefPtr<TitleBar> titleBar();
         RefPtr<View> contentView();
@@ -16,12 +16,11 @@ namespace GUI
         void layout() override;
         void redraw(NonNull<RefPtr<Gfx::Context>> context) override;
 
-        void onPointerButtonPressed(const Event& event) override;
-        void onPointerButtonReleased(const Event& event) override;
-        void onPointerEntered(const Event& event) override;
-        void onPointerMoved(const Event& event) override;
-        void onPointerLeft(const Event& event) override;
-
+        void onPointerButtonPressed(Event event) override;
+        void onPointerButtonReleased(Event event) override;
+        void onPointerEntered(Event event) override;
+        void onPointerMoved(Event event) override;
+        void onPointerLeft(Event event) override;
     private:
         DecorationView(RefPtr<Window> window);
         ~DecorationView() = default;
@@ -35,7 +34,7 @@ namespace GUI
         const int _borderThickness { 6 };
     };
 
-    inline NonNull<RefPtr<Window::DecorationView>> Window::DecorationView::make(const RefPtr<Window>& window)
+    inline NonNull<RefPtr<Window::DecorationView>> Window::DecorationView::make(RefPtr<Window> window)
     {
         return adopt(new DecorationView(window));
     }

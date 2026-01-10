@@ -31,7 +31,7 @@ namespace GUI::Wayland
         static const xdg_toplevel_listener _xdgToplevelListener;
         static const wl_buffer_listener _wlBufferListener;
 
-        Window(const RefPtr<Display>& display);
+        Window(RefPtr<Display> display);
         ~Window();
 
         void onSurfaceEnter(wl_surface* wlSurface, wl_output* output);

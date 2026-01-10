@@ -71,7 +71,7 @@ namespace GUI::Wayland
         return adopt(new Window(display));
     }
 
-    Window::Window(const RefPtr<Display>& display) : _display { display }
+    Window::Window(RefPtr<Display> display) : _display { display }
     {
         _wlSurface = wl_compositor_create_surface(display->wlCompositor());
         wl_surface_set_user_data(_wlSurface, this);

@@ -18,7 +18,7 @@ namespace GUI::Wayland
     class Pointer final : public RefCounted
     {
     public:
-        static NonNull<RefPtr<Pointer>> make(NonNull<wl_pointer*> wlPointer, const RefPtr<Seat>& seat);
+        static NonNull<RefPtr<Pointer>> make(NonNull<wl_pointer*> wlPointer, RefPtr<Seat> seat);
 
         void setCursor(Cursor cursor);
 
@@ -27,7 +27,7 @@ namespace GUI::Wayland
     private:
         static const wl_pointer_listener _wlPointerListener;
 
-        Pointer(NonNull<wl_pointer*> wlPointer, const RefPtr<Seat>& seat);
+        Pointer(NonNull<wl_pointer*> wlPointer, RefPtr<Seat> seat);
         ~Pointer();
 
         void onEnter(uint32_t serial, wl_surface* surface, wl_fixed_t x, wl_fixed_t y);
@@ -55,7 +55,7 @@ namespace GUI::Wayland
         uint32_t _lastEnterSerial { 0 };
     };
 
-    inline NonNull<RefPtr<Pointer>> Pointer::make(NonNull<wl_pointer*> wlPointer, const RefPtr<Seat>& seat)
+    inline NonNull<RefPtr<Pointer>> Pointer::make(NonNull<wl_pointer*> wlPointer, RefPtr<Seat> seat)
     {
         return adopt(new Pointer(wlPointer, seat));
     }

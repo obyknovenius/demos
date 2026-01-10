@@ -7,7 +7,7 @@ namespace GUI
     class Application
     {
     public:
-        static Application& sharedApplication() { return _sharedApplication; }
+        static NonNull<Application*> sharedApplication() { return &_sharedApplication; }
 
         void run();
         void quit();
@@ -18,16 +18,16 @@ namespace GUI
         Application() = default;
         ~Application() = default;
 
-        Core::EventLoop& _event_loop { Core::EventLoop::mainLoop() };
+        NonNull<Core::EventLoop*> _event_loop { Core::EventLoop::mainLoop() };
     };
 
     inline void Application::run()
     {
-        _event_loop.run();
+        _event_loop->run();
     }
 
     inline void Application::quit()
     {
-        _event_loop.quit();
+        _event_loop->quit();
     }
 }

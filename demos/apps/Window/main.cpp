@@ -3,15 +3,15 @@
 
 int main()
 {
-    auto& app = GUI::Application::sharedApplication();
+    auto app = GUI::Application::sharedApplication();
 
     auto window = GUI::Window::make();
     window->onClose = [&app]()
     {
-        app.quit();
+        app->quit();
     };
 
-    app.run();
+    app->run();
 
     return 0;
 }

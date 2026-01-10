@@ -16,12 +16,12 @@ namespace GUI
         context->strokeLine({ crossRect.maxX(), crossRect.minY() }, { crossRect.minX(), crossRect.maxY() }, Gfx::Color::black, 2.0f);
     }
 
-    void Window::CloseButton::onPointerButtonPressed(const Event& event)
+    void Window::CloseButton::onPointerButtonPressed(Event event)
     {
         _pressed = true;
     }
 
-    void Window::CloseButton::onPointerButtonReleased(const Event& event)
+    void Window::CloseButton::onPointerButtonReleased(Event event)
     {
         if (_pressed) {
             if (auto window = _window.strong())
