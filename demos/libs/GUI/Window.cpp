@@ -28,21 +28,21 @@ namespace GUI
     {
         switch (event->type)
         {
-            case Event::Type::pointerButtonPressed:
+            case Event::Type::PointerButtonPressed:
             {
                 auto view = _decorationView->hitTest(*event->position);
                 view->onPointerButtonPressed(*event);
                 break;
             }
 
-            case Event::Type::pointerButtonReleased:
+            case Event::Type::PointerButtonReleased:
             {
                 auto view = _decorationView->hitTest(*event->position);
                 view->onPointerButtonReleased(*event);
                 break;
             }
 
-            case Event::Type::pointerEntered:
+            case Event::Type::PointerEntered:
             {
                 auto view = _decorationView->hitTest(*event->position);
                 view->onPointerEntered(*event);
@@ -50,7 +50,7 @@ namespace GUI
                 break;
             }
 
-            case Event::Type::pointerMoved:
+            case Event::Type::PointerMoved:
             {
                 auto view = _decorationView->hitTest(*event->position);
 
@@ -70,7 +70,7 @@ namespace GUI
                 break;
             }
 
-            case Event::Type::pointerLeft:
+            case Event::Type::PointerLeft:
             {
                 if (auto viewUnderPointer = _viewUnderPointer.strong())
                 {
@@ -99,7 +99,7 @@ namespace GUI
 
     void Window::redraw(NonNull<RefPtr<Gfx::Context>> context)
     {
-        context->fillRect({ 0, 0, _size.width, _size.height }, Gfx::Color::white);
+        context->fillRect({ 0, 0, _size.width, _size.height }, Gfx::Color::White);
         _decorationView->redraw(context);
     }
 

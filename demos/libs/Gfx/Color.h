@@ -4,12 +4,12 @@ namespace Gfx
 {
     struct Color
     {
-        static const Color black;
-        static const Color white;
+        static const Color Black;
+        static const Color White;
 
-        static const Color red;
-        static const Color green;
-        static const Color blue;
+        static const Color Red;
+        static const Color Green;
+        static const Color Blue;
 
         float r { 0.0f };
         float g { 0.0f };

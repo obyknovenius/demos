@@ -21,10 +21,10 @@ namespace GUI
     public:
         enum class Edge
         {
-            top = 1 << 0,
-            bottom = 1 << 1,
-            left = 1 << 2,
-            right = 1 << 3,
+            Top = 1 << 0,
+            Bottom = 1 << 1,
+            Left = 1 << 2,
+            Right = 1 << 3,
         };
 
         using Edges = OptionSet<Edge>;

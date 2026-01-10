@@ -133,13 +133,13 @@ namespace GUI::Wayland
                 if (auto pointer = seat->pointer()) {
                     uint32_t xdgEdges = XDG_TOPLEVEL_RESIZE_EDGE_NONE;
 
-                    if (edges.contains(Window::Edge::top))
+                    if (edges.contains(Window::Edge::Top))
                         xdgEdges |= XDG_TOPLEVEL_RESIZE_EDGE_TOP;
-                    if (edges.contains(Window::Edge::bottom))
+                    if (edges.contains(Window::Edge::Bottom))
                         xdgEdges |= XDG_TOPLEVEL_RESIZE_EDGE_BOTTOM;
-                    if (edges.contains(Window::Edge::left))
+                    if (edges.contains(Window::Edge::Left))
                         xdgEdges |= XDG_TOPLEVEL_RESIZE_EDGE_LEFT;
-                    if (edges.contains(Window::Edge::right))
+                    if (edges.contains(Window::Edge::Right))
                         xdgEdges |= XDG_TOPLEVEL_RESIZE_EDGE_RIGHT;
 
                     if (xdgEdges != XDG_TOPLEVEL_RESIZE_EDGE_NONE)

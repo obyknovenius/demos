@@ -33,7 +33,7 @@ namespace GUI
 
     void Window::DecorationView::redraw(NonNull<RefPtr<Gfx::Context>> context)
     {
-        context->fillRect(_bounds, Gfx::Color::white);
+        context->fillRect(_bounds, Gfx::Color::White);
 
         int lineWidth = 2;
         auto titleBarHeight = _titleBar->intrinsicSize().height;
@@ -42,10 +42,10 @@ namespace GUI
             origin: { _borderThickness, _borderThickness + titleBarHeight },
             size: { _bounds.size.width - 2 * _borderThickness, _bounds.size.height - titleBarHeight - 2 * _borderThickness }
         };
-        context->strokeRect(innerBorderRect.inset(lineWidth / 2), Gfx::Color::black, lineWidth);
+        context->strokeRect(innerBorderRect.inset(lineWidth / 2), Gfx::Color::Black, lineWidth);
 
         auto outerBorderRect = _bounds;
-        context->strokeRect(outerBorderRect.inset(lineWidth / 2), Gfx::Color::black, lineWidth);
+        context->strokeRect(outerBorderRect.inset(lineWidth / 2), Gfx::Color::Black, lineWidth);
 
         View::redraw(context);
     }
@@ -94,34 +94,34 @@ namespace GUI
     {
         Window::Edges edges;
         if (position.y < _borderThickness)
-            edges.add(Window::Edge::top);
+            edges.add(Window::Edge::Top);
         if (position.y >= _frame.size.height - _borderThickness)
-            edges.add(Window::Edge::bottom);
+            edges.add(Window::Edge::Bottom);
         if (position.x < _borderThickness)
-            edges.add(Window::Edge::left);
+            edges.add(Window::Edge::Left);
         if (position.x >= _frame.size.width - _borderThickness)
-            edges.add(Window::Edge::right);
+            edges.add(Window::Edge::Right);
         return edges;
     }
 
     Cursor Window::DecorationView::cursorForPosition(Gfx::Point position) const
     {
         auto edges = resizeEdgesForPosition(position);
-        if (edges.containsOnly(Window::Edge::top))
+        if (edges.containsOnly(Window::Edge::Top))
             return Cursor::NorthResize;
-        if (edges.containsOnly(Window::Edge::bottom))
+        if (edges.containsOnly(Window::Edge::Bottom))
             return Cursor::SouthResize;
-        if (edges.containsOnly(Window::Edge::left))
+        if (edges.containsOnly(Window::Edge::Left))
             return Cursor::WestResize;
-        if (edges.containsOnly(Window::Edge::right))
+        if (edges.containsOnly(Window::Edge::Right))
             return Cursor::EastResize;
-        if (edges.containsOnly(Window::Edge::top, Window::Edge::left))
+        if (edges.containsOnly(Window::Edge::Top, Window::Edge::Left))
             return Cursor::NorthWestResize;
-        if (edges.containsOnly(Window::Edge::top, Window::Edge::right))
+        if (edges.containsOnly(Window::Edge::Top, Window::Edge::Right))
             return Cursor::NorthEastResize;
-        if (edges.containsOnly(Window::Edge::bottom, Window::Edge::left))
+        if (edges.containsOnly(Window::Edge::Bottom, Window::Edge::Left))
             return Cursor::SouthWestResize;
-        if (edges.containsOnly(Window::Edge::bottom, Window::Edge::right))
+        if (edges.containsOnly(Window::Edge::Bottom, Window::Edge::Right))
             return Cursor::SouthEastResize;
         return Cursor::Default;
     }

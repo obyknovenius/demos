@@ -36,7 +36,7 @@ namespace GUI
 
     void Window::TitleBar::redraw(NonNull<RefPtr<Gfx::Context>> context)
     {
-        context->fillRect(_bounds, Gfx::Color::white);
+        context->fillRect(_bounds, Gfx::Color::White);
 
         int closeButtonWidth = _closeButton->frame().size.width;
         int maximizeButtonWidth = _maximizeButton->frame().size.width;
@@ -46,7 +46,7 @@ namespace GUI
         {
             Gfx::Point from { closeButtonWidth + buttonMargin, y };
             Gfx::Point to { _bounds.size.width - maximizeButtonWidth - buttonMargin, y };
-            context->strokeLine(from, to, Gfx::Color::black, 2.0f );
+            context->strokeLine(from, to, Gfx::Color::Black, 2.0f );
         }
 
         View::redraw(context);

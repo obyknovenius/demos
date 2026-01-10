@@ -12,18 +12,18 @@ namespace GUI
     {
         enum class Type
         {
-            pointerButtonPressed,
-            pointerButtonReleased,
-            pointerEntered,
-            pointerMoved,
-            pointerLeft,
+            PointerButtonPressed,
+            PointerButtonReleased,
+            PointerEntered,
+            PointerMoved,
+            PointerLeft,
         };
 
         enum class PointerButton
         {
-            mouseLeft = 1 << 0,
-            mouseRight = 1 << 1,
-            mouseMiddle = 1 << 2,
+            MouseLeft = 1 << 0,
+            MouseRight = 1 << 1,
+            MouseMiddle = 1 << 2,
         };
 
         using PointerButtons = OptionSet<PointerButton>;
