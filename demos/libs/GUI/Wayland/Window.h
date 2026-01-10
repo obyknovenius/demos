@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Forward.h"
 #include "../Window.h"
 #include <Core/WeakPtr.h>
 #include <wayland-client.h>
@@ -7,8 +8,6 @@
 
 namespace GUI::Wayland
 {
-    class Display;
-
     class Window final : public GUI::Window
     {
     public:

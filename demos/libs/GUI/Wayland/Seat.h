@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Forward.h"
 #include <Core/NonNull.h>
 #include <Core/Weakable.h>
 #include <Core/WeakPtr.h>
@@ -7,9 +8,6 @@
 
 namespace GUI::Wayland
 {
-    class Display;
-    class Pointer;
-
     class Seat final : public Weakable
     {
     public:

@@ -1,28 +1,21 @@
 #pragma once
 
 #include "Cursor.h"
+#include "Forward.h"
 #include "View.h"
 #include <Core/NonNull.h>
 #include <Core/OptionSet.h>
 #include <Core/Weakable.h>
 #include <Core/WeakPtr.h>
+#include <Gfx/Forward.h>
 #include <Gfx/Size.h>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <vector>
 
-namespace Gfx
-{
-    class Context;
-    struct Rect;
-    struct Size;
-}
-
 namespace GUI
 {
-    struct Event;
-
     class Window : public Weakable
     {
     public:

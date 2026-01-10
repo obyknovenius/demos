@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Forward.h"
 #include <Core/OptionSet.h>
 #include <Core/RefPtr.h>
 #include <Gfx/Point.h>
@@ -7,8 +8,6 @@
 
 namespace GUI
 {
-    class Window;
-
     struct Event
     {
         enum class Type

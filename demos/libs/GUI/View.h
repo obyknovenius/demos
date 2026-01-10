@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Event.h"
+#include "Forward.h"
 #include <Core/NonNull.h>
 #include <Core/RefPtr.h>
 #include <Core/WeakPtr.h>
@@ -13,9 +14,6 @@
 
 namespace GUI
 {
-    class Window;
-    struct Event;
-
     class View : public Weakable
     {
     public:

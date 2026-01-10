@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Forward.h"
+#include "../Forward.h"
 #include <Core/NonNull.h>
 #include <Core/Weakable.h>
 #include <memory>
@@ -7,15 +9,8 @@
 #include <xdg-shell-client-protocol.h>
 #include <cursor-shape-v1-client-protocol.h>
 
-namespace GUI
-{
-    struct Event;
-}
-
 namespace GUI::Wayland
 {
-    class Seat;
-
     class Display final : public Weakable
     {
     public:

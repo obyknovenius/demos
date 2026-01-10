@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Forward.h"
 #include "../Cursor.h"
 #include "../Event.h"
 #include <Core/NonNull.h>
@@ -12,9 +13,6 @@
 
 namespace GUI::Wayland
 {
-    class Seat;
-    class Window;
-
     class Pointer final : public RefCounted
     {
     public:
