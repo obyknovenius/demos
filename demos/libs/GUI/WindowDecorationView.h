@@ -28,8 +28,8 @@ namespace GUI
         DecorationView(RefPtr<Window> window);
         ~DecorationView() = default;
 
-        Window::Edges resizeEdgesForPosition(const Gfx::Point& position) const;
-        Cursor cursorForPosition(const Gfx::Point& position) const;
+        Window::Edges resizeEdgesForPosition(Gfx::Point position) const;
+        Cursor cursorForPosition(Gfx::Point position) const;
 
         RefPtr<TitleBar> _titleBar;
         RefPtr<View> _contentView;

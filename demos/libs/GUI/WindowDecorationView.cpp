@@ -90,7 +90,7 @@ namespace GUI
             window->popCursor();
     }
 
-    Window::Edges Window::DecorationView::resizeEdgesForPosition(const Gfx::Point& position) const
+    Window::Edges Window::DecorationView::resizeEdgesForPosition(Gfx::Point position) const
     {
         Window::Edges edges;
         if (position.y < _borderThickness)
@@ -104,7 +104,7 @@ namespace GUI
         return edges;
     }
 
-    Cursor Window::DecorationView::cursorForPosition(const Gfx::Point& position) const
+    Cursor Window::DecorationView::cursorForPosition(Gfx::Point position) const
     {
         auto edges = resizeEdgesForPosition(position);
         if (edges.containsOnly(Window::Edge::top))
