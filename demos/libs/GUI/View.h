@@ -19,28 +19,31 @@ namespace GUI
     class View : public Weakable
     {
     public:
-        static NonNull<RefPtr<View>> make();
+        static NonNull<RefPtr<View>> make()
+        {
+            return adopt(new View());
+        }
 
         RefPtr<Window> window();
 
-        RefPtr<View> superview();
+        RefPtr<View> superview() { return _superview.strong(); }
         void addSubview(RefPtr<View> subview);
 
         void setFrame(Gfx::Rect frame);
-        Gfx::Rect frame() const;
+        Gfx::Rect frame() { return _frame; }
 
-        virtual Gfx::Size intrinsicSize() const;
+        virtual Gfx::Size intrinsicSize() { return { -1, -1 }; }
 
         virtual void layout();
         virtual void redraw(NonNull<RefPtr<Gfx::Context>> context);
 
         RefPtr<View> hitTest(Gfx::Point point);
 
-        virtual void onPointerButtonPressed(Event event);
-        virtual void onPointerButtonReleased(Event event);
-        virtual void onPointerEntered(Event event);
-        virtual void onPointerMoved(Event event);
-        virtual void onPointerLeft(Event event);
+        virtual void onPointerButtonPressed(Event event) {}
+        virtual void onPointerButtonReleased(Event event) {}
+        virtual void onPointerEntered(Event event) {}
+        virtual void onPointerMoved(Event event) {}
+        virtual void onPointerLeft(Event event) {}
     protected:
         View() = default;
         virtual ~View() = default;
@@ -56,44 +59,4 @@ namespace GUI
     private:
         void _willBeMovedToWindow(RefPtr<Window> window);
     };
-
-    inline NonNull<RefPtr<View>> View::make()
-    {
-        return adopt(new View());
-    }
-
-    inline RefPtr<View> View::superview()
-    {
-        return _superview.strong();
-    }
-
-    inline Gfx::Rect View::frame() const
-    {
-        return _frame;
-    }
-
-    inline Gfx::Size View::intrinsicSize() const
-    {
-        return { -1, -1 };
-    }
-
-    inline void View::onPointerButtonPressed(Event event)
-    {
-    }
-
-    inline void View::onPointerButtonReleased(Event event)
-    {
-    }
-
-    inline void View::onPointerEntered(Event event)
-    {
-    }
-
-    inline void View::onPointerMoved(Event event)
-    {
-    }
-
-    inline void View::onPointerLeft(Event event)
-    {
-    }
 }

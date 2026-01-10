@@ -23,12 +23,12 @@ namespace GUI::Wayland
 
         void dispatchEvent(std::unique_ptr<const Event> event);
 
-        wl_compositor* wlCompositor();
-        xdg_wm_base* xdgWmBase();
-        wl_shm* wlShm();
-        wp_cursor_shape_manager_v1* wpCursorShapeManagerV1();
+        wl_compositor* wlCompositor() { return _wlCompositor; }
+        xdg_wm_base* xdgWmBase() { return _xdgWmBase; }
+        wl_shm* wlShm() { return _wlShm; }
+        wp_cursor_shape_manager_v1* wpCursorShapeManagerV1() { return _wpCursorShapeManagerV1; }
 
-        RefPtr<Seat> seat();
+        RefPtr<Seat> seat() { return _seat; }
 
     private:
         static RefPtr<Display> _defaultDisplay;
@@ -51,29 +51,4 @@ namespace GUI::Wayland
 
         RefPtr<Seat> _seat;
     };
-
-    inline wl_compositor* Display::wlCompositor()
-    {
-        return _wlCompositor;
-    }
-
-    inline xdg_wm_base* Display::xdgWmBase()
-    {
-        return _xdgWmBase;
-    }
-
-    inline wl_shm* Display::wlShm()
-    {
-        return _wlShm;
-    }
-
-    inline wp_cursor_shape_manager_v1* Display::wpCursorShapeManagerV1()
-    {
-        return _wpCursorShapeManagerV1;
-    }
-
-    inline RefPtr<Seat> Display::seat()
-    {
-        return _seat;
-    }
 }

@@ -18,11 +18,14 @@ namespace GUI::Wayland
     class Pointer final : public RefCounted
     {
     public:
-        static NonNull<RefPtr<Pointer>> make(NonNull<wl_pointer*> wlPointer, RefPtr<Seat> seat);
+        static NonNull<RefPtr<Pointer>> make(NonNull<wl_pointer*> wlPointer, RefPtr<Seat> seat)
+        {
+            return adopt(new Pointer(wlPointer, seat));
+        }
 
         void setCursor(Cursor cursor);
 
-        uint32_t lastSerial() const;
+        uint32_t lastSerial() { return _lastSerial; }
 
     private:
         static const wl_pointer_listener _wlPointerListener;
@@ -41,6 +44,7 @@ namespace GUI::Wayland
         void onAxisDiscrete(uint32_t axis, int32_t discrete);
 
         NonNull<wl_pointer*> _wlPointer;
+
         wp_cursor_shape_device_v1* _wpCursorShapeDeviceV1;
 
         WeakPtr<Seat> _seat;
@@ -54,14 +58,4 @@ namespace GUI::Wayland
         uint32_t _lastSerial { 0 };
         uint32_t _lastEnterSerial { 0 };
     };
-
-    inline NonNull<RefPtr<Pointer>> Pointer::make(NonNull<wl_pointer*> wlPointer, RefPtr<Seat> seat)
-    {
-        return adopt(new Pointer(wlPointer, seat));
-    }
-
-    inline uint32_t Pointer::lastSerial() const
-    {
-        return _lastSerial;
-    }
 }

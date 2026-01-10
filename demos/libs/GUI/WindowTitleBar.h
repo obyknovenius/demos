@@ -8,9 +8,12 @@ namespace GUI
     class Window::TitleBar final : public View
     {
     public:
-        static NonNull<RefPtr<TitleBar>> make();
+        static NonNull<RefPtr<TitleBar>> make()
+        {
+            return adopt(new TitleBar());
+        }
 
-        Gfx::Size intrinsicSize() const override;
+        Gfx::Size intrinsicSize() override { return { -1, _height }; }
 
         void layout() override;
         void redraw(NonNull<RefPtr<Gfx::Context>> context) override;
@@ -26,14 +29,4 @@ namespace GUI
 
         int _height { 26 };
     };
-
-    inline NonNull<RefPtr<Window::TitleBar>> Window::TitleBar::make()
-    {
-        return adopt(new TitleBar());
-    }
-
-    inline Gfx::Size Window::TitleBar::intrinsicSize() const
-    {
-        return { -1, _height };
-    }
 }

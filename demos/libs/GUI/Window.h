@@ -38,8 +38,8 @@ namespace GUI
 
         static NonNull<RefPtr<Window>> make();
 
-        virtual void setMaximized(bool maximized);
-        bool maximized() const;
+        virtual void setMaximized(bool maximized) { _maximized = maximized; }
+        bool maximized() { return _maximized; }
 
         virtual void close();
 
@@ -50,10 +50,11 @@ namespace GUI
 
         void dispatchEvent(std::unique_ptr<const Event> event);
 
-        virtual void setCursor(Cursor cursor);
+        virtual void setCursor(Cursor cursor) { _currentCursor = cursor; }
+        Cursor currentCursor() { return _currentCursor; }
         void pushCursor(Cursor cursor);
         void popCursor();
-        Cursor currentCursor() const;
+
 
     protected:
         class DecorationView;
@@ -78,24 +79,4 @@ namespace GUI
 
         WeakPtr<View> _viewUnderPointer;
     };
-
-    inline void Window::setMaximized(bool maximized)
-    {
-        _maximized = maximized;
-    }
-
-    inline bool Window::maximized() const
-    {
-        return _maximized;
-    }
-
-    inline void Window::setCursor(Cursor cursor)
-    {
-        _currentCursor = cursor;
-    }
-
-    inline Cursor Window::currentCursor() const
-    {
-        return _currentCursor;
-    }
 }

@@ -8,7 +8,10 @@ namespace GUI
     class Window::CloseButton final : public View
     {
     public:
-        static NonNull<RefPtr<CloseButton>> make();
+        static NonNull<RefPtr<CloseButton>> make()
+        {
+            return adopt(new CloseButton());
+        }
 
         void redraw(NonNull<RefPtr<Gfx::Context>> context) override;
 
@@ -21,9 +24,4 @@ namespace GUI
 
         bool _pressed { false };
     };
-
-    inline NonNull<RefPtr<Window::CloseButton>> Window::CloseButton::make()
-    {
-        return adopt(new CloseButton());
-    }
 }

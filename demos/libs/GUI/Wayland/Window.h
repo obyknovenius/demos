@@ -23,7 +23,7 @@ namespace GUI::Wayland
 
         void setCursor(Cursor cursor) override;
 
-        xdg_toplevel* xdgToplevel();
+        xdg_toplevel* xdgToplevel() { return _xdgToplevel; }
 
     private:
         static const wl_surface_listener _wlSurfaceListener;
@@ -59,9 +59,4 @@ namespace GUI::Wayland
 
         bool _closed { false };
     };
-
-    inline xdg_toplevel* GUI::Wayland::Window::xdgToplevel()
-    {
-        return _xdgToplevel;
-    }
 }
