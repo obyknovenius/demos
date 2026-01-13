@@ -8,7 +8,7 @@
 
 namespace GUI::Wayland
 {
-    class Seat final : public Weakable
+    class Seat final : public RefCounted, public Weakable
     {
     public:
         static NonNull<RefPtr<Seat>> make(NonNull<wl_seat*> wlSeat, RefPtr<Display> display)

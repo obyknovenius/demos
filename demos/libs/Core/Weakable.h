@@ -1,5 +1,6 @@
 #pragma once
 
+#include "NonNull.h"
 #include "RefCounted.h"
 #include "RefPtr.h"
 
@@ -7,38 +8,43 @@ namespace Core
 {
     class Weakable;
 
-    class WeakLink : public RefCounted
+    class WeakLink final : public RefCounted
     {
+        friend class Weakable;
+
     public:
-        WeakLink(Weakable& ref) : _ptr { &ref }
-        {
-        }
+        template<typename T>
+        RefPtr<T> strong() const { return static_cast<T*>(_ptr); }
 
-        ~WeakLink() = default;
-
-        RefPtr<Weakable> strong()
-        {
-            return _ptr;
-        }
+        void revoke() { _ptr = nullptr; }
 
     private:
-        Weakable* _ptr { nullptr };
+        explicit WeakLink(NonNull<Weakable*> ptr) :
+            _ptr { ptr }
+        {
+        }
+
+        Weakable* _ptr {};
     };
 
-    class Weakable : public RefCounted
+    class Weakable
     {
         template<typename T>
         friend class WeakPtr;
 
     public:
-        Weakable() : _weakLink { adopt(new WeakLink(*this)) }
+        Weakable() :
+            _link { adopt(new WeakLink(this)) }
         {
         }
 
-        ~Weakable() = default;
+        virtual ~Weakable()
+        {
+            _link->revoke();
+        }
 
     private:
-        RefPtr<WeakLink> _weakLink;
+        RefPtr<WeakLink> _link;
     };
 }
 

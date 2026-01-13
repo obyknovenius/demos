@@ -11,22 +11,22 @@ namespace Core
     public:
         WeakPtr() = default;
 
-        WeakPtr(const T* ptr)
+        WeakPtr(T* ptr)
         {
             if (ptr)
-                _link = ptr->_weakLink;
+                _link = ptr->_link;
         }
 
-        WeakPtr(const RefPtr<T>& ptr)
+        WeakPtr(RefPtr<T> ptr)
         {
             if (ptr)
-                _link = ptr->_weakLink;
+                _link = ptr->_link;
         }
 
         RefPtr<T> strong()
         {
             if (_link)
-                return _link->strong();
+                return _link->strong<T>();
             return nullptr;
         }
     private:

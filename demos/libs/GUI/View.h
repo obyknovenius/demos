@@ -14,7 +14,7 @@
 
 namespace GUI
 {
-    class View : public Weakable
+    class View : public RefCounted, public Weakable
     {
     public:
         static NonNull<RefPtr<View>> make()
@@ -44,7 +44,7 @@ namespace GUI
         virtual void onPointerLeft(Event event) {}
     protected:
         View() = default;
-        virtual ~View() = default;
+        ~View() = default;
 
         WeakPtr<Window> _window {};
 

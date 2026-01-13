@@ -11,7 +11,7 @@
 
 namespace GUI::Wayland
 {
-    class Display final : public Weakable
+    class Display final : public RefCounted, public Weakable
     {
     public:
         static RefPtr<Display> defaultDisplay();

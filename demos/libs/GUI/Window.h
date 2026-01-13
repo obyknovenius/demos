@@ -16,7 +16,7 @@
 
 namespace GUI
 {
-    class Window : public Weakable
+    class Window : public RefCounted, public Weakable
     {
     public:
         enum class Edge
