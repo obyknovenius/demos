@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Forward.h"
+#include "Seat.h"
 #include "../Forward.h"
 #include <Core/NonNull.h>
 #include <Core/Weakable.h>
@@ -18,6 +19,7 @@ namespace GUI::Wayland
 
         void dispatchEvent(std::unique_ptr<const Event> event);
 
+        NonNull<wl_display*> wlDisplay() { return _wlDisplay; }
         wl_compositor* wlCompositor() { return _wlCompositor; }
         xdg_wm_base* xdgWmBase() { return _xdgWmBase; }
         wl_shm* wlShm() { return _wlShm; }
@@ -38,7 +40,7 @@ namespace GUI::Wayland
         void onWmPing(xdg_wm_base* xdgWmBase, uint32_t serial);
 
         NonNull<wl_display*> _wlDisplay;
-        wl_registry* _wlRegistry;
+        wl_registry* _wlRegistry {};
         wl_compositor* _wlCompositor {};
         xdg_wm_base* _xdgWmBase {};
         wl_shm* _wlShm {};

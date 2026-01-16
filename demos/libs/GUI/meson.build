@@ -24,4 +24,5 @@ gui_lib = static_library(
 gui_dep = declare_dependency(
     include_directories: libs_inc,
     link_with: gui_lib,
+    dependencies: gui_deps,
 )

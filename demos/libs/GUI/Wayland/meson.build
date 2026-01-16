@@ -75,6 +75,8 @@ gui_wayland_sources = [
     'Display.cpp',
     'Pointer.cpp',
     'Seat.cpp',
+    'Surface.cpp',
+    'Toplevel.cpp',
     'Window.cpp',
 ]
 

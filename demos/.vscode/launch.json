@@ -11,6 +11,14 @@
             "program": "${workspaceFolder}/${config:mesonbuild.buildFolder}/apps/Window/window",
             "cwd": "${workspaceFolder}",
             "preLaunchTask": "Meson: Build all targets"
+        },
+        {
+            "name": "Surface",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/${config:mesonbuild.buildFolder}/apps/Surface/surface",
+            "cwd": "${workspaceFolder}",
+            "preLaunchTask": "Meson: Build all targets"
         }
     ]
 }
