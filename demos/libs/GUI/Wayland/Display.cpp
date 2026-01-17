@@ -48,6 +48,24 @@ namespace GUI::Wayland
 
     Display::Display(NonNull<wl_display*> wlDisplay) : _wlDisplay { wlDisplay }
     {
+        _eglDisplay = eglGetPlatformDisplay(EGL_PLATFORM_WAYLAND_KHR, _wlDisplay, NULL);
+
+        EGLint major, minor;
+        eglInitialize(_eglDisplay, &major, &minor);
+
+        EGLint attribs[] = {
+            EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
+            EGL_RED_SIZE, 8,
+            EGL_GREEN_SIZE, 8,
+            EGL_BLUE_SIZE, 8,
+            EGL_ALPHA_SIZE, 8,
+            EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT,
+            EGL_NONE
+        };
+        EGLint numConfig;
+
+        eglChooseConfig(_eglDisplay, attribs, &_eglConfig, 1, &numConfig);
+
         _wlRegistry = wl_display_get_registry(_wlDisplay);
         wl_registry_add_listener(_wlRegistry, &_wlRegistryListener, this);
         wl_display_roundtrip(_wlDisplay);
@@ -76,6 +94,9 @@ namespace GUI::Wayland
         wp_cursor_shape_manager_v1_destroy(_wpCursorShapeManagerV1);
 
         wl_registry_destroy(_wlRegistry);
+
+        eglMakeCurrent(_eglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
+        eglTerminate(_eglDisplay);
 
         wl_display_disconnect(_wlDisplay);
     }

@@ -5,8 +5,10 @@
 #include <Core/RefCounted.h>
 #include <Core/RefPtr.h>
 #include <Core/WeakPtr.h>
+#include <EGL/egl.h>
 #include <Gfx/Size.h>
 #include <wayland-client.h>
+#include <wayland-egl.h>
 #include <xdg-shell-client-protocol.h>
 
 namespace GUI::Wayland
@@ -16,9 +18,11 @@ namespace GUI::Wayland
     public:
         static NonNull<RefPtr<Surface>> make(RefPtr<Display> display) { return adopt(new Surface(display)); }
 
+        Gfx::Size size() const { return _size; }
+
         NonNull<wl_surface*> wlSurface() const { return _wlSurface; }
 
-        Gfx::Size size() const { return _size; }
+        EGLSurface eglSurface() const { return _eglSurface; }
 
     protected:
         Surface(NonNull<RefPtr<Display>> display);
@@ -37,6 +41,10 @@ namespace GUI::Wayland
 
         wl_surface* _wlSurface {};
         xdg_surface* _xdgSurface {};
+
+        wl_egl_window* _wlEglWindow {};
+
+        EGLSurface _eglSurface { EGL_NO_SURFACE };
 
     private:
         static const wl_surface_listener _wlSurfaceListener;

@@ -63,10 +63,17 @@ cursor_shape_v1_client_protocol_dep = declare_dependency(
     ]
 )
 
+egl_dep = dependency('egl')
+wayland_egl_dep = dependency('wayland-egl')
+gles2_dep = dependency('glesv2')
+
 gui_wayland_deps = [
     wayland_client_dep,
     xdg_shell_client_protocol_dep,
     cursor_shape_v1_client_protocol_dep,
+    egl_dep,
+    wayland_egl_dep,
+    gles2_dep,
 ]
 
 gui_deps += gui_wayland_deps

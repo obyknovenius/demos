@@ -40,11 +40,21 @@ namespace GUI::Wayland
         _wlSurface = wl_compositor_create_surface(display->wlCompositor());
 
         _xdgSurface = xdg_wm_base_get_xdg_surface(display->xdgWmBase(), _wlSurface);
+
+        _wlEglWindow = wl_egl_window_create(_wlSurface, _size.width, _size.height);
+
+        _eglSurface = eglCreatePlatformWindowSurface(display->eglDisplay(), display->eglConfig(), _wlEglWindow, NULL);
     }
 
     Surface::~Surface()
     {
+        if (auto display = _display.strong())
+            eglDestroySurface(display->eglDisplay(), _eglSurface);
+
+        wl_egl_window_destroy(_wlEglWindow);
+
         xdg_surface_destroy(_xdgSurface);
+
         wl_surface_destroy(_wlSurface);
     }
 
