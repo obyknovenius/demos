@@ -2,7 +2,7 @@
 
 #include "Display.h"
 
-namespace GUI::Wayland
+namespace Gfx::Wayland
 {
     const xdg_toplevel_listener Toplevel::_xdgToplevelListener = {
         .configure = [](void* data, xdg_toplevel* xdgToplevel, int32_t width, int32_t height, wl_array* states)
@@ -19,8 +19,12 @@ namespace GUI::Wayland
         .wm_capabilities = nullptr
     };
 
-    Toplevel::Toplevel(NonNull<RefPtr<Display>> display)
-        : Surface(display)
+    NonNull<RefPtr<Toplevel>> Toplevel::create(NonNull<RefPtr<Display>> display)
+    {
+        return adopt(new Toplevel(display));
+    }
+
+    Toplevel::Toplevel(NonNull<RefPtr<Display>> display) : Surface(display)
     {
         _xdgToplevel = xdg_surface_get_toplevel(_xdgSurface);
 

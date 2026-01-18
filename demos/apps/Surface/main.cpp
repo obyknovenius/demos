@@ -1,29 +1,27 @@
 #include <Core/EventLoop.h>
-#include <GUI/Wayland/Display.h>
-#include <GUI/Wayland/Toplevel.h>
+#include <Gfx/EGL/Context.h>
+#include <Gfx/Wayland/Display.h>
+#include <Gfx/Wayland/Toplevel.h>
 #include <GLES3/gl3.h>
 
 int main(int argc, char** argv)
 {
-    auto display = GUI::Wayland::Display::defaultDisplay();
-    auto toplevel = GUI::Wayland::Toplevel::make(display);
+    auto display = Gfx::Wayland::Display::connect();
+    if (!display)
+        return 1;
 
-    EGLint contextAttribs[] = {
-        EGL_CONTEXT_MAJOR_VERSION, 3,
-        EGL_NONE
-    };
-    auto eglContext = eglCreateContext(display->eglDisplay(), display->eglConfig(), EGL_NO_CONTEXT, contextAttribs);
+    auto toplevel = Gfx::Wayland::Toplevel::create(display);
 
-    eglMakeCurrent(display->eglDisplay(), toplevel->eglSurface(), toplevel->eglSurface(), eglContext);
+    auto context = Gfx::EGL::Context::create(toplevel);
 
-    glViewport(0, 0, toplevel->size().width, toplevel->size().height);
+    context->beginFrame();
 
     glClearColor(0.0f, 1.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    eglSwapBuffers(display->eglDisplay(), toplevel->eglSurface());
+    context->endFrame();
 
-    auto mainLoop = Core::EventLoop::mainLoop();
-    mainLoop->run();
+    Core::EventLoop::mainLoop()->run();
+
     return 0;
 }

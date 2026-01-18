@@ -2,18 +2,18 @@
 
 #include "Display.h"
 
-namespace GUI::Wayland
+namespace Gfx::Wayland
 {
     const wl_surface_listener Surface::_wlSurfaceListener = {
-        .enter = [](void* data, wl_surface* wlSurface, wl_output* output)
+        .enter = [](void* data, wl_surface* wlSurface, wl_output* wlOutput)
         {
             auto* surface = reinterpret_cast<Surface*>(data);
-            surface->onSurfaceEnter(wlSurface, output);
+            surface->onSurfaceEnter(wlSurface, wlOutput);
         },
-        .leave = [](void* data, wl_surface* wlSurface, wl_output* output)
+        .leave = [](void* data, wl_surface* wlSurface, wl_output* wlOutput)
         {
             auto* surface = reinterpret_cast<Surface*>(data);
-            surface->onSurfaceLeave(wlSurface, output);
+            surface->onSurfaceLeave(wlSurface, wlOutput);
         },
         .preferred_buffer_scale = [](void* data, wl_surface* wlSurface, int32_t scale)
         {
@@ -37,32 +37,44 @@ namespace GUI::Wayland
 
     Surface::Surface(NonNull<RefPtr<Display>> display) : _display { display }
     {
-        _wlSurface = wl_compositor_create_surface(display->wlCompositor());
+        _wlSurface = wl_compositor_create_surface(_display->globals().wlCompositor);
+        wl_surface_add_listener(_wlSurface, &_wlSurfaceListener, this);
 
-        _xdgSurface = xdg_wm_base_get_xdg_surface(display->xdgWmBase(), _wlSurface);
+        _xdgSurface = xdg_wm_base_get_xdg_surface(_display->globals().xdgWmBase, _wlSurface);
+        xdg_surface_add_listener(_xdgSurface, &_xdgSurfaceListener, this);
 
         _wlEglWindow = wl_egl_window_create(_wlSurface, _size.width, _size.height);
 
-        _eglSurface = eglCreatePlatformWindowSurface(display->eglDisplay(), display->eglConfig(), _wlEglWindow, NULL);
+        EGLint attributes[] = {
+            EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
+            EGL_RED_SIZE, 8,
+            EGL_GREEN_SIZE, 8,
+            EGL_BLUE_SIZE, 8,
+            EGL_ALPHA_SIZE, 8,
+            EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT,
+            EGL_NONE
+        };
+        EGLint configCount;
+        eglChooseConfig(_display->eglDisplay(), attributes, &_eglConfig, 1, &configCount);
+
+        _eglSurface = eglCreatePlatformWindowSurface(_display->eglDisplay(), _eglConfig, _wlEglWindow, NULL);
     }
 
     Surface::~Surface()
     {
-        if (auto display = _display.strong())
-            eglDestroySurface(display->eglDisplay(), _eglSurface);
+        eglDestroySurface(_display->eglDisplay(), _eglSurface);
 
         wl_egl_window_destroy(_wlEglWindow);
 
         xdg_surface_destroy(_xdgSurface);
-
         wl_surface_destroy(_wlSurface);
     }
 
-    void Surface::onSurfaceEnter(wl_surface* wlSurface, wl_output* output)
+    void Surface::onSurfaceEnter(wl_surface* wlSurface, wl_output* wlOutput)
     {
     }
 
-    void Surface::onSurfaceLeave(wl_surface* wlSurface, wl_output* output)
+    void Surface::onSurfaceLeave(wl_surface* wlSurface, wl_output* wlOutput)
     {
     }
 

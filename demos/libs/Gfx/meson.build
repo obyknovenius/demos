@@ -9,7 +9,9 @@ gfx_sources = [
     'Color.cpp',
 ]
 
+subdir('EGL')
 subdir('Cairo')
+subdir('Wayland')
 
 gfx_lib = static_library(
     'Gfx',
@@ -20,4 +22,5 @@ gfx_lib = static_library(
 gfx_dep = declare_dependency(
     include_directories: libs_inc,
     link_with: gfx_lib,
+    dependencies: gfx_deps,
 )

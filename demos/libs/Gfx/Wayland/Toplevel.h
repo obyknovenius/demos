@@ -2,12 +2,12 @@
 
 #include "Surface.h"
 
-namespace GUI::Wayland
+namespace Gfx::Wayland
 {
     class Toplevel final : public Surface
     {
     public:
-        static NonNull<RefPtr<Toplevel>> make(RefPtr<Display> display) { return adopt(new Toplevel(display)); }
+        static NonNull<RefPtr<Toplevel>> create(NonNull<RefPtr<Display>> display);
 
     private:
         static const xdg_toplevel_listener _xdgToplevelListener;

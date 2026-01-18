@@ -2,6 +2,6 @@ executable(
     'surface',
     sources: 'main.cpp',
     dependencies: [
-        gui_dep,
+        gfx_dep,
     ]
 )
