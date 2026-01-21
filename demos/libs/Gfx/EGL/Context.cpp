@@ -29,6 +29,7 @@ namespace Gfx::EGL
     void Context::beginFrame()
     {
         eglMakeCurrent(_surface->display()->eglDisplay(), _surface->eglSurface(), _surface->eglSurface(), _eglContext);
+        eglSwapInterval(_surface->display()->eglDisplay(), 0);
 
         glViewport(0, 0, _surface->size().width, _surface->size().height);
     }

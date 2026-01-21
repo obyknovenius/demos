@@ -9,6 +9,8 @@
 
 namespace Gfx::Wayland
 {
+    class Seat;
+
     struct Globals
     {
         wl_compositor* wlCompositor {};
@@ -33,8 +35,10 @@ namespace Gfx::Wayland
         Display(NonNull<wl_display*> wlDisplay);
         ~Display() override;
 
-        void onRegistryGlobal(wl_registry* wlRegistry, uint32_t name, const char* interface, uint32_t version);
-        void onWmBasePing(xdg_wm_base* xdgWmBase, uint32_t serial);
+        void onWlRegistryGlobal(wl_registry* wlRegistry, uint32_t name, const char* interface, uint32_t version);
+        void onWlRegistryGlobalRemove(wl_registry* wlRegistry, uint32_t name);
+
+        void onXdgWmBasePing(xdg_wm_base* xdgWmBase, uint32_t serial);
 
         NonNull<wl_display*> _wlDisplay;
 
@@ -43,5 +47,7 @@ namespace Gfx::Wayland
         Globals _globals;
 
         EGLDisplay _eglDisplay { EGL_NO_DISPLAY };
+
+        RefPtr<Seat> _seat;
     };
 }

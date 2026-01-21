@@ -79,6 +79,8 @@ gfx_deps += gfx_wayland_deps
 
 gfx_wayland_sources = [
     'Display.cpp',
+    'Pointer.cpp',
+    'Seat.cpp',
     'Surface.cpp',
     'Toplevel.cpp',
 ]

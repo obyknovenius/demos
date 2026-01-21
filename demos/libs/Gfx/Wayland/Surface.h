@@ -5,6 +5,7 @@
 #include <Core/RefCounted.h>
 #include <Core/RefPtr.h>
 #include <EGL/egl.h>
+#include <functional>
 #include <wayland-client.h>
 #include <wayland-egl.h>
 #include <xdg-shell-client-protocol.h>
@@ -22,6 +23,8 @@ namespace Gfx::Wayland
         EGLSurface eglSurface() const { return _eglSurface; }
 
         Size size() const { return _size; }
+
+        std::function<void()> onPointerMotion;
 
     protected:
         Surface(NonNull<RefPtr<Display>> display);
@@ -43,11 +46,11 @@ namespace Gfx::Wayland
         static const wl_surface_listener _wlSurfaceListener;
         static const xdg_surface_listener _xdgSurfaceListener;
 
-        void onSurfaceEnter(wl_surface* wlSurface, wl_output* wlOutput);
-        void onSurfaceLeave(wl_surface* wlSurface, wl_output* wlOutput);
-        void onSurfacePreferredBufferScale(wl_surface* wlSurface, int32_t scale);
-        void onSurfacePreferredBufferTransform(wl_surface* wlSurface, uint32_t transform);
+        void onWlSurfaceEnter(wl_surface* wlSurface, wl_output* wlOutput);
+        void onWlSurfaceLeave(wl_surface* wlSurface, wl_output* wlOutput);
+        void onWlSurfacePreferredBufferScale(wl_surface* wlSurface, int32_t scale);
+        void onWlSurfacePreferredBufferTransform(wl_surface* wlSurface, uint32_t transform);
 
-        void onSurfaceConfigure(xdg_surface* xdgSurface, uint32_t serial);
+        void onXdgSurfaceConfigure(xdg_surface* xdgSurface, uint32_t serial);
     };
 }

@@ -1,5 +1,6 @@
 #include "Display.h"
 
+#include "Seat.h"
 #include <Core/EventLoop.h>
 #include <EGL/eglext.h>
 #include <cstring>
@@ -10,16 +11,20 @@ namespace Gfx::Wayland
         .global = [](void* data, wl_registry* wlRegistry, uint32_t name, const char* interface, uint32_t version)
         {
             auto* display = reinterpret_cast<Display*>(data);
-            display->onRegistryGlobal(wlRegistry, name, interface, version);
+            display->onWlRegistryGlobal(wlRegistry, name, interface, version);
         },
-        .global_remove = nullptr
+        .global_remove = [](void* data, wl_registry* wlRegistry, uint32_t name)
+        {
+            auto* display = reinterpret_cast<Display*>(data);
+            display->onWlRegistryGlobalRemove(wlRegistry, name);
+        }
     };
 
     const xdg_wm_base_listener Display::_xdgWmBaseListener = {
         .ping = [](void* data, xdg_wm_base* xdgWmBase, uint32_t serial)
         {
             auto* display = reinterpret_cast<Display*>(data);
-            display->onWmBasePing(xdgWmBase, serial);
+            display->onXdgWmBasePing(xdgWmBase, serial);
         }
     };
 
@@ -66,7 +71,7 @@ namespace Gfx::Wayland
         wl_display_disconnect(_wlDisplay);
     }
 
-    void Display::onRegistryGlobal(wl_registry* wlRegistry, uint32_t name, const char* interface, uint32_t version)
+    void Display::onWlRegistryGlobal(wl_registry* wlRegistry, uint32_t name, const char* interface, uint32_t version)
     {
         if (strcmp(interface, wl_compositor_interface.name) == 0)
         {
@@ -77,9 +82,18 @@ namespace Gfx::Wayland
             _globals.xdgWmBase = reinterpret_cast<xdg_wm_base*>(wl_registry_bind(wlRegistry, name, &xdg_wm_base_interface, 1));
             xdg_wm_base_add_listener(_globals.xdgWmBase, &_xdgWmBaseListener, this);
         }
+        else if (strcmp(interface, wl_seat_interface.name) == 0)
+        {
+            auto* wl_seat = reinterpret_cast<struct wl_seat*>(wl_registry_bind(wlRegistry, name, &wl_seat_interface, 7));
+            _seat = Seat::create(wl_seat, { this });
+        }
     }
 
-    void Display::onWmBasePing(xdg_wm_base* xdgWmBase, uint32_t serial)
+    void Display::onWlRegistryGlobalRemove(wl_registry* wlRegistry, uint32_t name)
+    {
+    }
+
+    void Display::onXdgWmBasePing(xdg_wm_base* xdgWmBase, uint32_t serial)
     {
         xdg_wm_base_pong(xdgWmBase, serial);
     }

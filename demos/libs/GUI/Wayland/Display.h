@@ -37,7 +37,7 @@ namespace GUI::Wayland
         static RefPtr<Display> _defaultDisplay;
 
         Display(NonNull<wl_display*> wlDisplay);
-        ~Display();
+        ~Display() override;
 
         static const wl_registry_listener _wlRegistryListener;
         static const xdg_wm_base_listener _xdgWmBaseListener;

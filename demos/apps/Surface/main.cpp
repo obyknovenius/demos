@@ -4,6 +4,20 @@
 #include <Gfx/Wayland/Toplevel.h>
 #include <GLES3/gl3.h>
 
+void draw(NonNull<RefPtr<Gfx::EGL::Context>> context)
+{
+    context->beginFrame();
+
+    float red = rand() % 256 / 255.0f;
+    float green = rand() % 256 / 255.0f;
+    float blue = rand() % 256 / 255.0f;
+
+    glClearColor(red, green, blue, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    context->endFrame();
+}
+
 int main(int argc, char** argv)
 {
     auto display = Gfx::Wayland::Display::connect();
@@ -14,12 +28,11 @@ int main(int argc, char** argv)
 
     auto context = Gfx::EGL::Context::create(toplevel);
 
-    context->beginFrame();
+    draw(context);
 
-    glClearColor(0.0f, 1.0f, 0.0f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
-
-    context->endFrame();
+    toplevel->onPointerMotion = [&]() {
+        draw(context);
+    };
 
     Core::EventLoop::mainLoop()->run();
 

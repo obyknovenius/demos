@@ -8,22 +8,22 @@ namespace Gfx::Wayland
         .enter = [](void* data, wl_surface* wlSurface, wl_output* wlOutput)
         {
             auto* surface = reinterpret_cast<Surface*>(data);
-            surface->onSurfaceEnter(wlSurface, wlOutput);
+            surface->onWlSurfaceEnter(wlSurface, wlOutput);
         },
         .leave = [](void* data, wl_surface* wlSurface, wl_output* wlOutput)
         {
             auto* surface = reinterpret_cast<Surface*>(data);
-            surface->onSurfaceLeave(wlSurface, wlOutput);
+            surface->onWlSurfaceLeave(wlSurface, wlOutput);
         },
         .preferred_buffer_scale = [](void* data, wl_surface* wlSurface, int32_t scale)
         {
             auto* surface = reinterpret_cast<Surface*>(data);
-            surface->onSurfacePreferredBufferScale(wlSurface, scale);
+            surface->onWlSurfacePreferredBufferScale(wlSurface, scale);
         },
         .preferred_buffer_transform = [](void* data, wl_surface* wlSurface, uint32_t transform)
         {
             auto* surface = reinterpret_cast<Surface*>(data);
-            surface->onSurfacePreferredBufferTransform(wlSurface, transform);
+            surface->onWlSurfacePreferredBufferTransform(wlSurface, transform);
         }
     };
 
@@ -31,13 +31,14 @@ namespace Gfx::Wayland
         .configure = [](void* data, xdg_surface* xdgSurface, uint32_t serial)
         {
             auto* surface = reinterpret_cast<Surface*>(data);
-            surface->onSurfaceConfigure(xdgSurface, serial);
+            surface->onXdgSurfaceConfigure(xdgSurface, serial);
         }
     };
 
     Surface::Surface(NonNull<RefPtr<Display>> display) : _display { display }
     {
         _wlSurface = wl_compositor_create_surface(_display->globals().wlCompositor);
+        wl_surface_set_user_data(_wlSurface, this);
         wl_surface_add_listener(_wlSurface, &_wlSurfaceListener, this);
 
         _xdgSurface = xdg_wm_base_get_xdg_surface(_display->globals().xdgWmBase, _wlSurface);
@@ -70,23 +71,23 @@ namespace Gfx::Wayland
         wl_surface_destroy(_wlSurface);
     }
 
-    void Surface::onSurfaceEnter(wl_surface* wlSurface, wl_output* wlOutput)
+    void Surface::onWlSurfaceEnter(wl_surface* wlSurface, wl_output* wlOutput)
     {
     }
 
-    void Surface::onSurfaceLeave(wl_surface* wlSurface, wl_output* wlOutput)
+    void Surface::onWlSurfaceLeave(wl_surface* wlSurface, wl_output* wlOutput)
     {
     }
 
-    void Surface::onSurfacePreferredBufferScale(wl_surface* wlSurface, int32_t scale)
+    void Surface::onWlSurfacePreferredBufferScale(wl_surface* wlSurface, int32_t scale)
     {
     }
 
-    void Surface::onSurfacePreferredBufferTransform(wl_surface* wlSurface, uint32_t transform)
+    void Surface::onWlSurfacePreferredBufferTransform(wl_surface* wlSurface, uint32_t transform)
     {
     }
 
-    void Surface::onSurfaceConfigure(xdg_surface* xdgSurface, uint32_t serial)
+    void Surface::onXdgSurfaceConfigure(xdg_surface* xdgSurface, uint32_t serial)
     {
         xdg_surface_ack_configure(xdgSurface, serial);
     }

@@ -9,6 +9,7 @@ RUN apt update && \
         libegl-dev \
         libgles-dev \
         libwayland-dev \
+        mangohud \
         meson \
         pkg-config \
         valgrind \
