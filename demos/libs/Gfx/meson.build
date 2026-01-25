@@ -9,7 +9,6 @@ gfx_sources = [
     'Color.cpp',
 ]
 
-subdir('EGL')
 subdir('Cairo')
 subdir('Wayland')
 

@@ -1,12 +1,27 @@
 #include <Core/EventLoop.h>
-#include <Gfx/EGL/Context.h>
 #include <Gfx/Wayland/Display.h>
 #include <Gfx/Wayland/Toplevel.h>
 #include <GLES3/gl3.h>
 
-void draw(NonNull<RefPtr<Gfx::EGL::Context>> context)
+static bool drawing = false;
+
+class ToplevelDelegate : public Gfx::Wayland::Surface::Delegate
 {
-    context->beginFrame();
+public:
+    void surfaceDidFinishFrame(RefPtr<Gfx::Wayland::Surface> surface) override
+    {
+        drawing = false;
+    }
+};
+
+void draw(NonNull<RefPtr<Gfx::Wayland::Toplevel>> toplevel)
+{
+    if (drawing)
+        return;
+
+    drawing = true;
+
+    toplevel->beginFrame();
 
     float red = rand() % 256 / 255.0f;
     float green = rand() % 256 / 255.0f;
@@ -15,7 +30,7 @@ void draw(NonNull<RefPtr<Gfx::EGL::Context>> context)
     glClearColor(red, green, blue, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    context->endFrame();
+    toplevel->endFrame();
 }
 
 int main(int argc, char** argv)
@@ -26,12 +41,13 @@ int main(int argc, char** argv)
 
     auto toplevel = Gfx::Wayland::Toplevel::create(display);
 
-    auto context = Gfx::EGL::Context::create(toplevel);
+    auto delegate = adopt(new ToplevelDelegate());
+    toplevel->setDelegate(delegate);
 
-    draw(context);
+    draw(toplevel);
 
     toplevel->onPointerMotion = [&]() {
-        draw(context);
+        draw(toplevel);
     };
 
     Core::EventLoop::mainLoop()->run();
