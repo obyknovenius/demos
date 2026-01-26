@@ -19,21 +19,10 @@ namespace Gfx::Wayland
     class Surface : public RefCounted
     {
     public:
-        class Delegate : public RefCounted, public Weakable
-        {
-        public:
-            virtual void surfaceDidFinishFrame(RefPtr<Surface> surface) = 0;
-        };
-
-        NonNull<RefPtr<Display>> display() const { return _display; }
-
         Size size() const { return _size; }
 
-        void setDelegate(RefPtr<Delegate> delegate) { _delegate = delegate; }
-        WeakPtr<Delegate> delegate() const { return _delegate; }
-
-        void beginFrame();
-        void endFrame();
+        void setNeedsRedraw();
+        void redraw();
 
         std::function<void()> onPointerMotion;
 
@@ -41,7 +30,8 @@ namespace Gfx::Wayland
         Surface(NonNull<RefPtr<Display>> display);
         ~Surface() override;
 
-        void didFinishFrame();
+        void scheduleNextFrame();
+        void frameDidFinish();
 
         NonNull<RefPtr<Display>> _display;
 
@@ -56,20 +46,14 @@ namespace Gfx::Wayland
 
         Size _size { 800, 600 };
 
-        WeakPtr<Delegate> _delegate;
+        bool _needsRedraw { false };
 
     private:
-        static const wl_surface_listener _wlSurfaceListener;
-        static const wl_callback_listener _wlFrameCallbackListener;
         static const xdg_surface_listener _xdgSurfaceListener;
+        static const wl_callback_listener _frameCallbackListener;
 
-        wl_callback* _wlFrameCallback {};
+        void didConfigure(uint32_t serial);
 
-        void onWlSurfaceEnter(wl_surface* wlSurface, wl_output* wlOutput);
-        void onWlSurfaceLeave(wl_surface* wlSurface, wl_output* wlOutput);
-        void onWlSurfacePreferredBufferScale(wl_surface* wlSurface, int32_t scale);
-        void onWlSurfacePreferredBufferTransform(wl_surface* wlSurface, uint32_t transform);
-
-        void onXdgSurfaceConfigure(xdg_surface* xdgSurface, uint32_t serial);
+        wl_callback* _frameCallback {};
     };
 }
