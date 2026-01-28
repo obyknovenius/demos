@@ -22,7 +22,6 @@ namespace Gfx::Wayland
         Size size() const { return _size; }
 
         void setNeedsRedraw();
-        void redraw();
 
         std::function<void()> onPointerMotion;
 
@@ -30,8 +29,7 @@ namespace Gfx::Wayland
         Surface(NonNull<RefPtr<Display>> display);
         ~Surface() override;
 
-        void scheduleNextFrame();
-        void frameDidFinish();
+        void draw();
 
         NonNull<RefPtr<Display>> _display;
 
@@ -46,13 +44,19 @@ namespace Gfx::Wayland
 
         Size _size { 800, 600 };
 
-        bool _needsRedraw { false };
-
     private:
         static const xdg_surface_listener _xdgSurfaceListener;
         static const wl_callback_listener _frameCallbackListener;
 
         void didConfigure(uint32_t serial);
+
+        void renderFrame();
+        void frameDidFinish(uint32_t time);
+
+        bool _needsRedraw { false };
+
+        bool _renderingFrame { false };
+        bool _frameScheduled { false };
 
         wl_callback* _frameCallback {};
     };

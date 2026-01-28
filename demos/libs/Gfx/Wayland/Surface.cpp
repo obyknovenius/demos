@@ -9,16 +9,15 @@ namespace Gfx::Wayland
         .done = [](void* data, wl_callback* wlCallback, uint32_t time)
         {
             auto* surface = reinterpret_cast<Surface*>(data);
-            surface->frameDidFinish();
+            surface->frameDidFinish(time);
         }
     };
 
     const xdg_surface_listener Surface::_xdgSurfaceListener = {
         .configure = [](void* data, xdg_surface* xdgSurface, uint32_t serial)
         {
-            xdg_surface_ack_configure(xdgSurface, serial);
             auto* surface = reinterpret_cast<Surface*>(data);
-            surface->redraw();
+            surface->didConfigure(serial);
         }
     };
 
@@ -69,48 +68,42 @@ namespace Gfx::Wayland
 
     void Surface::setNeedsRedraw()
     {
-        if (_needsRedraw)
-            return;
-
         _needsRedraw = true;
-
-        scheduleNextFrame();
+        renderFrame();
     }
 
-    void Surface::scheduleNextFrame()
+    void Surface::renderFrame()
     {
-        if (_frameCallback)
+        if (_renderingFrame)
+        {
+            _frameScheduled = true;
             return;
+        }
+
+        _renderingFrame = true;
 
         _frameCallback = wl_surface_frame(_wlSurface);
         wl_callback_add_listener(_frameCallback, &_frameCallbackListener, this);
-        wl_surface_commit(_wlSurface);
-    }
 
-    void Surface::frameDidFinish()
-    {
-        wl_callback_destroy(_frameCallback);
-        _frameCallback = nullptr;
-
-        if (_needsRedraw)
-            redraw();
-    }
-
-    void Surface::redraw()
-    {
         eglMakeCurrent(_display->eglDisplay(), _eglSurface, _eglSurface, _eglContext);
         eglSwapInterval(_display->eglDisplay(), 0);
 
         glViewport(0, 0, _size.width, _size.height);
 
+        if (_needsRedraw)
+            draw();
+
+        eglSwapBuffers(_display->eglDisplay(), _eglSurface);
+    }
+
+    void Surface::draw()
+    {
         float red = rand() % 256 / 255.0f;
         float green = rand() % 256 / 255.0f;
         float blue = rand() % 256 / 255.0f;
 
         glClearColor(red, green, blue, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
-
-        eglSwapBuffers(_display->eglDisplay(), _eglSurface);
 
         _needsRedraw = false;
     }
@@ -120,5 +113,19 @@ namespace Gfx::Wayland
         xdg_surface_ack_configure(_xdgSurface, serial);
 
         setNeedsRedraw();
+    }
+
+    void Surface::frameDidFinish(uint32_t time)
+    {
+        wl_callback_destroy(_frameCallback);
+        _frameCallback = nullptr;
+
+        _renderingFrame = false;
+
+        if (_frameScheduled)
+        {
+            _frameScheduled = false;
+            renderFrame();
+        }
     }
 }
