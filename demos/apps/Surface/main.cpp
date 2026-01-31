@@ -1,19 +1,11 @@
 #include <Core/EventLoop.h>
-#include <Gfx/Wayland/Display.h>
-#include <Gfx/Wayland/Toplevel.h>
-#include <GLES3/gl3.h>
+#include <Platform/Display.h>
+#include <Platform/Window.h>
 
 int main(int argc, char** argv)
 {
-    auto display = Gfx::Wayland::Display::connect();
-    if (!display)
-        return 1;
-
-    auto toplevel = Gfx::Wayland::Toplevel::create(display);
-
-    toplevel->onPointerMotion = [&]() {
-        toplevel->setNeedsRedraw();
-    };
+    auto display = Platform::Display::defaultDisplay();
+    auto window = Platform::Window::create(display);
 
     Core::EventLoop::mainLoop()->run();
 

@@ -10,7 +10,6 @@ gfx_sources = [
 ]
 
 subdir('Cairo')
-subdir('Wayland')
 
 gfx_lib = static_library(
     'Gfx',

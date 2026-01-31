@@ -1,6 +1,7 @@
 gui_deps = [
     core_dep,
     gfx_dep,
+    platform_dep
 ]
 
 gui_sources = [

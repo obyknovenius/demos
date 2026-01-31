@@ -1,7 +1,5 @@
 executable(
     'surface',
     sources: 'main.cpp',
-    dependencies: [
-        gfx_dep,
-    ]
+    dependencies: platform_dep
 )
