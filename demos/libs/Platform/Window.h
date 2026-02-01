@@ -12,6 +12,13 @@ namespace Platform
     class Window : public RefCounted
     {
     public:
+        class Delegate : public RefCounted
+        {
+        public:
+            virtual void layout(NonNull<RefPtr<Window>> window) {};
+            virtual void draw(NonNull<RefPtr<Window>> window) {};
+        };
+
         static NonNull<RefPtr<Window>> create(NonNull<RefPtr<Display>> display, Gfx::Size size = { 800, 600 });
 
         Gfx::Size size() const { return _size; }
@@ -22,19 +29,24 @@ namespace Platform
         bool needsRedraw() const { return _needsRedraw; }
         void setNeedsRedraw() { _needsRedraw = true; }
 
+        RefPtr<Delegate> delegate() const { return _delegate; }
+        void setDelegate(RefPtr<Delegate> delegate) { _delegate = delegate; }
+
     protected:
         Window(Gfx::Size size) : _size { size } {};
 
         void layoutIfNeeded();
         void redrawIfNeeded();
 
-        virtual void layout() = 0;
-        virtual void draw() = 0;
+        virtual void layout();
+        virtual void draw();
 
         Gfx::Size _size {};
 
         bool _needsLayout { false };
         bool _needsRedraw { false };
+
+        RefPtr<Delegate> _delegate;
     };
 
     inline void Window::layoutIfNeeded()
@@ -47,5 +59,19 @@ namespace Platform
     {
         if (_needsRedraw)
             draw();
+    }
+
+    inline void Window::layout()
+    {
+        if (_delegate)
+            _delegate->layout(this);
+        _needsLayout = false;
+    }
+
+    inline void Window::draw()
+    {
+        if (_delegate)
+            _delegate->draw(this);
+        _needsRedraw = false;
     }
 }

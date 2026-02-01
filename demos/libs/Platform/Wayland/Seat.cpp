@@ -35,7 +35,7 @@ namespace Platform::Wayland
         bool havePointer = capabilities & WL_SEAT_CAPABILITY_POINTER;
 
         if (havePointer && !_pointer)
-            _pointer = Pointer::create(wl_seat_get_pointer(_wlSeat), RefPtr(this));
+            _pointer = Pointer::create(wl_seat_get_pointer(_wlSeat), this);
         else if (!havePointer && _pointer)
             _pointer = nullptr;
     }

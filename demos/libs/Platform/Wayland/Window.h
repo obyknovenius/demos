@@ -18,7 +18,6 @@ namespace Platform::Wayland
         static NonNull<RefPtr<Window>> create(NonNull<RefPtr<Display>> display, Gfx::Size size = { 800, 600 });
 
     protected:
-        void layout() override;
         void draw() override;
 
     private:

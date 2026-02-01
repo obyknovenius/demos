@@ -14,6 +14,12 @@ namespace Core
         }
 
         template<typename U>
+        NonNull(U ptr) : _ptr { static_cast<T>(ptr) }
+        {
+            assert(ptr);
+        }
+
+        template<typename U>
         NonNull(const NonNull<U>& other) : _ptr { static_cast<T>(other.get()) }
         {
         }
@@ -21,6 +27,13 @@ namespace Core
         T get() const { return _ptr; }
         operator T() const { return _ptr; }
         T operator->() const { return _ptr; }
+
+        template<typename U>
+        U get() const { return static_cast<U>(_ptr); }
+        template<typename U>
+        operator U() const { return static_cast<U>(_ptr); }
+        template<typename U>
+        U operator->() const { return static_cast<U>(_ptr); }
 
         NonNull(std::nullptr_t) = delete;
         NonNull& operator=(std::nullptr_t) = delete;

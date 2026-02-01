@@ -66,11 +66,6 @@ namespace Platform::Wayland
         wl_surface_destroy(_wlSurface);
     }
 
-    void Window::layout()
-    {
-        _needsLayout = false;
-    }
-
     void Window::draw()
     {
         eglMakeCurrent(_display->eglDisplay(), _eglSurface, _eglSurface, _eglContext);
@@ -78,12 +73,8 @@ namespace Platform::Wayland
 
         glViewport(0, 0, _size.width, _size.height);
 
-        float red = rand() % 256 / 255.0f;
-        float green = rand() % 256 / 255.0f;
-        float blue = rand() % 256 / 255.0f;
-
-        glClearColor(red, green, blue, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
+        if (_delegate)
+            _delegate->draw(this);
 
         eglSwapBuffers(_display->eglDisplay(), _eglSurface);
 
