@@ -23,6 +23,7 @@ namespace Platform::Wayland
         , _display { display }
     {
         _wlSurface = wl_compositor_create_surface(_display->wlCompositor());
+        wl_surface_set_user_data(_wlSurface, this);
 
         _xdgSurface = xdg_wm_base_get_xdg_surface(_display->xdgWmBase(), _wlSurface);
         xdg_surface_add_listener(_xdgSurface, &_xdgSurfaceListener, this);
@@ -66,25 +67,35 @@ namespace Platform::Wayland
         wl_surface_destroy(_wlSurface);
     }
 
-    void Window::draw()
+    void Window::setNeedsLayout()
     {
-        eglMakeCurrent(_display->eglDisplay(), _eglSurface, _eglSurface, _eglContext);
-        eglSwapInterval(_display->eglDisplay(), 0);
+        Platform::Window::setNeedsLayout();
+        renderFrame();
+    }
 
-        glViewport(0, 0, _size.width, _size.height);
-
-        if (_delegate)
-            _delegate->draw(this);
-
-        eglSwapBuffers(_display->eglDisplay(), _eglSurface);
-
-        _needsRedraw = false;
+    void Window::setNeedsDraw()
+    {
+        Platform::Window::setNeedsDraw();
+        renderFrame();
     }
 
     void Window::didConfigure(uint32_t serial)
     {
         xdg_surface_ack_configure(_xdgSurface, serial);
 
-        draw();
+        setNeedsDraw();
+    }
+
+    void Window::renderFrame()
+    {
+        eglMakeCurrent(_display->eglDisplay(), _eglSurface, _eglSurface, _eglContext);
+        eglSwapInterval(_display->eglDisplay(), 0);
+
+        glViewport(0, 0, _size.width, _size.height);
+
+        layoutIfNeeded();
+        drawIfNeeded();
+
+        eglSwapBuffers(_display->eglDisplay(), _eglSurface);
     }
 }

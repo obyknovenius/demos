@@ -15,7 +15,9 @@ namespace Platform::Wayland
             auto* seat = reinterpret_cast<Seat*>(data);
             seat->capabilitiesDidChange(capabilities);
         },
-        .name = nullptr
+        .name = [](void* data, wl_seat* wlSeat, const char* name)
+        {
+        }
     };
 
     Seat::Seat(NonNull<wl_seat*> wlSeat, NonNull<RefPtr<Display>> display) :

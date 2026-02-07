@@ -17,8 +17,8 @@ namespace Platform::Wayland
     public:
         static NonNull<RefPtr<Window>> create(NonNull<RefPtr<Display>> display, Gfx::Size size = { 800, 600 });
 
-    protected:
-        void draw() override;
+        void setNeedsLayout() override;
+        void setNeedsDraw() override;
 
     private:
         static const xdg_surface_listener _xdgSurfaceListener;
@@ -27,6 +27,8 @@ namespace Platform::Wayland
         ~Window() override;
 
         void didConfigure(uint32_t serial);
+
+        void renderFrame();
 
         NonNull<RefPtr<Display>> _display;
 

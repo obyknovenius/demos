@@ -12,7 +12,7 @@ public:
         return adopt(new WindowDelegate());
     }
 
-    void draw(NonNull<RefPtr<Platform::Window>> window) override
+    void drawWindow(NonNull<RefPtr<Platform::Window>> window) override
     {
         float red = rand() % 256 / 255.0f;
         float green = rand() % 256 / 255.0f;
@@ -20,6 +20,11 @@ public:
 
         glClearColor(red, green, blue, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
+    }
+
+    void windowDidReceiveEvent(NonNull<RefPtr<Platform::Window>> window, Platform::Event event) override
+    {
+        window->setNeedsDraw();
     }
 
 private:

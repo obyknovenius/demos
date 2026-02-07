@@ -80,7 +80,7 @@ namespace Platform::Wayland
         }
         else if (interface == wl_seat_interface.name)
         {
-            wl_seat* wlSeat = reinterpret_cast<wl_seat*>(wl_registry_bind(_wlRegistry, name, &wl_seat_interface, 1));
+            wl_seat* wlSeat = reinterpret_cast<wl_seat*>(wl_registry_bind(_wlRegistry, name, &wl_seat_interface, 7));
             _seat = Seat::create(wlSeat, this);
         }
     }
