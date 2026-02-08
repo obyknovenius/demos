@@ -17,18 +17,20 @@ namespace Platform::Wayland
     public:
         static NonNull<RefPtr<Window>> create(NonNull<RefPtr<Display>> display, Gfx::Size size = { 800, 600 });
 
-        void setNeedsLayout() override;
         void setNeedsDraw() override;
 
     private:
         static const xdg_surface_listener _xdgSurfaceListener;
+        static const wl_callback_listener _frameCallbackListener;
 
         Window(NonNull<RefPtr<Display>>display, Gfx::Size size);
         ~Window() override;
 
         void didConfigure(uint32_t serial);
 
-        void renderFrame();
+        void drawFrame();
+        void setNeedsDrawNextFrame();
+        void drawNextFrameIfNeeded();
 
         NonNull<RefPtr<Display>> _display;
 
@@ -41,5 +43,10 @@ namespace Platform::Wayland
         EGLConfig _eglConfig {};
         EGLSurface _eglSurface { EGL_NO_SURFACE };
         EGLContext _eglContext { EGL_NO_CONTEXT };
+
+        bool _drawingFrame { false };
+        bool _needsDrawNextFrame { false };
+
+        wl_callback* _frameCallback {};
     };
 }

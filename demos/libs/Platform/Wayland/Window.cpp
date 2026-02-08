@@ -18,6 +18,14 @@ namespace Platform::Wayland
         }
     };
 
+    const wl_callback_listener Window::_frameCallbackListener = {
+        .done = [](void* data, wl_callback* wlCallback, uint32_t time)
+        {
+            auto* window = reinterpret_cast<Window*>(data);
+            window->drawNextFrameIfNeeded();
+        }
+    };
+
     Window::Window(NonNull<RefPtr<Display>> display, Gfx::Size size)
         : Platform::Window { size }
         , _display { display }
@@ -58,6 +66,9 @@ namespace Platform::Wayland
 
     Window::~Window()
     {
+        if (_frameCallback)
+            wl_callback_destroy(_frameCallback);
+
         eglDestroyContext(_display->eglDisplay(), _eglContext);
         eglDestroySurface(_display->eglDisplay(), _eglSurface);
 
@@ -67,16 +78,17 @@ namespace Platform::Wayland
         wl_surface_destroy(_wlSurface);
     }
 
-    void Window::setNeedsLayout()
-    {
-        Platform::Window::setNeedsLayout();
-        renderFrame();
-    }
-
     void Window::setNeedsDraw()
     {
-        Platform::Window::setNeedsDraw();
-        renderFrame();
+        if (!_needsDraw)
+        {
+            _needsDraw = true;
+
+            if (!_drawingFrame)
+                drawFrame();
+            else
+                setNeedsDrawNextFrame();
+        }
     }
 
     void Window::didConfigure(uint32_t serial)
@@ -86,16 +98,39 @@ namespace Platform::Wayland
         setNeedsDraw();
     }
 
-    void Window::renderFrame()
+    void Window::drawFrame()
     {
+        _drawingFrame = true;
+
+        _frameCallback = wl_surface_frame(_wlSurface);
+        wl_callback_add_listener(_frameCallback, &_frameCallbackListener, this);
+
         eglMakeCurrent(_display->eglDisplay(), _eglSurface, _eglSurface, _eglContext);
         eglSwapInterval(_display->eglDisplay(), 0);
 
         glViewport(0, 0, _size.width, _size.height);
 
-        layoutIfNeeded();
         drawIfNeeded();
 
         eglSwapBuffers(_display->eglDisplay(), _eglSurface);
+    }
+
+    void Window::setNeedsDrawNextFrame()
+    {
+        _needsDrawNextFrame = true;
+    }
+
+    void Window::drawNextFrameIfNeeded()
+    {
+        wl_callback_destroy(_frameCallback);
+        _frameCallback = nullptr;
+
+        _drawingFrame = false;
+
+        if (_needsDrawNextFrame)
+        {
+            _needsDrawNextFrame = false;
+            drawFrame();
+        }
     }
 }
