@@ -1,0 +1,39 @@
+#pragma once
+
+#include "RefCounted.h"
+#include "RefPtr.h"
+
+namespace Foundation
+{
+    template<typename T>
+    class WeakLink final : public RefCounted
+    {
+    public:
+        WeakLink(T* ptr) : _ptr { ptr } {}
+        ~WeakLink() = default;
+
+        T* get() const { return _ptr; }
+
+        void revoke() { _ptr = nullptr; }
+    private:
+        T* _ptr {};
+    };
+
+    template<typename T>
+    class Weakable
+    {
+    public:
+        Weakable() : _weakLink { new WeakLink(static_cast<T*>(this)) } {}
+
+        virtual ~Weakable()
+        {
+            _weakLink->revoke();
+        }
+
+        RefPtr<WeakLink<T>> weakLink() const { return _weakLink; }
+    private:
+        RefPtr<WeakLink<T>> _weakLink;
+    };
+}
+
+using Foundation::Weakable;

@@ -6,4 +6,5 @@ tests_deps = [
     gui_dep
 ]
 
+subdir('Foundation')
 subdir('Core')
