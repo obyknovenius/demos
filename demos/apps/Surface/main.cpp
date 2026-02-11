@@ -4,13 +4,16 @@
 #include <GLES3/gl3.h>
 #include <cstdlib>
 
-class WindowDelegate final : public Platform::Window::Delegate
+class WindowDelegate final : public Platform::Window::Delegate, public RefCounted
 {
 public:
     static NonNull<RefPtr<WindowDelegate>> create()
     {
         return adopt(new WindowDelegate());
     }
+
+    void ref() override { RefCounted::ref(); }
+    void unref() override { RefCounted::unref(); }
 
     void drawWindow(NonNull<RefPtr<Platform::Window>> window) override
     {

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Event.h"
+#include <Core/CanMakeRefPtr.h>
 #include <Core/NonNull.h>
 #include <Core/RefCounted.h>
 #include <Core/RefPtr.h>
@@ -14,7 +15,7 @@ namespace Platform
     class Window : public RefCounted, public Weakable
     {
     public:
-        class Delegate : public RefCounted
+        class Delegate : public CanMakeRefPtr
         {
         public:
             virtual void layoutWindow(NonNull<RefPtr<Window>> window) {};
