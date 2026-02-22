@@ -1,7 +1,6 @@
 #pragma once
 
-#include "RefPtr.h"
-#include "Weakable.h"
+#include "EnableWeakPtr.h"
 
 namespace Foundation
 {
@@ -11,21 +10,22 @@ namespace Foundation
     public:
         WeakPtr() = default;
 
-        template<typename U>
-        WeakPtr(RefPtr<U> ptr)
+        WeakPtr(T* ptr) : _weakLink { ptr ? static_cast<EnableWeakPtr<T>*>(ptr)->_weakLink : nullptr } {}
+
+        WeakPtr& operator=(T* ptr)
         {
-            if (ptr)
-                _weakLink = static_cast<Weakable<T>*>(ptr.get())->weakLink();
+            _weakLink = ptr ? static_cast<EnableWeakPtr<T>*>(ptr)->_weakLink : nullptr;
+            return *this;
         }
 
         T* get() const
         {
             if (_weakLink)
-                return _weakLink->get();
+                return static_cast<T*>(_weakLink->get());
             return nullptr;
         }
     private:
-        RefPtr<WeakLink<T>> _weakLink {};
+        RefPtr<WeakLink<T>> _weakLink;
     };
 }
 

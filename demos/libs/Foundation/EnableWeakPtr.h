@@ -6,6 +6,9 @@
 namespace Foundation
 {
     template<typename T>
+    class WeakPtr;
+
+    template<typename T>
     class WeakLink final : public RefCounted
     {
     public:
@@ -17,23 +20,25 @@ namespace Foundation
         void revoke() { _ptr = nullptr; }
     private:
         T* _ptr {};
+
     };
 
     template<typename T>
-    class Weakable
+    class EnableWeakPtr
     {
-    public:
-        Weakable() : _weakLink { new WeakLink(static_cast<T*>(this)) } {}
+        friend class WeakPtr<T>;
 
-        virtual ~Weakable()
+    public:
+        EnableWeakPtr() : _weakLink { new WeakLink(static_cast<T*>(this)) } {}
+
+        ~EnableWeakPtr()
         {
             _weakLink->revoke();
         }
 
-        RefPtr<WeakLink<T>> weakLink() const { return _weakLink; }
     private:
         RefPtr<WeakLink<T>> _weakLink;
     };
 }
 
-using Foundation::Weakable;
+using Foundation::EnableWeakPtr;

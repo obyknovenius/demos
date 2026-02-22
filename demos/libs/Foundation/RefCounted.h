@@ -19,10 +19,8 @@ namespace Foundation
         unsigned refCount() const { return _refCount; }
 
     protected:
-        RefCounted() = default;
         virtual ~RefCounted() = default;
 
-    private:
         unsigned _refCount { 1 };
     };
 }

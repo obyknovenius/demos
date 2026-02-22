@@ -1,13 +1,14 @@
 #include <gtest/gtest.h>
 
-#include <Foundation/WeakPtr.h>
 #include <Foundation/RefCounted.h>
+#include <Foundation/EnableWeakPtr.h>
+#include <Foundation/WeakPtr.h>
 
-class A : public Weakable<A>
+class A : public EnableWeakPtr<A>
 {
 };
 
-class B : public RefCounted, public Weakable<B>, public A
+class B : public EnableWeakPtr<B>, public A
 {
 };
 
@@ -20,11 +21,12 @@ TEST(WeakPtr, Basics)
     EXPECT_TRUE(weakB.get() == nullptr);
 
     {
-        RefPtr<B> b = adoptRef(new B);
+        auto* b = new B;
         weakA = b;
         weakB = b;
-        EXPECT_TRUE(weakA.get() == b.get());
-        EXPECT_TRUE(weakB.get() == b.get());
+        EXPECT_TRUE(weakA.get() == b);
+        EXPECT_TRUE(weakB.get() == b);
+        delete b;
     }
 
     EXPECT_TRUE(weakA.get() == nullptr);
