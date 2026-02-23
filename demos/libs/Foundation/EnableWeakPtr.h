@@ -28,13 +28,15 @@ namespace Foundation
     {
         friend class WeakPtr<T>;
 
-    public:
+    protected:
         EnableWeakPtr() : _weakLink { new WeakLink(static_cast<T*>(this)) } {}
 
         ~EnableWeakPtr()
         {
             _weakLink->revoke();
         }
+
+        RefPtr<WeakLink<T>> weakLink() const { return _weakLink; }
 
     private:
         RefPtr<WeakLink<T>> _weakLink;

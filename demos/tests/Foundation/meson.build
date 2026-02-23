@@ -1,7 +1,7 @@
 foundation_sources = [
-    'EnableWeakPtrTest.cpp',
     'RefCountedTest.cpp',
     'RefPtrTest.cpp',
+    'WeakPtrTest.cpp',
 ]
 
 foundation = executable(

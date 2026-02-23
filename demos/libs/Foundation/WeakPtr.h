@@ -10,11 +10,11 @@ namespace Foundation
     public:
         WeakPtr() = default;
 
-        WeakPtr(T* ptr) : _weakLink { ptr ? static_cast<EnableWeakPtr<T>*>(ptr)->_weakLink : nullptr } {}
+        WeakPtr(T* ptr) : _weakLink { ptr ? static_cast<EnableWeakPtr<T>*>(ptr)->weakLink() : nullptr } {}
 
         WeakPtr& operator=(T* ptr)
         {
-            _weakLink = ptr ? static_cast<EnableWeakPtr<T>*>(ptr)->_weakLink : nullptr;
+            _weakLink = ptr ? static_cast<EnableWeakPtr<T>*>(ptr)->weakLink() : nullptr;
             return *this;
         }
 
@@ -24,6 +24,7 @@ namespace Foundation
                 return static_cast<T*>(_weakLink->get());
             return nullptr;
         }
+
     private:
         RefPtr<WeakLink<T>> _weakLink;
     };
