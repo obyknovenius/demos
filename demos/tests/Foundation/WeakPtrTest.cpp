@@ -2,6 +2,38 @@
 
 #include <Foundation/WeakPtr.h>
 
+TEST(WeakPtrTest, ConstructsFromObject)
+{
+    class Object : public EnableWeakPtr<Object>
+    {
+    };
+
+    Object* object = new Object();
+    WeakPtr<Object> weakPtr = object;
+
+    EXPECT_EQ(weakPtr.get(), object);
+
+    delete object;
+}
+
+TEST(WeakPtrTest, ConstructsFromDerivedObject)
+{
+    class Base : public EnableWeakPtr<Base>
+    {
+    };
+
+    class Derived : public Base
+    {
+    };
+
+    Derived* derived = new Derived;
+    WeakPtr<Base> weakPtr(derived);
+
+    EXPECT_EQ(weakPtr.get(), derived);
+
+    delete derived;
+}
+
 TEST(WeakPtrTest, WeakPtrReturnsValidPointerWhileObjectIsAlive)
 {
     class Object : public EnableWeakPtr<Object>

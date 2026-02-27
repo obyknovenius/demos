@@ -12,7 +12,17 @@ namespace Foundation
 
         WeakPtr(T* ptr) : _weakLink { ptr ? static_cast<EnableWeakPtr<T>*>(ptr)->weakLink() : nullptr } {}
 
+        template<typename U>
+        WeakPtr(U* ptr) : _weakLink { ptr ? static_cast<EnableWeakPtr<T>*>(ptr)->weakLink() : nullptr } {}
+
         WeakPtr& operator=(T* ptr)
+        {
+            _weakLink = ptr ? static_cast<EnableWeakPtr<T>*>(ptr)->weakLink() : nullptr;
+            return *this;
+        }
+
+        template<typename U>
+        WeakPtr& operator=(U* ptr)
         {
             _weakLink = ptr ? static_cast<EnableWeakPtr<T>*>(ptr)->weakLink() : nullptr;
             return *this;
