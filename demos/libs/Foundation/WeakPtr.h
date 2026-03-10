@@ -10,21 +10,35 @@ namespace Foundation
     public:
         WeakPtr() = default;
 
-        WeakPtr(T* ptr) : _weakLink { ptr ? static_cast<EnableWeakPtr<T>*>(ptr)->weakLink() : nullptr } {}
+        WeakPtr(std::nullptr_t) : _weakLink { nullptr } {}
 
-        template<typename U>
-        WeakPtr(U* ptr) : _weakLink { ptr ? static_cast<EnableWeakPtr<T>*>(ptr)->weakLink() : nullptr } {}
+        WeakPtr(EnableWeakPtr<T>* ptr) : _weakLink { ptr ? ptr->weakLink() : nullptr } {}
 
-        WeakPtr& operator=(T* ptr)
+        WeakPtr(const WeakPtr& other) : _weakLink { other._weakLink } {}
+
+        WeakPtr(WeakPtr&& other) : _weakLink { std::move(other._weakLink) } {}
+
+        WeakPtr& operator=(std::nullptr_t)
         {
-            _weakLink = ptr ? static_cast<EnableWeakPtr<T>*>(ptr)->weakLink() : nullptr;
+            _weakLink = nullptr;
             return *this;
         }
 
-        template<typename U>
-        WeakPtr& operator=(U* ptr)
+        WeakPtr& operator=(EnableWeakPtr<T>* ptr)
         {
-            _weakLink = ptr ? static_cast<EnableWeakPtr<T>*>(ptr)->weakLink() : nullptr;
+            _weakLink = ptr ? ptr->weakLink() : nullptr;
+            return *this;
+        }
+
+        WeakPtr& operator=(const WeakPtr& other)
+        {
+            _weakLink = other._weakLink;
+            return *this;
+        }
+
+        WeakPtr& operator=(WeakPtr&& other)
+        {
+            _weakLink = std::move(other._weakLink);
             return *this;
         }
 
@@ -33,6 +47,19 @@ namespace Foundation
             if (_weakLink)
                 return static_cast<T*>(_weakLink->get());
             return nullptr;
+        }
+
+        T* operator->() const { return get(); }
+        T& operator*() const { return *get(); }
+
+        bool operator==(std::nullptr_t) const { return get() == nullptr; }
+        bool operator==(const WeakPtr& other) const { return get() == other.get(); }
+
+        explicit operator bool() const { return get() != nullptr; }
+
+        void reset()
+        {
+            _weakLink = nullptr;
         }
 
     private:
