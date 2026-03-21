@@ -20,46 +20,50 @@ namespace Foundation
 
         WeakPtr& operator=(std::nullptr_t)
         {
-            _weakLink = nullptr;
+            WeakPtr tmp;
+            swap(tmp);
             return *this;
         }
 
         WeakPtr& operator=(EnableWeakPtr<T>* ptr)
         {
-            _weakLink = ptr ? ptr->weakLink() : nullptr;
+            WeakPtr tmp { ptr };
+            swap(tmp);
             return *this;
         }
 
         WeakPtr& operator=(const WeakPtr& other)
         {
-            _weakLink = other._weakLink;
+            WeakPtr tmp (other);
+            swap(tmp);
             return *this;
         }
 
         WeakPtr& operator=(WeakPtr&& other)
         {
-            _weakLink = std::move(other._weakLink);
+            WeakPtr tmp (std::move(other));
+            swap(tmp);
             return *this;
         }
 
         T* get() const
         {
             if (_weakLink)
-                return static_cast<T*>(_weakLink->get());
+                return _weakLink->get();
             return nullptr;
         }
 
         T* operator->() const { return get(); }
         T& operator*() const { return *get(); }
 
-        bool operator==(std::nullptr_t) const { return get() == nullptr; }
+        bool operator==(std::nullptr_t) const { return !get(); }
         bool operator==(const WeakPtr& other) const { return get() == other.get(); }
 
-        explicit operator bool() const { return get() != nullptr; }
+        explicit operator bool() const { return get(); }
 
-        void reset()
+        void swap(WeakPtr& other)
         {
-            _weakLink = nullptr;
+            std::swap(_weakLink, other._weakLink);
         }
 
     private:

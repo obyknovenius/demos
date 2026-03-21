@@ -5,19 +5,14 @@ namespace Foundation
     template<typename T>
     class RefPtr
     {
-        friend RefPtr adoptRef<T>(T*);
-
     public:
+        static RefPtr adopt(T* ptr) { return RefPtr(Adopt, ptr); }
+
         RefPtr() = default;
 
-        RefPtr(T* ptr) : _ptr { ptr }
-        {
-            if (_ptr)
-                _ptr->ref();
-        }
+        RefPtr(std::nullptr_t) : _ptr { nullptr } {}
 
-        template<typename U>
-        RefPtr(U* ptr) : _ptr { static_cast<T*>(ptr) }
+        RefPtr(T* ptr) : _ptr { ptr }
         {
             if (_ptr)
                 _ptr->ref();
@@ -30,16 +25,18 @@ namespace Foundation
         }
 
         template<typename U>
+        requires(std::derived_from<U, T>)
         RefPtr(const RefPtr<U>& other) : _ptr { static_cast<T*>(other.get()) }
         {
             if (_ptr)
                 _ptr->ref();
         }
 
-        RefPtr(RefPtr&& other) : _ptr { other.leakRef() } {}
+        RefPtr(RefPtr&& other) : _ptr { other.leak() } {}
 
         template<typename U>
-        RefPtr(RefPtr<U>&& other) : _ptr { static_cast<T*>(other.leakRef()) } {}
+        requires(std::derived_from<U, T>)
+        RefPtr(RefPtr<U>&& other) : _ptr { static_cast<T*>(other.leak()) } {}
 
         ~RefPtr()
         {
@@ -47,16 +44,17 @@ namespace Foundation
                 _ptr->unref();
         }
 
+        RefPtr& operator=(std::nullptr_t)
+        {
+            RefPtr tmp;
+            swap(tmp);
+            return *this;
+        }
+
         RefPtr& operator=(T* ptr)
         {
-            if (_ptr != ptr)
-            {
-                if (_ptr)
-                    _ptr->unref();
-                _ptr = ptr;
-                if (_ptr)
-                    _ptr->ref();
-            }
+            RefPtr tmp { ptr };
+            swap(tmp);
             return *this;
         }
 
@@ -68,6 +66,7 @@ namespace Foundation
         }
 
         template<typename U>
+        requires(std::derived_from<U, T>)
         RefPtr& operator=(const RefPtr<U>& other)
         {
             RefPtr tmp { other };
@@ -83,6 +82,7 @@ namespace Foundation
         }
 
         template<typename U>
+        requires(std::derived_from<U, T>)
         RefPtr& operator=(RefPtr<U>&& other)
         {
             RefPtr tmp { std::move(other) };
@@ -91,11 +91,16 @@ namespace Foundation
         }
 
         T* get() const { return _ptr; }
-        T* operator->() const { return _ptr; }
 
-        operator bool() const { return _ptr; }
+        T* operator->() const { return get(); }
+        T& operator*() const { return *get(); }
 
-        [[nodiscard]] T* leakRef()
+        bool operator==(std::nullptr_t) const { return !get(); }
+        bool operator==(const RefPtr& other) const { return get() == other.get(); }
+
+        explicit operator bool() const { return get(); }
+
+        [[nodiscard]] T* leak()
         {
             T* ptr = _ptr;
             _ptr = nullptr;
@@ -114,13 +119,6 @@ namespace Foundation
 
         T* _ptr {};
     };
-
-    template<typename T>
-    RefPtr<T> adoptRef(T* ptr)
-    {
-        return RefPtr<T>(RefPtr<T>::Adopt, ptr);
-    }
 }
 
 using Foundation::RefPtr;
-using Foundation::adoptRef;
