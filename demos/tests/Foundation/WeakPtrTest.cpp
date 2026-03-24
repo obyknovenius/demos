@@ -4,9 +4,7 @@
 
 TEST(WeakPtrTest, DefaultConstructsToNullptr)
 {
-    class Object : public EnableWeakPtr<Object>
-    {
-    };
+    struct Object : EnableWeakPtr<Object> {};
 
     WeakPtr<Object> weakPtr;
     EXPECT_EQ(weakPtr.get(), nullptr);
@@ -14,9 +12,7 @@ TEST(WeakPtrTest, DefaultConstructsToNullptr)
 
 TEST(WeakPtrTest, ConstructsFromNullptr)
 {
-    class Object : public EnableWeakPtr<Object>
-    {
-    };
+    struct Object : EnableWeakPtr<Object> {};
 
     WeakPtr<Object> weakPtr(nullptr);
     EXPECT_EQ(weakPtr.get(), nullptr);
@@ -24,9 +20,7 @@ TEST(WeakPtrTest, ConstructsFromNullptr)
 
 TEST(WeakPtrTest, ConstructsFromPointer)
 {
-    class Object : public EnableWeakPtr<Object>
-    {
-    };
+    struct Object : EnableWeakPtr<Object> {};
 
     Object* object = new Object();
     WeakPtr<Object> weakPtr(object);
@@ -38,9 +32,7 @@ TEST(WeakPtrTest, ConstructsFromPointer)
 
 TEST(WeakPtrTest, CopyConstructsFromAnotherWeakPtr)
 {
-    class Object : public EnableWeakPtr<Object>
-    {
-    };
+    struct Object : EnableWeakPtr<Object> {};
 
     Object* object = new Object();
     WeakPtr<Object> weakPtr1(object);
@@ -54,9 +46,7 @@ TEST(WeakPtrTest, CopyConstructsFromAnotherWeakPtr)
 
 TEST(WeakPtrTest, MoveConstructsFromAnotherWeakPtr)
 {
-    class Object : public EnableWeakPtr<Object>
-    {
-    };
+    struct Object : EnableWeakPtr<Object> {};
 
     Object* object = new Object();
     WeakPtr<Object> weakPtr1(object);
@@ -71,9 +61,7 @@ TEST(WeakPtrTest, MoveConstructsFromAnotherWeakPtr)
 
 TEST(WeakPtrTest, AssignsFromNullptr)
 {
-    class Object : public EnableWeakPtr<Object>
-    {
-    };
+    struct Object : EnableWeakPtr<Object> {};
 
     Object* object = new Object();
     WeakPtr<Object> weakPtr(object);
@@ -87,9 +75,7 @@ TEST(WeakPtrTest, AssignsFromNullptr)
 
 TEST(WeakPtrTest, AssignsFromPointer)
 {
-    class Object : public EnableWeakPtr<Object>
-    {
-    };
+    struct Object : EnableWeakPtr<Object> {};
 
     WeakPtr<Object> weakPtr;
     EXPECT_EQ(weakPtr.get(), nullptr);
@@ -103,9 +89,7 @@ TEST(WeakPtrTest, AssignsFromPointer)
 
 TEST(WeakPtrTest, CopyAssignsFromWeakPtr)
 {
-    class Object : public EnableWeakPtr<Object>
-    {
-    };
+    struct Object : EnableWeakPtr<Object> {};
 
     Object* object = new Object();
     WeakPtr<Object> weakPtr1(object);
@@ -120,9 +104,7 @@ TEST(WeakPtrTest, CopyAssignsFromWeakPtr)
 
 TEST(WeakPtrTest, MoveAssignsFromWeakPtr)
 {
-    class Object : public EnableWeakPtr<Object>
-    {
-    };
+    struct Object : EnableWeakPtr<Object> {};
 
     Object* object = new Object();
     WeakPtr<Object> weakPtr1(object);
@@ -138,11 +120,7 @@ TEST(WeakPtrTest, MoveAssignsFromWeakPtr)
 
 TEST(WeakPtrTest, OperatorArrowAccessesMember)
 {
-    class Object : public EnableWeakPtr<Object>
-    {
-    public:
-        int value { 42 };
-    };
+    struct Object : EnableWeakPtr<Object> { int value { 42 }; };
 
     Object* object = new Object();
     WeakPtr<Object> weakPtr(object);
@@ -154,11 +132,7 @@ TEST(WeakPtrTest, OperatorArrowAccessesMember)
 
 TEST(WeakPtrTest, OperatorStarDereferencesPointer)
 {
-    class Object : public EnableWeakPtr<Object>
-    {
-    public:
-        int value { 42 };
-    };
+    struct Object : EnableWeakPtr<Object> { int value { 42 }; };
 
     Object* object = new Object();
     WeakPtr<Object> weakPtr(object);
@@ -170,9 +144,7 @@ TEST(WeakPtrTest, OperatorStarDereferencesPointer)
 
 TEST(WeakPtrTest, OperatorEqualComparesUnderlyingPointer)
 {
-    class Object : public EnableWeakPtr<Object>
-    {
-    };
+    struct Object : EnableWeakPtr<Object> {};
 
     Object* object1 = new Object();
     Object* object2 = new Object();
@@ -208,9 +180,7 @@ TEST(WeakPtrTest, OperatorEqualComparesUnderlyingPointer)
 
 TEST(WeakPtrTest, OperatorBoolReturnsTrueWhenValidAndFalseWhenNullptr)
 {
-    class Object : public EnableWeakPtr<Object>
-    {
-    };
+    struct Object : EnableWeakPtr<Object> {};
 
     Object* object = new Object();
     WeakPtr<Object> weakPtr(object);
@@ -222,9 +192,7 @@ TEST(WeakPtrTest, OperatorBoolReturnsTrueWhenValidAndFalseWhenNullptr)
 
 TEST(WeakPtrTest, ResetsToNullptrAfterObjectIsDeleted)
 {
-    class Object : public EnableWeakPtr<Object>
-    {
-    };
+    struct Object : EnableWeakPtr<Object> {};
 
     Object* object = new Object();
     WeakPtr<Object> weakPtr(object);
@@ -235,9 +203,7 @@ TEST(WeakPtrTest, ResetsToNullptrAfterObjectIsDeleted)
 
 TEST(WeakPtrTest, MultipleWeakPtrsResetToNullptrAfterObjectIsDeleted)
 {
-    class Object : public EnableWeakPtr<Object>
-    {
-    };
+    struct Object : EnableWeakPtr<Object> {};
 
     Object* object = new Object();
     WeakPtr<Object> weakPtr1(object);
@@ -255,13 +221,9 @@ TEST(WeakPtrTest, MultipleWeakPtrsResetToNullptrAfterObjectIsDeleted)
 
 TEST(WeakPtrTest, WorksWithMultipleInheritance)
 {
-    class BaseObject : public EnableWeakPtr<BaseObject>
-    {
-    };
+    struct BaseObject : EnableWeakPtr<BaseObject> {};
 
-    class DerivedObject : public EnableWeakPtr<DerivedObject>, public BaseObject
-    {
-    };
+    struct DerivedObject : EnableWeakPtr<DerivedObject>, BaseObject {};
 
     WeakPtr<BaseObject> weakBasePtr;
     WeakPtr<DerivedObject> weakDerivedPtr;

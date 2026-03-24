@@ -1,4 +1,5 @@
 foundation_sources = [
+    'NonNullTest.cpp',
     'RefCountedTest.cpp',
     'RefPtrTest.cpp',
     'WeakPtrTest.cpp',

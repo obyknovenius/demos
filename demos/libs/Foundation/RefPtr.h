@@ -10,8 +10,6 @@ namespace Foundation
 
         RefPtr() = default;
 
-        RefPtr(std::nullptr_t) : _ptr { nullptr } {}
-
         RefPtr(T* ptr) : _ptr { ptr }
         {
             if (_ptr)
@@ -42,13 +40,6 @@ namespace Foundation
         {
             if (_ptr)
                 _ptr->unref();
-        }
-
-        RefPtr& operator=(std::nullptr_t)
-        {
-            RefPtr tmp;
-            swap(tmp);
-            return *this;
         }
 
         RefPtr& operator=(T* ptr)

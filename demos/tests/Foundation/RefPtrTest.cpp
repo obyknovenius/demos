@@ -5,9 +5,7 @@
 
 TEST(RefPtrTest, DefaultConstructsToNullptr)
 {
-    class Object : public RefCounted
-    {
-    };
+    struct Object : RefCounted {};
 
     RefPtr<Object> refPtr;
     EXPECT_EQ(refPtr.get(), nullptr);
@@ -15,9 +13,7 @@ TEST(RefPtrTest, DefaultConstructsToNullptr)
 
 TEST(RefPtrTest, ConstructsFromNullptr)
 {
-    class Object : public RefCounted
-    {
-    };
+    struct Object : RefCounted {};
 
     RefPtr<Object> refPtr(nullptr);
     EXPECT_EQ(refPtr.get(), nullptr);
@@ -25,9 +21,7 @@ TEST(RefPtrTest, ConstructsFromNullptr)
 
 TEST(RefPtrTest, ConstructsFromPointerAndIncrementsRefCount)
 {
-    class Object : public RefCounted
-    {
-    };
+    struct Object : RefCounted {};
 
     Object* object = new Object();
     EXPECT_EQ(object->refCount(), 1U);
@@ -41,9 +35,7 @@ TEST(RefPtrTest, ConstructsFromPointerAndIncrementsRefCount)
 
 TEST(RefPtrTest, CopyConstructsFromRefPtrAndIncrementsRefCount)
 {
-    class Object : public RefCounted
-    {
-    };
+    struct Object : RefCounted {};
 
     Object* object = new Object();
     EXPECT_EQ(object->refCount(), 1U);
@@ -61,13 +53,8 @@ TEST(RefPtrTest, CopyConstructsFromRefPtrAndIncrementsRefCount)
 
 TEST(RefPtrTest, CopyConstructsFromRefPtrOfInheritedTypeAndIncrementsRefCount)
 {
-    class BaseObject : public RefCounted
-    {
-    };
-
-    class DerivedObject : public BaseObject
-    {
-    };
+    struct BaseObject : RefCounted {};
+    struct DerivedObject : BaseObject {};
 
     DerivedObject* object = new DerivedObject();
     EXPECT_EQ(object->refCount(), 1U);
@@ -85,9 +72,7 @@ TEST(RefPtrTest, CopyConstructsFromRefPtrOfInheritedTypeAndIncrementsRefCount)
 
 TEST(RefPtrTest, MoveConstructsFromRefPtrAndTransfersOwnership)
 {
-    class Object : public RefCounted
-    {
-    };
+    struct Object : RefCounted {};
 
     Object* object = new Object();
     EXPECT_EQ(object->refCount(), 1U);
@@ -106,13 +91,8 @@ TEST(RefPtrTest, MoveConstructsFromRefPtrAndTransfersOwnership)
 
 TEST(RefPtrTest, MoveConstructsFromRefPtrOfInheritedTypeAndTransfersOwnership)
 {
-    class BaseObject : public RefCounted
-    {
-    };
-
-    class DerivedObject : public BaseObject
-    {
-    };
+    struct BaseObject : RefCounted {};
+    struct DerivedObject : BaseObject {};
 
     DerivedObject* object = new DerivedObject();
     EXPECT_EQ(object->refCount(), 1U);
@@ -131,9 +111,7 @@ TEST(RefPtrTest, MoveConstructsFromRefPtrOfInheritedTypeAndTransfersOwnership)
 
 TEST(RefPtrTest, AdoptingDoesNotIncrementRefCount)
 {
-    class Object : public RefCounted
-    {
-    };
+    struct Object : RefCounted {};
 
     Object* object = new Object();
     EXPECT_EQ(object->refCount(), 1U);
@@ -147,9 +125,7 @@ TEST(RefPtrTest, AdoptingDoesNotIncrementRefCount)
 
 TEST(RefPtrTest, DestructingDecrementsRefCount)
 {
-    class Object : public RefCounted
-    {
-    };
+    struct Object : RefCounted {};
 
     Object* object = new Object();
     EXPECT_EQ(object->refCount(), 1U);
@@ -167,9 +143,7 @@ TEST(RefPtrTest, DestructingDecrementsRefCount)
 
 TEST(RefPtrTest, AssignsFromNullptrAndDecrementsRefCount)
 {
-    class Object : public RefCounted
-    {
-    };
+    struct Object : RefCounted {};
 
     Object* object = new Object();
     EXPECT_EQ(object->refCount(), 1U);
@@ -185,9 +159,7 @@ TEST(RefPtrTest, AssignsFromNullptrAndDecrementsRefCount)
 
 TEST(RefPtrTest, AssignsFromPointerAndDecrementsAndIncrementsRefCount)
 {
-    class Object : public RefCounted
-    {
-    };
+    struct Object : RefCounted {};
 
     Object* object1 = new Object();
     EXPECT_EQ(object1->refCount(), 1U);
@@ -210,9 +182,7 @@ TEST(RefPtrTest, AssignsFromPointerAndDecrementsAndIncrementsRefCount)
 
 TEST(RefPtrTest, CopyAssignsFromRefPtrAndDecrementsAndIncrementsRefCount)
 {
-    class Object : public RefCounted
-    {
-    };
+    struct Object : RefCounted {};
 
     Object* object1 = new Object();
     EXPECT_EQ(object1->refCount(), 1U);
@@ -237,15 +207,10 @@ TEST(RefPtrTest, CopyAssignsFromRefPtrAndDecrementsAndIncrementsRefCount)
     object2->unref();
 }
 
-TEST(RefPtrTest, CopyAssignsFromRefPtrOfInheritedTypeAndDecrementsAndIncrementsRefCount)
+TEST(RefPtrTest, CopyAssignsFromRefPtrOfDerivedTypeAndDecrementsAndIncrementsRefCount)
 {
-    class BaseObject : public RefCounted
-    {
-    };
-
-    class DerivedObject : public BaseObject
-    {
-    };
+    struct BaseObject : RefCounted {};
+    struct DerivedObject : BaseObject {};
 
     DerivedObject* object1 = new DerivedObject();
     EXPECT_EQ(object1->refCount(), 1U);
@@ -272,9 +237,7 @@ TEST(RefPtrTest, CopyAssignsFromRefPtrOfInheritedTypeAndDecrementsAndIncrementsR
 
 TEST(RefPtrTest, MoveAssignsFromRefPtrAndTransfersOwnership)
 {
-    class Object : public RefCounted
-    {
-    };
+    struct Object : RefCounted {};
 
     Object* object1 = new Object();
     EXPECT_EQ(object1->refCount(), 1U);
@@ -300,15 +263,10 @@ TEST(RefPtrTest, MoveAssignsFromRefPtrAndTransfersOwnership)
     object2->unref();
 }
 
-TEST(RefPtrTest, MoveAssignsFromRefPtrOfInheritedTypeAndTransfersOwnership)
+TEST(RefPtrTest, MoveAssignsFromRefPtrOfDerivedTypeAndTransfersOwnership)
 {
-    class BaseObject : public RefCounted
-    {
-    };
-
-    class DerivedObject : public BaseObject
-    {
-    };
+    struct BaseObject : RefCounted {};
+    struct DerivedObject : BaseObject {};
 
     DerivedObject* object1 = new DerivedObject();
     EXPECT_EQ(object1->refCount(), 1U);
@@ -336,11 +294,7 @@ TEST(RefPtrTest, MoveAssignsFromRefPtrOfInheritedTypeAndTransfersOwnership)
 
 TEST(RefPtrTest, OperatorArrowAccessesMember)
 {
-    class Object : public RefCounted
-    {
-    public:
-        int value { 42 };
-    };
+    struct Object : RefCounted { int value { 42 }; };
 
     Object* object = new Object();
     RefPtr<Object> refPtr(object);
@@ -351,11 +305,7 @@ TEST(RefPtrTest, OperatorArrowAccessesMember)
 
 TEST(RefPtrTest, OperatorStarDereferencesPointer)
 {
-    class Object : public RefCounted
-    {
-    public:
-        int value { 42 };
-    };
+    struct Object : RefCounted { int value { 42 }; };
 
     Object* object = new Object();
     RefPtr<Object> refPtr(object);
@@ -366,9 +316,7 @@ TEST(RefPtrTest, OperatorStarDereferencesPointer)
 
 TEST(RefPtrTest, OperatorEqualComparesUnderlyingPointer)
 {
-    class Object : public RefCounted
-    {
-    };
+    struct Object : RefCounted {};
 
     Object* object1 = new Object();
     Object* object2 = new Object();
@@ -404,9 +352,7 @@ TEST(RefPtrTest, OperatorEqualComparesUnderlyingPointer)
 
 TEST(RefPtrTest, OperatorBoolReturnsTrueWhenValidAndFalseWhenNullptr)
 {
-    class Object : public RefCounted
-    {
-    };
+    struct Object : RefCounted {};
 
     Object* object = new Object();
     RefPtr<Object> refPtr(object);
@@ -420,9 +366,7 @@ TEST(RefPtrTest, OperatorBoolReturnsTrueWhenValidAndFalseWhenNullptr)
 
 TEST(RefPtrTest, LeakTransfersOwnership)
 {
-    class Object : public RefCounted
-    {
-    };
+    struct Object : RefCounted {};
 
     Object* object = new Object();
     EXPECT_EQ(object->refCount(), 1U);
