@@ -6,9 +6,9 @@
 
 namespace Platform
 {
-    NonNullRefPtr<Window> Window::create(NonNullRefPtr<Display> display, Gfx::Size size)
+    NonNull<RefPtr<Window>> Window::create(NonNull<RefPtr<Display>> display, Gfx::Size size)
     {
-        auto waylandDisplay = staticPtrCast<Platform::Wayland::Display>(display);
+        auto waylandDisplay = staticPtrCast<Platform::Wayland::Display>(display.get());
         return Wayland::Window::create(waylandDisplay, size);
     }
 }

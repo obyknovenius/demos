@@ -3,7 +3,6 @@
 #include "../Window.h"
 #include <EGL/egl.h>
 #include <Foundation/NonNull.h>
-#include <Foundation/NonNullRefPtr.h>
 #include <Foundation/RefPtr.h>
 #include <wayland-client.h>
 #include <wayland-egl.h>
@@ -16,7 +15,7 @@ namespace Platform::Wayland
     class Window : public Platform::Window, public EnableWeakPtr<Window>
     {
     public:
-        static NonNullRefPtr<Window> create(NonNullRefPtr<Display> display, Gfx::Size size = { 800, 600 });
+        static NonNull<RefPtr<Window>> create(NonNull<RefPtr<Display>> display, Gfx::Size size = { 800, 600 });
 
         void setNeedsDraw() override;
 
@@ -24,7 +23,7 @@ namespace Platform::Wayland
         static const xdg_surface_listener _xdgSurfaceListener;
         static const wl_callback_listener _frameCallbackListener;
 
-        Window(NonNullRefPtr<Display> display, Gfx::Size size);
+        Window(NonNull<RefPtr<Display>> display, Gfx::Size size);
         ~Window() override;
 
         void didConfigure(uint32_t serial);
@@ -33,7 +32,7 @@ namespace Platform::Wayland
         void setNeedsDrawNextFrame();
         void drawNextFrameIfNeeded();
 
-        NonNullRefPtr<Display> _display;
+        NonNull<RefPtr<Display>> _display;
 
         wl_surface* _wlSurface {};
         xdg_surface* _xdgSurface {};

@@ -4,25 +4,30 @@
 
 namespace Foundation
 {
-    template<typename T>
+    template <typename T>
+    class NonNull;
+
+    template <typename T>
     class WeakPtr
     {
     public:
         WeakPtr() = default;
 
+        WeakPtr(std::nullptr_t) : _weakLink { nullptr } {}
+
         WeakPtr(EnableWeakPtr<T>* ptr) : _weakLink { ptr ? ptr->weakLink() : nullptr } {}
 
-        WeakPtr(const NonNullRefPtr<T>& ptr) : _weakLink { static_cast<EnableWeakPtr<T>*>(ptr.get())->weakLink() } {}
+        template<typename U>
+        requires(std::derived_from<U, EnableWeakPtr<T>>)
+        WeakPtr(NonNull<U> ptr) : WeakPtr(ptr.get()) {}
 
         template<typename U>
         requires(std::derived_from<U, EnableWeakPtr<T>>)
-        WeakPtr(const NonNullRefPtr<U>& ptr) : _weakLink { static_cast<EnableWeakPtr<T>*>(ptr.get())->weakLink() } {}
-
-        WeakPtr(const RefPtr<T>& ptr) : _weakLink { ptr ? static_cast<EnableWeakPtr<T>*>(ptr.get())->weakLink() : nullptr } {}
+        WeakPtr(const RefPtr<U>& ptr) : WeakPtr(ptr.get()) {}
 
         template<typename U>
         requires(std::derived_from<U, EnableWeakPtr<T>>)
-        WeakPtr(const RefPtr<U>& ptr) : _weakLink { ptr ? static_cast<EnableWeakPtr<T>*>(ptr.get())->weakLink() : nullptr } {}
+        WeakPtr(const NonNull<RefPtr<U>>& ptr) : WeakPtr(ptr.get()) {}
 
         WeakPtr(const WeakPtr& other) : _weakLink { other._weakLink } {}
 
@@ -42,7 +47,7 @@ namespace Foundation
             return *this;
         }
 
-        WeakPtr& operator=(const NonNullRefPtr<T>& ptr)
+        WeakPtr& operator=(const NonNull<RefPtr<T>>& ptr)
         {
             WeakPtr tmp { ptr };
             swap(tmp);

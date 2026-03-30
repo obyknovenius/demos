@@ -3,7 +3,6 @@
 #include "Pointer.h"
 #include <Foundation/EnableWeakPtr.h>
 #include <Foundation/NonNull.h>
-#include <Foundation/NonNullRefPtr.h>
 #include <Foundation/RefCounted.h>
 #include <Foundation/RefPtr.h>
 #include <Foundation/WeakPtr.h>
@@ -16,12 +15,12 @@ namespace Platform::Wayland
     class Seat final : public RefCounted, public EnableWeakPtr<Seat>
     {
     public:
-        static NonNullRefPtr<Seat> create(NonNull<wl_seat*> wlSeat, NonNullRefPtr<Display> display);
+        static NonNull<RefPtr<Seat>> create(NonNull<wl_seat*> wlSeat, NonNull<RefPtr<Display>> display);
 
     private:
         static const wl_seat_listener _wlSeatListener;
 
-        Seat(NonNull<wl_seat*> wlSeat, NonNullRefPtr<Display> display);
+        Seat(NonNull<wl_seat*> wlSeat, NonNull<RefPtr<Display>> display);
         ~Seat() override;
 
         void capabilitiesDidChange(uint32_t capabilities);

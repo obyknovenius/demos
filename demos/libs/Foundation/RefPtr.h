@@ -6,9 +6,6 @@
 namespace Foundation
 {
     template<typename T>
-    class NonNullRefPtr;
-
-    template<typename T>
     class WeakPtr;
 
     template<typename T>
@@ -23,11 +20,6 @@ namespace Foundation
         {
             if (_ptr)
                 _ptr->ref();
-        }
-
-        RefPtr(const NonNullRefPtr<T>& ptr) : _ptr { ptr.get() }
-        {
-            _ptr->ref();
         }
 
         RefPtr(const WeakPtr<T>& ptr) : _ptr { ptr.get() }

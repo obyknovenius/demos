@@ -3,7 +3,6 @@
 #include "Event.h"
 #include <Foundation/EnableWeakPtr.h>
 #include <Foundation/NonNull.h>
-#include <Foundation/NonNullRefPtr.h>
 #include <Foundation/RefCounted.h>
 #include <Foundation/RefPtr.h>
 #include <Foundation/WeakPtr.h>
@@ -19,12 +18,12 @@ namespace Platform
         class Delegate : public EnableWeakPtr<Delegate>
         {
         public:
-            virtual void layoutWindow(NonNullRefPtr<Window> window) {};
-            virtual void drawWindow(NonNullRefPtr<Window> window) {};
-            virtual void windowDidReceiveEvent(NonNullRefPtr<Platform::Window> window, Platform::Event event) {};
+            virtual void layoutWindow(NonNull<RefPtr<Window>> window) {};
+            virtual void drawWindow(NonNull<RefPtr<Window>> window) {};
+            virtual void windowDidReceiveEvent(NonNull<RefPtr<Platform::Window>> window, Platform::Event event) {};
         };
 
-        static NonNullRefPtr<Window> create(NonNullRefPtr<Display> display, Gfx::Size size = { 800, 600 });
+        static NonNull<RefPtr<Window>> create(NonNull<RefPtr<Display>> display, Gfx::Size size = { 800, 600 });
 
         Gfx::Size size() const { return _size; }
 

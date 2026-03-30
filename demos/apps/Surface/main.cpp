@@ -7,12 +7,12 @@
 class WindowDelegate final : public RefCounted, public Platform::Window::Delegate
 {
 public:
-    static NonNullRefPtr<WindowDelegate> create()
+    static NonNull<RefPtr<WindowDelegate>> create()
     {
-        return NonNullRefPtr<WindowDelegate>::adopt(new WindowDelegate());
+        return RefPtr<WindowDelegate>::adopt(new WindowDelegate());
     }
 
-    void drawWindow(NonNullRefPtr<Platform::Window> window) override
+    void drawWindow(NonNull<RefPtr<Platform::Window>> window) override
     {
         float red = rand() % 256 / 255.0f;
         float green = rand() % 256 / 255.0f;
@@ -22,7 +22,7 @@ public:
         glClear(GL_COLOR_BUFFER_BIT);
     }
 
-    void windowDidReceiveEvent(NonNullRefPtr<Platform::Window> window, Platform::Event event) override
+    void windowDidReceiveEvent(NonNull<RefPtr<Platform::Window>> window, Platform::Event event) override
     {
         window->setNeedsDraw();
     }

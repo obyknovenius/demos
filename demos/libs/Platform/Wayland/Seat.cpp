@@ -4,9 +4,9 @@
 
 namespace Platform::Wayland
 {
-    NonNullRefPtr<Seat> Seat::create(NonNull<wl_seat*> wlSeat, NonNullRefPtr<Display> display)
+    NonNull<RefPtr<Seat>> Seat::create(NonNull<wl_seat*> wlSeat, NonNull<RefPtr<Display>> display)
     {
-        return NonNullRefPtr<Seat>::adopt(new Seat(wlSeat, display));
+        return RefPtr<Seat>::adopt(new Seat(wlSeat, display));
     }
 
     const wl_seat_listener Seat::_wlSeatListener = {
@@ -20,7 +20,7 @@ namespace Platform::Wayland
         }
     };
 
-    Seat::Seat(NonNull<wl_seat*> wlSeat, NonNullRefPtr<Display> display) :
+    Seat::Seat(NonNull<wl_seat*> wlSeat, NonNull<RefPtr<Display>> display) :
         _wlSeat { wlSeat },
         _display { display }
     {

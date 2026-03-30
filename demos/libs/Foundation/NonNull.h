@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cassert>
+#include <concepts>
 
 namespace Foundation
 {
@@ -11,6 +12,20 @@ namespace Foundation
         NonNull(T ptr) : _ptr { ptr }
         {
             assert(ptr != nullptr);
+        }
+
+        template <typename U>
+        requires(std::is_convertible_v<U, T>)
+        NonNull(U ptr) : _ptr { ptr }
+        {
+            assert(ptr != nullptr);
+        }
+
+        template <typename U>
+        requires(std::is_convertible_v<U, T>)
+        NonNull(const NonNull<U>& other) : _ptr { other.get() }
+        {
+            assert(_ptr != nullptr);
         }
 
         T get() const { return _ptr; }
