@@ -46,7 +46,7 @@ namespace GUI::Wayland
         return _defaultDisplay;
     }
 
-    Display::Display(NonNull<wl_display*> wlDisplay) : _wlDisplay { wlDisplay }
+    Display::Display(Core::NonNull<wl_display*> wlDisplay) : _wlDisplay { wlDisplay }
     {
         _eglDisplay = eglGetPlatformDisplay(EGL_PLATFORM_WAYLAND_KHR, _wlDisplay, NULL);
 

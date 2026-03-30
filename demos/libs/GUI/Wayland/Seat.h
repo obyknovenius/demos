@@ -11,26 +11,26 @@ namespace GUI::Wayland
     class Seat final : public RefCounted, public Weakable
     {
     public:
-        static NonNull<RefPtr<Seat>> make(NonNull<wl_seat*> wlSeat, RefPtr<Display> display)
+        static Core::NonNull<RefPtr<Seat>> make(Core::NonNull<wl_seat*> wlSeat, RefPtr<Display> display)
         {
             return adopt(new Seat(wlSeat, display));
         }
 
         RefPtr<Display> display() { return _display.strong(); }
 
-        NonNull<wl_seat*> wlSeat() { return _wlSeat; }
+        Core::NonNull<wl_seat*> wlSeat() { return _wlSeat; }
 
         RefPtr<Pointer> pointer();
 
     private:
         static const wl_seat_listener _wlSeatListener;
 
-        Seat(NonNull<wl_seat*> wlSeat, RefPtr<Display> display);
+        Seat(Core::NonNull<wl_seat*> wlSeat, RefPtr<Display> display);
         ~Seat();
 
         void onCapabilities(uint32_t capabilities);
 
-        NonNull<wl_seat*> _wlSeat;
+        Core::NonNull<wl_seat*> _wlSeat;
 
         WeakPtr<Display> _display;
 

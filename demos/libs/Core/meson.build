@@ -4,6 +4,7 @@ core_sources = [
 
 core_lib = static_library(
     'Core',
+    include_directories: libs_inc,
     sources: core_sources,
 )
 

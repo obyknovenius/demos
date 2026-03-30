@@ -42,5 +42,3 @@ namespace Core
         T _ptr;
     };
 }
-
-using Core::NonNull;

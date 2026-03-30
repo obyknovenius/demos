@@ -10,7 +10,7 @@ namespace Platform::Wayland
         wl_display* wlDisplay = wl_display_connect(name ? name->data() : nullptr);
         if (!wlDisplay)
             return nullptr;
-        return adopt(new Display(wlDisplay));
+        return RefPtr<Display>::adopt(new Display(wlDisplay));
     }
 
     const wl_registry_listener Display::_wlRegistryListener = {

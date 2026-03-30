@@ -1,29 +1,30 @@
 #pragma once
 
 #include "Event.h"
-#include <Core/CanMakeRefPtr.h>
-#include <Core/NonNull.h>
-#include <Core/RefCounted.h>
-#include <Core/RefPtr.h>
-#include <Core/Weakable.h>
+#include <Foundation/EnableWeakPtr.h>
+#include <Foundation/NonNull.h>
+#include <Foundation/NonNullRefPtr.h>
+#include <Foundation/RefCounted.h>
+#include <Foundation/RefPtr.h>
+#include <Foundation/WeakPtr.h>
 #include <Gfx/Size.h>
 
 namespace Platform
 {
     class Display;
 
-    class Window : public RefCounted, public Weakable
+    class Window : public RefCounted, public EnableWeakPtr<Window>
     {
     public:
-        class Delegate : public CanMakeRefPtr
+        class Delegate : public EnableWeakPtr<Delegate>
         {
         public:
-            virtual void layoutWindow(NonNull<RefPtr<Window>> window) {};
-            virtual void drawWindow(NonNull<RefPtr<Window>> window) {};
-            virtual void windowDidReceiveEvent(NonNull<RefPtr<Platform::Window>> window, Platform::Event event) {};
+            virtual void layoutWindow(NonNullRefPtr<Window> window) {};
+            virtual void drawWindow(NonNullRefPtr<Window> window) {};
+            virtual void windowDidReceiveEvent(NonNullRefPtr<Platform::Window> window, Platform::Event event) {};
         };
 
-        static NonNull<RefPtr<Window>> create(NonNull<RefPtr<Display>> display, Gfx::Size size = { 800, 600 });
+        static NonNullRefPtr<Window> create(NonNullRefPtr<Display> display, Gfx::Size size = { 800, 600 });
 
         Gfx::Size size() const { return _size; }
 
@@ -35,8 +36,8 @@ namespace Platform
 
         void receiveEvent(Event event);
 
-        RefPtr<Delegate> delegate() const { return _delegate; }
-        void setDelegate(RefPtr<Delegate> delegate) { _delegate = delegate; }
+        WeakPtr<Delegate> delegate() const { return _delegate; }
+        void setDelegate(WeakPtr<Delegate> delegate) { _delegate = delegate; }
 
     protected:
         Window(Gfx::Size size) : _size { size } {};
@@ -52,7 +53,7 @@ namespace Platform
         bool _needsLayout { false };
         bool _needsDraw { false };
 
-        RefPtr<Delegate> _delegate;
+        WeakPtr<Delegate> _delegate;
     };
 
     inline void Window::layoutIfNeeded()

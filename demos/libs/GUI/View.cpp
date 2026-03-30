@@ -28,7 +28,7 @@ namespace GUI
             subview->layout();
     }
 
-    void View::redraw(NonNull<RefPtr<Gfx::Context>> context)
+    void View::redraw(Core::NonNull<RefPtr<Gfx::Context>> context)
     {
         for (const auto& subview : _subviews)
         {

@@ -8,7 +8,7 @@ namespace GUI
     class Window::TitleBar final : public View
     {
     public:
-        static NonNull<RefPtr<TitleBar>> make()
+        static Core::NonNull<RefPtr<TitleBar>> make()
         {
             return adopt(new TitleBar());
         }
@@ -16,7 +16,7 @@ namespace GUI
         Gfx::Size intrinsicSize() override { return { -1, _height }; }
 
         void layout() override;
-        void redraw(NonNull<RefPtr<Gfx::Context>> context) override;
+        void redraw(Core::NonNull<RefPtr<Gfx::Context>> context) override;
 
         void onPointerButtonPressed(Event event) override;
 

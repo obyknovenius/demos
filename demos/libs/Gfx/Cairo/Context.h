@@ -10,7 +10,7 @@ namespace Gfx::Cairo
     class Context final : public Gfx::Context
     {
     public:
-        static NonNull<RefPtr<Context>> make(cairo_t* cr);
+        static Core::NonNull<RefPtr<Context>> make(cairo_t* cr);
 
         inline void save() override;
         inline void restore() override;
@@ -30,7 +30,7 @@ namespace Gfx::Cairo
         cairo_t* _cr;
     };
 
-    inline NonNull<RefPtr<Context>> Context::make(cairo_t* cr)
+    inline Core::NonNull<RefPtr<Context>> Context::make(cairo_t* cr)
     {
         return adopt(new Context(cr));
     }

@@ -8,7 +8,7 @@ namespace GUI
     class Window::DecorationView final : public View
     {
     public:
-        static NonNull<RefPtr<DecorationView>> make(RefPtr<Window> window)
+        static Core::NonNull<RefPtr<DecorationView>> make(RefPtr<Window> window)
         {
             return adopt(new DecorationView(window));
         }
@@ -17,7 +17,7 @@ namespace GUI
         RefPtr<View> contentView() { return _contentView; }
 
         void layout() override;
-        void redraw(NonNull<RefPtr<Gfx::Context>> context) override;
+        void redraw(Core::NonNull<RefPtr<Gfx::Context>> context) override;
 
         void onPointerButtonPressed(Event event) override;
         void onPointerButtonReleased(Event event) override;

@@ -1,16 +1,16 @@
 #pragma once
 
-#include <Core/NonNull.h>
-#include <Core/RefCounted.h>
-#include <Core/RefPtr.h>
-#include <Core/Weakable.h>
+#include <Foundation/EnableWeakPtr.h>
+#include <Foundation/NonNullRefPtr.h>
+#include <Foundation/RefCounted.h>
+#include <Foundation/RefPtr.h>
 
 namespace Platform
 {
-    class Display : public RefCounted, public Weakable
+    class Display : public RefCounted, public EnableWeakPtr<Display>
     {
     public:
-        static NonNull<RefPtr<Display>> defaultDisplay() { return _defaultDisplay; }
+        static NonNullRefPtr<Display> defaultDisplay() { return _defaultDisplay; }
 
     private:
         static RefPtr<Display> _defaultDisplay;

@@ -11,7 +11,7 @@ namespace GUI::Wayland
     class Window final : public GUI::Window
     {
     public:
-        static NonNull<RefPtr<Window>> make();
+        static Core::NonNull<RefPtr<Window>> make();
 
         void setMaximized(bool maximized) override;
 

@@ -5,9 +5,9 @@
 
 namespace Platform::Wayland
 {
-    NonNull<RefPtr<Pointer>> Pointer::create(NonNull<wl_pointer*> wlPointer, NonNull<RefPtr<Seat>> seat)
+    NonNullRefPtr<Pointer> Pointer::create(NonNull<wl_pointer*> wlPointer, NonNullRefPtr<Seat> seat)
     {
-        return adopt(new Pointer(wlPointer, seat));
+        return NonNullRefPtr<Pointer>::adopt(new Pointer(wlPointer, seat));
     }
 
     const wl_pointer_listener Pointer::_wlPointerListener = {
@@ -50,7 +50,7 @@ namespace Platform::Wayland
         }
     };
 
-    Pointer::Pointer(NonNull<wl_pointer*> wlPointer, NonNull<RefPtr<Seat>> seat) :
+    Pointer::Pointer(NonNull<wl_pointer*> wlPointer, NonNullRefPtr<Seat> seat) :
         _wlPointer { wlPointer },
         _seat { seat }
     {
@@ -62,13 +62,13 @@ namespace Platform::Wayland
         wl_pointer_destroy(_wlPointer);
     }
 
-    void Pointer::didEnterWindow(uint32_t serial, NonNull<RefPtr<Window>> window, double x, double y)
+    void Pointer::didEnterWindow(uint32_t serial, NonNullRefPtr<Window> window, double x, double y)
     {
         _event = { Event::Type::PointerEntered };
         _window = window;
     }
 
-    void Pointer::didLeaveWindow(uint32_t serial, NonNull<RefPtr<Window>> window)
+    void Pointer::didLeaveWindow(uint32_t serial, NonNullRefPtr<Window> window)
     {
         _event = { Event::Type::PointerLeft };
         _window = nullptr;
@@ -81,7 +81,7 @@ namespace Platform::Wayland
 
     void Pointer::sendEvent()
     {
-        if (auto window = _window.strong())
+        if (RefPtr<Window> window = _window)
         {
             window->receiveEvent(*_event);
             _event.reset();

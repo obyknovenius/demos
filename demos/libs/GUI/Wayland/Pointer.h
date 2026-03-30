@@ -16,7 +16,7 @@ namespace GUI::Wayland
     class Pointer final : public RefCounted
     {
     public:
-        static NonNull<RefPtr<Pointer>> make(NonNull<wl_pointer*> wlPointer, RefPtr<Seat> seat)
+        static Core::NonNull<RefPtr<Pointer>> make(Core::NonNull<wl_pointer*> wlPointer, RefPtr<Seat> seat)
         {
             return adopt(new Pointer(wlPointer, seat));
         }
@@ -28,7 +28,7 @@ namespace GUI::Wayland
     private:
         static const wl_pointer_listener _wlPointerListener;
 
-        Pointer(NonNull<wl_pointer*> wlPointer, RefPtr<Seat> seat);
+        Pointer(Core::NonNull<wl_pointer*> wlPointer, RefPtr<Seat> seat);
         ~Pointer();
 
         void onEnter(uint32_t serial, wl_surface* surface, wl_fixed_t x, wl_fixed_t y);
@@ -41,7 +41,7 @@ namespace GUI::Wayland
         void onAxisStop(uint32_t time, uint32_t axisStop);
         void onAxisDiscrete(uint32_t axis, int32_t discrete);
 
-        NonNull<wl_pointer*> _wlPointer;
+        Core::NonNull<wl_pointer*> _wlPointer;
 
         wp_cursor_shape_device_v1* _wpCursorShapeDeviceV1;
 

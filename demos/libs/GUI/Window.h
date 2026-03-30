@@ -29,7 +29,7 @@ namespace GUI
 
         using Edges = OptionSet<Edge>;
 
-        static NonNull<RefPtr<Window>> make();
+        static Core::NonNull<RefPtr<Window>> make();
 
         virtual void setMaximized(bool maximized) { _maximized = maximized; }
         bool maximized() { return _maximized; }
@@ -59,13 +59,13 @@ namespace GUI
         ~Window();
 
         void layout();
-        void redraw(NonNull<RefPtr<Gfx::Context>> context);
+        void redraw(Core::NonNull<RefPtr<Gfx::Context>> context);
 
         Gfx::Size _size;
 
         bool _maximized { false };
 
-        NonNull<RefPtr<DecorationView>> _decorationView;
+        Core::NonNull<RefPtr<DecorationView>> _decorationView;
 
         Cursor _currentCursor { Cursor::Default };
         std::vector<Cursor> _cursorStack;

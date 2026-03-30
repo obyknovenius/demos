@@ -2,7 +2,7 @@
 
 namespace GUI
 {
-    void Window::MaximizeButton::redraw(NonNull<RefPtr<Gfx::Context>> context)
+    void Window::MaximizeButton::redraw(Core::NonNull<RefPtr<Gfx::Context>> context)
     {
         context->fillRect(_bounds, Gfx::Color::White);
 

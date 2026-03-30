@@ -17,7 +17,7 @@ namespace GUI
     class View : public RefCounted, public Weakable
     {
     public:
-        static NonNull<RefPtr<View>> make()
+        static Core::NonNull<RefPtr<View>> make()
         {
             return adopt(new View());
         }
@@ -33,7 +33,7 @@ namespace GUI
         virtual Gfx::Size intrinsicSize() { return { -1, -1 }; }
 
         virtual void layout();
-        virtual void redraw(NonNull<RefPtr<Gfx::Context>> context);
+        virtual void redraw(Core::NonNull<RefPtr<Gfx::Context>> context);
 
         RefPtr<View> hitTest(Gfx::Point point);
 

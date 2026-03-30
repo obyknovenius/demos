@@ -5,9 +5,9 @@
 
 namespace Platform::Wayland
 {
-    NonNull<RefPtr<Window>> Window::create(NonNull<RefPtr<Display>> display, Gfx::Size size)
+    NonNullRefPtr<Window> Window::create(NonNullRefPtr<Display> display, Gfx::Size size)
     {
-        return adopt(new Window(display, size));
+        return NonNullRefPtr<Window>::adopt(new Window(display, size));
     }
 
     const xdg_surface_listener Window::_xdgSurfaceListener = {
@@ -26,7 +26,7 @@ namespace Platform::Wayland
         }
     };
 
-    Window::Window(NonNull<RefPtr<Display>> display, Gfx::Size size)
+    Window::Window(NonNullRefPtr<Display> display, Gfx::Size size)
         : Platform::Window { size }
         , _display { display }
     {

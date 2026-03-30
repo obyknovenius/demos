@@ -4,18 +4,15 @@
 #include <GLES3/gl3.h>
 #include <cstdlib>
 
-class WindowDelegate final : public Platform::Window::Delegate, public RefCounted
+class WindowDelegate final : public RefCounted, public Platform::Window::Delegate
 {
 public:
-    static NonNull<RefPtr<WindowDelegate>> create()
+    static NonNullRefPtr<WindowDelegate> create()
     {
-        return adopt(new WindowDelegate());
+        return NonNullRefPtr<WindowDelegate>::adopt(new WindowDelegate());
     }
 
-    void ref() override { RefCounted::ref(); }
-    void unref() override { RefCounted::unref(); }
-
-    void drawWindow(NonNull<RefPtr<Platform::Window>> window) override
+    void drawWindow(NonNullRefPtr<Platform::Window> window) override
     {
         float red = rand() % 256 / 255.0f;
         float green = rand() % 256 / 255.0f;
@@ -25,7 +22,7 @@ public:
         glClear(GL_COLOR_BUFFER_BIT);
     }
 
-    void windowDidReceiveEvent(NonNull<RefPtr<Platform::Window>> window, Platform::Event event) override
+    void windowDidReceiveEvent(NonNullRefPtr<Platform::Window> window, Platform::Event event) override
     {
         window->setNeedsDraw();
     }

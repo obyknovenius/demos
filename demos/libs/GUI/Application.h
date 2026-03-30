@@ -1,13 +1,14 @@
 #pragma once
 
 #include <Core/EventLoop.h>
+#include <Core/NonNull.h>
 
 namespace GUI
 {
     class Application
     {
     public:
-        static NonNull<Application*> sharedApplication() { return &_sharedApplication; }
+        static Core::NonNull<Application*> sharedApplication() { return &_sharedApplication; }
 
         void run();
         void quit();
@@ -18,7 +19,7 @@ namespace GUI
         Application() = default;
         ~Application() = default;
 
-        NonNull<Core::EventLoop*> _event_loop { Core::EventLoop::mainLoop() };
+        Core::NonNull<Core::EventLoop*> _event_loop { Core::EventLoop::mainLoop() };
     };
 
     inline void Application::run()

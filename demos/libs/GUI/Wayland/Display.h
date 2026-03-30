@@ -19,7 +19,7 @@ namespace GUI::Wayland
     public:
         static RefPtr<Display> defaultDisplay();
 
-        NonNull<wl_display*> wlDisplay() { return _wlDisplay; }
+        Core::NonNull<wl_display*> wlDisplay() { return _wlDisplay; }
 
         EGLDisplay eglDisplay() { return _eglDisplay; }
         EGLConfig eglConfig() { return _eglConfig; }
@@ -36,7 +36,7 @@ namespace GUI::Wayland
     private:
         static RefPtr<Display> _defaultDisplay;
 
-        Display(NonNull<wl_display*> wlDisplay);
+        Display(Core::NonNull<wl_display*> wlDisplay);
         ~Display() override;
 
         static const wl_registry_listener _wlRegistryListener;
@@ -45,7 +45,7 @@ namespace GUI::Wayland
         void onRegistryGlobal(wl_registry* registry, uint32_t name, const char* interface, uint32_t version);
         void onWmPing(xdg_wm_base* xdgWmBase, uint32_t serial);
 
-        NonNull<wl_display*> _wlDisplay;
+        Core::NonNull<wl_display*> _wlDisplay;
 
         EGLDisplay _eglDisplay { EGL_NO_DISPLAY };
         EGLConfig _eglConfig { EGL_NO_CONFIG_KHR };
