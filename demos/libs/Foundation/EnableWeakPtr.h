@@ -5,41 +5,45 @@
 
 namespace Foundation
 {
-    template<typename T>
-    class WeakPtr;
+    class EnableWeakPtr;
 
-    template<typename T>
     class WeakLink final : public RefCounted
     {
     public:
-        WeakLink(T* ptr) : _ptr { ptr } {}
+        WeakLink(EnableWeakPtr* ptr) : _ptr(ptr) {}
         ~WeakLink() = default;
 
-        T* get() const { return _ptr; }
+        EnableWeakPtr* get() const { return _ptr; }
 
         void revoke() { _ptr = nullptr; }
-    private:
-        T* _ptr {};
 
+    private:
+        EnableWeakPtr* _ptr;
     };
 
-    template<typename T>
     class EnableWeakPtr
     {
-        friend class WeakPtr<T>;
+        template <typename T>
+        friend class WeakPtr;
 
-    protected:
-        EnableWeakPtr() : _weakLink { new WeakLink(static_cast<T*>(this)) } {}
+    public:
+        EnableWeakPtr() = default;
 
-        ~EnableWeakPtr()
+        virtual ~EnableWeakPtr()
         {
-            _weakLink->revoke();
+            if (_weakLink)
+                _weakLink->revoke();
         }
 
-        RefPtr<WeakLink<T>> weakLink() const { return _weakLink; }
-
     private:
-        RefPtr<WeakLink<T>> _weakLink;
+        RefPtr<WeakLink> weakLink()
+        {
+            if (!_weakLink)
+                _weakLink = RefPtr<WeakLink>::adopt(new WeakLink(this));
+            return _weakLink;
+        }
+
+        RefPtr<WeakLink> _weakLink;
     };
 }
 

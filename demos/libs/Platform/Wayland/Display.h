@@ -3,10 +3,7 @@
 #include "../Display.h"
 #include "Seat.h"
 #include <EGL/egl.h>
-#include <Foundation/EnableWeakPtr.h>
 #include <Foundation/NonNull.h>
-#include <Foundation/RefCounted.h>
-#include <Foundation/RefPtr.h>
 #include <optional>
 #include <string_view>
 #include <wayland-client.h>
@@ -14,7 +11,7 @@
 
 namespace Platform::Wayland
 {
-    class Display : public Platform::Display, public EnableWeakPtr<Display>
+    class Display : public Platform::Display
     {
     public:
         static RefPtr<Display> connect(std::optional<std::string_view> name = std::nullopt);

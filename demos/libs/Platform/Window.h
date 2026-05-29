@@ -1,10 +1,9 @@
 #pragma once
 
 #include "Event.h"
-#include <Foundation/EnableWeakPtr.h>
+#include <Foundation/Object.h>
+#include <Foundation/Protocol.h>
 #include <Foundation/NonNull.h>
-#include <Foundation/RefCounted.h>
-#include <Foundation/RefPtr.h>
 #include <Foundation/WeakPtr.h>
 #include <Gfx/Size.h>
 
@@ -12,10 +11,10 @@ namespace Platform
 {
     class Display;
 
-    class Window : public RefCounted, public EnableWeakPtr<Window>
+    class Window : public Object
     {
     public:
-        class Delegate : public EnableWeakPtr<Delegate>
+        class Delegate : public Protocol
         {
         public:
             virtual void layoutWindow(NonNull<RefPtr<Window>> window) {};
@@ -69,21 +68,21 @@ namespace Platform
 
     inline void Window::layout()
     {
-        if (_delegate)
-            _delegate->layoutWindow(this);
+        if (RefPtr delegate = _delegate)
+            delegate->layoutWindow(this);
         _needsLayout = false;
     }
 
     inline void Window::draw()
     {
-        if (_delegate)
-            _delegate->drawWindow(this);
+        if (RefPtr delegate = _delegate)
+            delegate->drawWindow(this);
         _needsDraw = false;
     }
 
     inline void Window::receiveEvent(Event event)
     {
-        if (_delegate)
-            _delegate->windowDidReceiveEvent(this, event);
+        if (RefPtr delegate = _delegate)
+            delegate->windowDidReceiveEvent(this, event);
     }
 }

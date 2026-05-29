@@ -2,7 +2,7 @@
 
 #include "../Event.h"
 #include <Foundation/NonNull.h>
-#include <Foundation/RefCounted.h>
+#include <Foundation/Object.h>
 #include <Foundation/RefPtr.h>
 #include <Foundation/WeakPtr.h>
 #include <optional>
@@ -13,7 +13,7 @@ namespace Platform::Wayland
     class Seat;
     class Window;
 
-    class Pointer final : public RefCounted
+    class Pointer final : public Object
     {
     public:
         static NonNull<RefPtr<Pointer>> create(NonNull<wl_pointer*> wlPointer, NonNull<RefPtr<Seat>> seat);

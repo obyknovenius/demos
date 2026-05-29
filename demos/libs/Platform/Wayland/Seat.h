@@ -1,18 +1,14 @@
 #pragma once
 
 #include "Pointer.h"
-#include <Foundation/EnableWeakPtr.h>
-#include <Foundation/NonNull.h>
-#include <Foundation/RefCounted.h>
-#include <Foundation/RefPtr.h>
-#include <Foundation/WeakPtr.h>
+#include <Foundation/Object.h>
 #include <wayland-client.h>
 
 namespace Platform::Wayland
 {
     class Display;
 
-    class Seat final : public RefCounted, public EnableWeakPtr<Seat>
+    class Seat final : public Object
     {
     public:
         static NonNull<RefPtr<Seat>> create(NonNull<wl_seat*> wlSeat, NonNull<RefPtr<Display>> display);

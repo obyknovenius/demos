@@ -4,7 +4,7 @@
 #include <GLES3/gl3.h>
 #include <cstdlib>
 
-class WindowDelegate final : public RefCounted, public Platform::Window::Delegate
+class WindowDelegate final : public Object, public Platform::Window::Delegate
 {
 public:
     static NonNull<RefPtr<WindowDelegate>> create()

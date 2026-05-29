@@ -12,7 +12,7 @@ namespace Platform::Wayland
 {
     class Display;
 
-    class Window : public Platform::Window, public EnableWeakPtr<Window>
+    class Window : public Platform::Window
     {
     public:
         static NonNull<RefPtr<Window>> create(NonNull<RefPtr<Display>> display, Gfx::Size size = { 800, 600 });

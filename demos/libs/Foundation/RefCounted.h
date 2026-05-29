@@ -5,10 +5,7 @@ namespace Foundation
     class RefCounted
     {
     public:
-        void ref()
-        {
-            ++_refCount;
-        }
+        void ref() { ++_refCount; }
 
         void unref()
         {
@@ -21,7 +18,7 @@ namespace Foundation
     protected:
         virtual ~RefCounted() = default;
 
-        unsigned _refCount { 1 };
+        unsigned _refCount = 1;
     };
 }
 

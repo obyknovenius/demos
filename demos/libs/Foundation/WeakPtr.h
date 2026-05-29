@@ -1,102 +1,121 @@
 #pragma once
 
 #include "EnableWeakPtr.h"
+#include "NonNull.h"
 
 namespace Foundation
 {
     template <typename T>
-    class NonNull;
-
-    template <typename T>
     class WeakPtr
     {
+        template <typename U>
+        friend class WeakPtr;
+
     public:
         WeakPtr() = default;
 
-        WeakPtr(std::nullptr_t) : _weakLink { nullptr } {}
+        WeakPtr(T* ptr) : _weakLink(ptr ? ptr->weakLink() : nullptr) {}
 
-        WeakPtr(EnableWeakPtr<T>* ptr) : _weakLink { ptr ? ptr->weakLink() : nullptr } {}
+        WeakPtr(const RefPtr<T>& refPtr) : WeakPtr(refPtr.get()) {}
 
-        template<typename U>
-        requires(std::derived_from<U, EnableWeakPtr<T>>)
-        WeakPtr(NonNull<U> ptr) : WeakPtr(ptr.get()) {}
+        template <typename U>
+        requires std::derived_from<U, T>
+        WeakPtr(const RefPtr<U>& refPtr) : WeakPtr(refPtr.get()) {}
 
-        template<typename U>
-        requires(std::derived_from<U, EnableWeakPtr<T>>)
-        WeakPtr(const RefPtr<U>& ptr) : WeakPtr(ptr.get()) {}
+        template <typename U>
+        requires std::derived_from<U, T>
+        WeakPtr(const NonNull<RefPtr<U>>& refPtr) : WeakPtr(refPtr.get()) {}
 
-        template<typename U>
-        requires(std::derived_from<U, EnableWeakPtr<T>>)
-        WeakPtr(const NonNull<RefPtr<U>>& ptr) : WeakPtr(ptr.get()) {}
+        WeakPtr(const WeakPtr<T>& other) : _weakLink(other._weakLink) {}
 
-        WeakPtr(const WeakPtr& other) : _weakLink { other._weakLink } {}
+        template <typename U>
+        requires std::derived_from<U, T>
+        WeakPtr(const WeakPtr<U>& other) : _weakLink(other._weakLink) {}
 
-        WeakPtr(WeakPtr&& other) : _weakLink { std::move(other._weakLink) } {}
+        WeakPtr(WeakPtr&& other) : _weakLink(std::move(other._weakLink)) {}
 
-        WeakPtr& operator=(std::nullptr_t)
+        template <typename U>
+        requires std::derived_from<U, T>
+        WeakPtr(WeakPtr<U>&& other) : _weakLink(std::move(other._weakLink)) {}
+
+        T* get() const { return _weakLink ? dynamic_cast<T*>(_weakLink->get()) : nullptr; }
+
+        T* operator->() const { return get(); }
+        std::remove_pointer_t<T>& operator*() const { return *get(); }
+
+        explicit operator bool() const { return get(); }
+
+        WeakPtr& operator=(T* ptr)
         {
-            WeakPtr tmp;
+            WeakPtr tmp(ptr);
             swap(tmp);
             return *this;
         }
 
-        WeakPtr& operator=(EnableWeakPtr<T>* ptr)
+        WeakPtr& operator=(const RefPtr<T>& refPtr)
         {
-            WeakPtr tmp { ptr };
+            WeakPtr tmp(refPtr);
             swap(tmp);
             return *this;
         }
 
-        WeakPtr& operator=(const NonNull<RefPtr<T>>& ptr)
+        template <typename U>
+        requires std::derived_from<U, T>
+        WeakPtr& operator=(const RefPtr<U>& refPtr)
         {
-            WeakPtr tmp { ptr };
+            WeakPtr tmp(refPtr);
             swap(tmp);
             return *this;
         }
 
-        WeakPtr& operator=(const RefPtr<T>& ptr)
+        template <typename U>
+        requires std::derived_from<U, T>
+        WeakPtr& operator=(const NonNull<RefPtr<U>>& refPtr)
         {
-            WeakPtr tmp { ptr };
+            WeakPtr tmp(refPtr);
             swap(tmp);
             return *this;
         }
 
         WeakPtr& operator=(const WeakPtr& other)
         {
-            WeakPtr tmp (other);
+            WeakPtr tmp(other);
+            swap(tmp);
+            return *this;
+        }
+
+        template <typename U>
+        requires std::derived_from<U, T>
+        WeakPtr& operator=(const WeakPtr<U>& other)
+        {
+            WeakPtr tmp(other);
             swap(tmp);
             return *this;
         }
 
         WeakPtr& operator=(WeakPtr&& other)
         {
-            WeakPtr tmp (std::move(other));
+            WeakPtr tmp(std::move(other));
             swap(tmp);
             return *this;
         }
 
-        T* get() const
+        template <typename U>
+        requires std::derived_from<U, T>
+        WeakPtr& operator=(WeakPtr<U>&& other)
         {
-            if (_weakLink)
-                return _weakLink->get();
-            return nullptr;
+            WeakPtr tmp(std::move(other));
+            swap(tmp);
+            return *this;
         }
-
-        T* operator->() const { return get(); }
-        T& operator*() const { return *get(); }
-
-        bool operator==(std::nullptr_t) const { return !get(); }
-        bool operator==(const WeakPtr& other) const { return get() == other.get(); }
-
-        explicit operator bool() const { return get(); }
 
         void swap(WeakPtr& other)
         {
-            std::swap(_weakLink, other._weakLink);
+            _weakLink.swap(other._weakLink);
         }
 
     private:
-        RefPtr<WeakLink<T>> _weakLink;
+        RefPtr<WeakLink> _weakLink;
     };
 }
 
