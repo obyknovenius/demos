@@ -1,4 +1,4 @@
-FROM ubuntu:25.10
+FROM ubuntu:26.04
 
 RUN apt update && \
     apt -y install \
@@ -16,3 +16,6 @@ RUN apt update && \
         wayland-protocols && \
     apt -y clean && \
     rm -rf /var/lib/apt/lists/*
+
+RUN userdel -f -r ubuntu
+
