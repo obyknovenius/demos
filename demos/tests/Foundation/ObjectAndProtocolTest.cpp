@@ -1,23 +1,19 @@
 #include <gtest/gtest.h>
 
-#include <Foundation/NonNull.h>
 #include <Foundation/Object.h>
-#include <Foundation/Protocol.h>
+#include <Foundation/StrongPtr.h>
 #include <Foundation/WeakPtr.h>
 
 class Window : public Object
 {
 public:
-    static NonNull<RefPtr<Window>> create()
-    {
-        return RefPtr<Window>::adopt(new Window());
-    }
-
-    class Delegate : public Protocol
+    class Delegate
     {
     public:
         virtual void draw() = 0;
     };
+
+    Window() = default;
 
     void setDelegate(WeakPtr<Delegate> delegate)
     {
@@ -26,12 +22,12 @@ public:
 
     void draw()
     {
-        if (RefPtr delegate = _delegate)
+        if (StrongPtr delegate = _delegate)
             delegate->draw();
     }
 
 protected:
-    Window() = default;
+    virtual ~Window() = default;
 
 private:
     WeakPtr<Delegate> _delegate;
@@ -40,24 +36,21 @@ private:
 class WindowDelegate : public Object, public Window::Delegate
 {
 public:
-    static NonNull<RefPtr<WindowDelegate>> create()
-    {
-        return RefPtr<WindowDelegate>::adopt(new WindowDelegate());
-    }
-
+    WindowDelegate() = default;
+    
     void draw() override
     {
     }
 
-protected:
-    WindowDelegate() = default;
+private:
+    ~WindowDelegate() override = default;
 };
 
 
 TEST(ObjectAndProtocolTest, ItWorks)
 {
-    auto window = Window::create();
-    auto delegate = WindowDelegate::create();
+    auto window = makeStrong<Window>();
+    auto delegate = makeStrong<WindowDelegate>();
     window->setDelegate(delegate);
     window->draw();
 }

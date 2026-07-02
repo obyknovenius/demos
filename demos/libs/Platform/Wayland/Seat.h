@@ -2,6 +2,7 @@
 
 #include "Pointer.h"
 #include <Foundation/Object.h>
+#include <Foundation/StrongPtr.h>
 #include <wayland-client.h>
 
 namespace Platform::Wayland
@@ -11,20 +12,19 @@ namespace Platform::Wayland
     class Seat final : public Object
     {
     public:
-        static NonNull<RefPtr<Seat>> create(NonNull<wl_seat*> wlSeat, NonNull<RefPtr<Display>> display);
+        Seat(wl_seat* wlSeat, StrongPtr<Display> display);
 
     private:
         static const wl_seat_listener _wlSeatListener;
-
-        Seat(NonNull<wl_seat*> wlSeat, NonNull<RefPtr<Display>> display);
+        
         ~Seat() override;
 
         void capabilitiesDidChange(uint32_t capabilities);
 
-        NonNull<wl_seat*> _wlSeat;
+        wl_seat* _wlSeat = nullptr;
 
-        WeakPtr<Display> _display {};
+        WeakPtr<Display> _display = nullptr;
 
-        RefPtr<Pointer> _pointer {};
+        StrongPtr<Pointer> _pointer = nullptr;
     };
 }

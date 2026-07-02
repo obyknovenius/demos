@@ -2,8 +2,7 @@
 
 #include "Event.h"
 #include <Foundation/Object.h>
-#include <Foundation/Protocol.h>
-#include <Foundation/NonNull.h>
+#include <Foundation/StrongPtr.h>
 #include <Foundation/WeakPtr.h>
 #include <Gfx/Size.h>
 
@@ -14,15 +13,15 @@ namespace Platform
     class Window : public Object
     {
     public:
-        class Delegate : public Protocol
+        class Delegate
         {
         public:
-            virtual void layoutWindow(NonNull<RefPtr<Window>> window) {};
-            virtual void drawWindow(NonNull<RefPtr<Window>> window) {};
-            virtual void windowDidReceiveEvent(NonNull<RefPtr<Platform::Window>> window, Platform::Event event) {};
+            virtual void layoutWindow(StrongPtr<Window> window) {};
+            virtual void drawWindow(StrongPtr<Window> window) {};
+            virtual void windowDidReceiveEvent(StrongPtr<Platform::Window> window, Platform::Event event) {};
         };
 
-        static NonNull<RefPtr<Window>> create(NonNull<RefPtr<Display>> display, Gfx::Size size = { 800, 600 });
+        static StrongPtr<Window> create(StrongPtr<Display> display, Gfx::Size size = { 800, 600 });
 
         Gfx::Size size() const { return _size; }
 
@@ -46,10 +45,10 @@ namespace Platform
         virtual void layout();
         virtual void draw();
 
-        Gfx::Size _size {};
+        Gfx::Size _size = { 0, 0 };
 
-        bool _needsLayout { false };
-        bool _needsDraw { false };
+        bool _needsLayout = false;
+        bool _needsDraw = false;
 
         WeakPtr<Delegate> _delegate;
     };
@@ -68,21 +67,21 @@ namespace Platform
 
     inline void Window::layout()
     {
-        if (RefPtr delegate = _delegate)
+        if (StrongPtr delegate = _delegate)
             delegate->layoutWindow(this);
         _needsLayout = false;
     }
 
     inline void Window::draw()
     {
-        if (RefPtr delegate = _delegate)
+        if (StrongPtr delegate = _delegate)
             delegate->drawWindow(this);
         _needsDraw = false;
     }
 
     inline void Window::receiveEvent(Event event)
     {
-        if (RefPtr delegate = _delegate)
+        if (StrongPtr delegate = _delegate)
             delegate->windowDidReceiveEvent(this, event);
     }
 }

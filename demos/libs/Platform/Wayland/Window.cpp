@@ -5,11 +5,6 @@
 
 namespace Platform::Wayland
 {
-    NonNull<RefPtr<Window>> Window::create(NonNull<RefPtr<Display>> display, Gfx::Size size)
-    {
-        return RefPtr<Window>::adopt(new Window(display, size));
-    }
-
     const xdg_surface_listener Window::_xdgSurfaceListener = {
         .configure = [](void* data, xdg_surface* xdgSurface, uint32_t serial)
         {
@@ -26,9 +21,9 @@ namespace Platform::Wayland
         }
     };
 
-    Window::Window(NonNull<RefPtr<Display>> display, Gfx::Size size)
-        : Platform::Window { size }
-        , _display { display }
+    Window::Window(StrongPtr<Display> display, Gfx::Size size)
+        : Platform::Window(size)
+        , _display(display)
     {
         _wlSurface = wl_compositor_create_surface(_display->wlCompositor());
         wl_surface_set_user_data(_wlSurface, this);

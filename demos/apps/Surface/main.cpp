@@ -7,12 +7,9 @@
 class WindowDelegate final : public Object, public Platform::Window::Delegate
 {
 public:
-    static NonNull<RefPtr<WindowDelegate>> create()
-    {
-        return RefPtr<WindowDelegate>::adopt(new WindowDelegate());
-    }
+    WindowDelegate() = default;
 
-    void drawWindow(NonNull<RefPtr<Platform::Window>> window) override
+    void drawWindow(StrongPtr<Platform::Window> window) override
     {
         float red = rand() % 256 / 255.0f;
         float green = rand() % 256 / 255.0f;
@@ -22,13 +19,13 @@ public:
         glClear(GL_COLOR_BUFFER_BIT);
     }
 
-    void windowDidReceiveEvent(NonNull<RefPtr<Platform::Window>> window, Platform::Event event) override
+    void windowDidReceiveEvent(StrongPtr<Platform::Window> window, Platform::Event event) override
     {
         window->setNeedsDraw();
     }
-
+    
 private:
-    WindowDelegate() = default;
+    ~WindowDelegate() = default;
 };
 
 int main(int argc, char** argv)
@@ -36,7 +33,7 @@ int main(int argc, char** argv)
     auto display = Platform::Display::defaultDisplay();
     auto window = Platform::Window::create(display);
 
-    auto windowDelegate = WindowDelegate::create();
+    auto windowDelegate = makeStrong<WindowDelegate>();
     window->setDelegate(windowDelegate);
 
     Core::EventLoop::mainLoop()->run();

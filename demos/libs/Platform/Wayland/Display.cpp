@@ -5,14 +5,6 @@
 
 namespace Platform::Wayland
 {
-    RefPtr<Display> Display::connect(std::optional<std::string_view> name)
-    {
-        wl_display* wlDisplay = wl_display_connect(name ? name->data() : nullptr);
-        if (!wlDisplay)
-            return nullptr;
-        return RefPtr<Display>::adopt(new Display(wlDisplay));
-    }
-
     const wl_registry_listener Display::_wlRegistryListener = {
         .global = [](void* data, wl_registry* wlRegistry, uint32_t name, const char* interface, uint32_t version)
         {
@@ -30,7 +22,15 @@ namespace Platform::Wayland
         }
     };
 
-    Display::Display(NonNull<wl_display*> wlDisplay) : _wlDisplay { wlDisplay }
+    StrongPtr<Display> Display::connect(std::optional<std::string_view> name)
+    {
+        wl_display* wlDisplay = wl_display_connect(name ? name->data() : nullptr);
+        if (!wlDisplay)
+            return nullptr;
+        return StrongPtr<Display>::adopt(new Display(wlDisplay));
+    }
+
+    Display::Display(wl_display* wlDisplay) : _wlDisplay(wlDisplay)
     {
         _wlRegistry = wl_display_get_registry(_wlDisplay);
         wl_registry_add_listener(_wlRegistry, &_wlRegistryListener, this);
@@ -60,6 +60,8 @@ namespace Platform::Wayland
         eglMakeCurrent(_eglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
         eglTerminate(_eglDisplay);
 
+        _seat = nullptr;
+
         xdg_wm_base_destroy(_xdgWmBase);
         wl_compositor_destroy(_wlCompositor);
         wl_registry_destroy(_wlRegistry);
@@ -81,7 +83,7 @@ namespace Platform::Wayland
         else if (interface == wl_seat_interface.name)
         {
             wl_seat* wlSeat = reinterpret_cast<wl_seat*>(wl_registry_bind(_wlRegistry, name, &wl_seat_interface, 7));
-            _seat = Seat::create(wlSeat, this);
+            _seat = makeStrong<Seat>(wlSeat, this);
         }
     }
 

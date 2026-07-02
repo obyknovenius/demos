@@ -2,8 +2,7 @@
 
 #include "../Window.h"
 #include <EGL/egl.h>
-#include <Foundation/NonNull.h>
-#include <Foundation/RefPtr.h>
+#include <Foundation/StrongPtr.h>
 #include <wayland-client.h>
 #include <wayland-egl.h>
 #include <xdg-shell-client-protocol.h>
@@ -15,7 +14,7 @@ namespace Platform::Wayland
     class Window : public Platform::Window
     {
     public:
-        static NonNull<RefPtr<Window>> create(NonNull<RefPtr<Display>> display, Gfx::Size size = { 800, 600 });
+        Window(StrongPtr<Display> display, Gfx::Size size = { 800, 600 });
 
         void setNeedsDraw() override;
 
@@ -23,7 +22,6 @@ namespace Platform::Wayland
         static const xdg_surface_listener _xdgSurfaceListener;
         static const wl_callback_listener _frameCallbackListener;
 
-        Window(NonNull<RefPtr<Display>> display, Gfx::Size size);
         ~Window() override;
 
         void didConfigure(uint32_t serial);
@@ -32,21 +30,21 @@ namespace Platform::Wayland
         void setNeedsDrawNextFrame();
         void drawNextFrameIfNeeded();
 
-        NonNull<RefPtr<Display>> _display;
+        StrongPtr<Display> _display;
 
-        wl_surface* _wlSurface {};
-        xdg_surface* _xdgSurface {};
-        xdg_toplevel* _xdgToplevel {};
+        wl_surface* _wlSurface = nullptr;
+        xdg_surface* _xdgSurface = nullptr;
+        xdg_toplevel* _xdgToplevel = nullptr;
 
-        wl_egl_window* _wlEglWindow {};
+        wl_egl_window* _wlEglWindow = nullptr;
 
-        EGLConfig _eglConfig {};
-        EGLSurface _eglSurface { EGL_NO_SURFACE };
-        EGLContext _eglContext { EGL_NO_CONTEXT };
+        EGLConfig _eglConfig = nullptr;
+        EGLSurface _eglSurface = EGL_NO_SURFACE;
+        EGLContext _eglContext = EGL_NO_CONTEXT;
 
-        bool _drawingFrame { false };
-        bool _needsDrawNextFrame { false };
+        bool _drawingFrame = false;
+        bool _needsDrawNextFrame = false;
 
-        wl_callback* _frameCallback {};
+        wl_callback* _frameCallback = nullptr;
     };
 }

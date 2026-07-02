@@ -1,9 +1,8 @@
 #pragma once
 
 #include "../Event.h"
-#include <Foundation/NonNull.h>
 #include <Foundation/Object.h>
-#include <Foundation/RefPtr.h>
+#include <Foundation/StrongPtr.h>
 #include <Foundation/WeakPtr.h>
 #include <optional>
 #include <wayland-client.h>
@@ -16,26 +15,25 @@ namespace Platform::Wayland
     class Pointer final : public Object
     {
     public:
-        static NonNull<RefPtr<Pointer>> create(NonNull<wl_pointer*> wlPointer, NonNull<RefPtr<Seat>> seat);
+        Pointer(wl_pointer* wlPointer, StrongPtr<Seat> seat);
 
     private:
         static const wl_pointer_listener _wlPointerListener;
+        
+        ~Pointer() override;
 
-        Pointer(NonNull<wl_pointer*> wlPointer, NonNull<RefPtr<Seat>> seat);
-        ~Pointer();
-
-        void didEnterWindow(uint32_t serial, NonNull<RefPtr<Window>> window, double x, double y);
-        void didLeaveWindow(uint32_t serial, NonNull<RefPtr<Window>> window);
+        void didEnterWindow(uint32_t serial, StrongPtr<Window> window, double x, double y);
+        void didLeaveWindow(uint32_t serial, StrongPtr<Window> window);
         void didMove(uint32_t time, double x, double y);
 
         void sendEvent();
 
-        NonNull<wl_pointer*> _wlPointer;
+        wl_pointer* _wlPointer = nullptr;
 
-        WeakPtr<Seat> _seat {};
+        WeakPtr<Seat> _seat = nullptr;
 
-        WeakPtr<Window> _window {};
+        WeakPtr<Window> _window = nullptr;
 
-        std::optional<Event> _event {};
+        std::optional<Event> _event = std::nullopt;
     };
 }

@@ -4,11 +4,6 @@
 
 namespace Platform::Wayland
 {
-    NonNull<RefPtr<Seat>> Seat::create(NonNull<wl_seat*> wlSeat, NonNull<RefPtr<Display>> display)
-    {
-        return RefPtr<Seat>::adopt(new Seat(wlSeat, display));
-    }
-
     const wl_seat_listener Seat::_wlSeatListener = {
         .capabilities = [](void* data, wl_seat* wlSeat, uint32_t capabilities)
         {
@@ -20,7 +15,7 @@ namespace Platform::Wayland
         }
     };
 
-    Seat::Seat(NonNull<wl_seat*> wlSeat, NonNull<RefPtr<Display>> display) :
+    Seat::Seat(wl_seat* wlSeat, StrongPtr<Display> display) :
         _wlSeat { wlSeat },
         _display { display }
     {
@@ -29,6 +24,8 @@ namespace Platform::Wayland
 
     Seat::~Seat()
     {
+        _pointer = nullptr;
+
         wl_seat_destroy(_wlSeat);
     }
 
@@ -37,7 +34,7 @@ namespace Platform::Wayland
         bool havePointer = capabilities & WL_SEAT_CAPABILITY_POINTER;
 
         if (havePointer && !_pointer)
-            _pointer = Pointer::create(wl_seat_get_pointer(_wlSeat), this);
+            _pointer = makeStrong<Pointer>(wl_seat_get_pointer(_wlSeat), this);
         else if (!havePointer && _pointer)
             _pointer = nullptr;
     }
