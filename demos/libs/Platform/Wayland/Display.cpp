@@ -11,7 +11,7 @@ namespace Platform::Wayland
             auto* display = reinterpret_cast<Display*>(data);
             display->addGlobal(name, interface, version);
         },
-        .global_remove = nullptr
+        .global_remove = nullptr,
     };
 
     const xdg_wm_base_listener Display::_xdgWmBaseListener = {
@@ -19,7 +19,7 @@ namespace Platform::Wayland
         {
             auto* display = reinterpret_cast<Display*>(data);
             display->ping(serial);
-        }
+        },
     };
 
     StrongPtr<Display> Display::connect(std::optional<std::string_view> name)
@@ -46,7 +46,7 @@ namespace Platform::Wayland
             .dispatch = [this]()
             {
                 wl_display_dispatch(_wlDisplay);
-            }
+            },
         });
 
         _eglDisplay = eglGetPlatformDisplay(EGL_PLATFORM_WAYLAND_KHR, _wlDisplay, NULL);

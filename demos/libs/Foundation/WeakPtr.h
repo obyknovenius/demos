@@ -50,7 +50,9 @@ namespace Foundation
         requires std::convertible_to<U*, T*>
         WeakPtr(WeakPtr<U>&& other) noexcept :
             _ptr(std::exchange(other._ptr, nullptr)),
-            _weakLink(std::exchange(other._weakLink, nullptr)) {}
+            _weakLink(std::exchange(other._weakLink, nullptr))
+        {
+        }
 
         ~WeakPtr()
         {

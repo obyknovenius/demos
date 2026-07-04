@@ -16,7 +16,7 @@ namespace Platform::Wayland
 
     private:
         static const wl_seat_listener _wlSeatListener;
-        
+
         ~Seat() override;
 
         void capabilitiesDidChange(uint32_t capabilities);

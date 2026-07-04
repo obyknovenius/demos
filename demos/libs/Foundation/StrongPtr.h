@@ -6,13 +6,18 @@
 namespace Foundation
 {
     class Object;
-    template <typename T> class WeakPtr;
+
+    template <typename T>
+    class WeakPtr;
 
     template <typename T>
     class StrongPtr
     {
-        template <typename U> friend class StrongPtr;
-        template <typename U> friend class WeakPtr;
+        template <typename U>
+        friend class StrongPtr;
+
+        template <typename U>
+        friend class WeakPtr;
 
     public:
         template <typename U>
@@ -161,11 +166,13 @@ namespace Foundation
         }
 
     private:
-        struct Adopt {};
+        enum class Adopt;
 
         template <typename U>
         requires std::derived_from<U, Object> && std::convertible_to<U*, T*>
-        StrongPtr(U* ptr, Adopt) : _ptr(ptr), _object(ptr) {}
+        StrongPtr(U* ptr, Adopt) : _ptr(ptr), _object(ptr)
+        {
+        }
 
         T* _ptr = nullptr;
         Object* _object = nullptr;

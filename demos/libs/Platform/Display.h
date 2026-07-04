@@ -12,7 +12,7 @@ namespace Platform
         {
             return _defaultDisplay;
         }
-    
+
     protected:
         Display() = default;
         ~Display() override = default;

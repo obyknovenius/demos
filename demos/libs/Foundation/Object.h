@@ -3,18 +3,23 @@
 namespace Foundation
 {
     class Object;
-    template <typename T> class WeakPtr;
+
+    template <typename T>
+    class WeakPtr;
 
     class WeakLink final
     {
         friend class Object;
-        template <typename T> friend class WeakPtr;
+
+        template <typename T>
+        friend class WeakPtr;
 
     public:
         Object* get() const { return _ptr; }
-    
+
     private:
         explicit WeakLink(Object* ptr) : _ptr(ptr) {}
+
         ~WeakLink() = default;
 
         void retain() { ++_retainCount; }

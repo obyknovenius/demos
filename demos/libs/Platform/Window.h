@@ -37,7 +37,7 @@ namespace Platform
         void setDelegate(WeakPtr<Delegate> delegate) { _delegate = delegate; }
 
     protected:
-        Window(Gfx::Size size) : _size { size } {};
+        Window(Gfx::Size size) : _size{ size } {};
 
         void layoutIfNeeded();
         void drawIfNeeded();

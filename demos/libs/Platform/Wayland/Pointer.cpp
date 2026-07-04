@@ -42,7 +42,7 @@ namespace Platform::Wayland
         },
         .axis_discrete = [](void* data, wl_pointer* wlPointer, uint32_t axis, int32_t discrete)
         {
-        }
+        },
     };
 
     Pointer::Pointer(wl_pointer* wlPointer, StrongPtr<Seat> seat) :

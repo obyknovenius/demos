@@ -1,8 +1,9 @@
 FROM ubuntu:26.04
 
-RUN apt update && \
-    apt -y install \
+RUN apt-get update && \
+    apt-get -y install \
         build-essential \
+        curl \
         gdb \
         git \
         libcairo2-dev \
@@ -13,9 +14,14 @@ RUN apt update && \
         meson \
         pkg-config \
         valgrind \
-        wayland-protocols && \
-    apt -y clean && \
+        wayland-protocols
+
+RUN curl -sSL https://apt.llvm.org/llvm-snapshot.gpg.key | tee /etc/apt/trusted.gpg.d/apt.llvm.org.asc && \
+    echo "deb http://apt.llvm.org/resolute/ llvm-toolchain-resolute main" | tee /etc/apt/sources.list.d/llvm.list && \
+    apt-get update && \
+    apt-get -y install clang-format
+
+RUN apt-get -y clean && \
     rm -rf /var/lib/apt/lists/*
 
 RUN userdel -f -r ubuntu
-

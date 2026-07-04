@@ -12,12 +12,10 @@ namespace Platform::Wayland
         },
         .name = [](void* data, wl_seat* wlSeat, const char* name)
         {
-        }
+        },
     };
 
-    Seat::Seat(wl_seat* wlSeat, StrongPtr<Display> display) :
-        _wlSeat { wlSeat },
-        _display { display }
+    Seat::Seat(wl_seat* wlSeat, StrongPtr<Display> display) : _wlSeat{ wlSeat }, _display{ display }
     {
         wl_seat_add_listener(_wlSeat, &_wlSeatListener, this);
     }

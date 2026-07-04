@@ -15,7 +15,12 @@
 	},
 	 "features": {
         "ghcr.io/devcontainers/features/common-utils:2": {
-            "username": "${localEnv:USER}"
+            "username": "${localEnv:USER}",
+			"installSsl": "false",
+			"installZsh": "false",
+			"installOhMyZsh": "false",
+			"installOhMyZshConfig": "false",
+			"upgradePackages": "false"
         }
     },
 	"customizations": {

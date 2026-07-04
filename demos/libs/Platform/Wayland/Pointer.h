@@ -19,7 +19,7 @@ namespace Platform::Wayland
 
     private:
         static const wl_pointer_listener _wlPointerListener;
-        
+
         ~Pointer() override;
 
         void didEnterWindow(uint32_t serial, StrongPtr<Window> window, double x, double y);
