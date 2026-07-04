@@ -118,6 +118,22 @@ namespace Foundation
             return *this;
         }
 
+        StrongPtr& operator=(const WeakPtr<T>& weakPtr) noexcept
+        {
+            StrongPtr tmp(weakPtr);
+            swap(tmp);
+            return *this;
+        }
+
+        template <typename U>
+        requires std::convertible_to<U*, T*>
+        StrongPtr& operator=(const WeakPtr<U>& weakPtr) noexcept
+        {
+            StrongPtr tmp(weakPtr);
+            swap(tmp);
+            return *this;
+        }
+
         StrongPtr& operator=(const StrongPtr& other) noexcept
         {
             StrongPtr tmp(other);
@@ -137,15 +153,6 @@ namespace Foundation
         StrongPtr& operator=(StrongPtr&& other) noexcept
         {
             StrongPtr tmp(std::move(other));
-            swap(tmp);
-            return *this;
-        }
-
-        template <typename U>
-        requires std::convertible_to<U*, T*>
-        StrongPtr& operator=(const WeakPtr<U>& weakPtr) noexcept
-        {
-            StrongPtr tmp(weakPtr);
             swap(tmp);
             return *this;
         }

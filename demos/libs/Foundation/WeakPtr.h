@@ -16,6 +16,16 @@ namespace Foundation
 
         WeakPtr(std::nullptr_t) {}
 
+        WeakPtr(const StrongPtr<T>& strongPtr)
+        {
+            if (strongPtr._object)
+            {
+                _ptr = strongPtr._ptr;
+                _weakLink = strongPtr._object->weakLink();
+                _weakLink->retain();
+            }
+        }
+
         template <typename U>
         requires std::convertible_to<U*, T*>
         WeakPtr(const StrongPtr<U>& strongPtr)
@@ -65,6 +75,22 @@ namespace Foundation
         WeakPtr& operator=(std::nullptr_t) noexcept
         {
             WeakPtr tmp;
+            swap(tmp);
+            return *this;
+        }
+
+        WeakPtr& operator=(const StrongPtr<T>& strongPtr) noexcept
+        {
+            WeakPtr tmp(strongPtr);
+            swap(tmp);
+            return *this;
+        }
+
+        template <typename U>
+        requires std::convertible_to<U*, T*>
+        WeakPtr& operator=(const StrongPtr<U>& strongPtr) noexcept
+        {
+            WeakPtr tmp(strongPtr);
             swap(tmp);
             return *this;
         }
