@@ -24,7 +24,7 @@ public:
 
 int main(int argc, char** argv)
 {
-    auto window = Platform::Window::create();
+    auto window = Platform::Window::window();
 
     auto windowDelegate = makeStrong<WindowDelegate>();
     window->setDelegate(windowDelegate);

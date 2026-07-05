@@ -4,7 +4,7 @@
 
 namespace Platform
 {
-    NonNull<StrongPtr<Window>> Window::create(Gfx::Size size)
+    NonNull<StrongPtr<Window>> Window::window(Gfx::Size size)
     {
         return StrongPtr<Window>::adopt(new Wayland::Window(size));
     }
