@@ -21,7 +21,7 @@ namespace Platform::Wayland
         },
     };
 
-    Window::Window(NonNull<StrongPtr<Display>> display, Gfx::Size size) : Platform::Window(size), _display(display)
+    Window::Window(Gfx::Size size) : Platform::Window(size), _display(Display::defaultDisplay())
     {
         _wlSurface = wl_compositor_create_surface(_display->wlCompositor());
         wl_surface_set_user_data(_wlSurface, this);

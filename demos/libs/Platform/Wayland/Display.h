@@ -1,6 +1,5 @@
 #pragma once
 
-#include "../Display.h"
 #include "Seat.h"
 #include <EGL/egl.h>
 #include <Foundation/NonNull.h>
@@ -11,9 +10,11 @@
 
 namespace Platform::Wayland
 {
-    class Display : public Platform::Display
+    class Display final : public Object
     {
     public:
+        static NonNull<StrongPtr<Display>> defaultDisplay() { return _defaultDisplay; }
+
         static StrongPtr<Display> connect(std::optional<std::string_view> name = std::nullopt);
 
         wl_compositor* wlCompositor() const { return _wlCompositor; }
@@ -22,6 +23,8 @@ namespace Platform::Wayland
         EGLDisplay eglDisplay() const { return _eglDisplay; }
 
     private:
+        static NonNull<StrongPtr<Display>> _defaultDisplay;
+
         static const wl_registry_listener _wlRegistryListener;
         static const xdg_wm_base_listener _xdgWmBaseListener;
 

@@ -1,14 +1,11 @@
 #include <Core/EventLoop.h>
-#include <Platform/Display.h>
-#include <Platform/Window.h>
 #include <GLES3/gl3.h>
+#include <Platform/Window.h>
 #include <cstdlib>
 
 class WindowDelegate final : public Object, public Platform::Window::Delegate
 {
 public:
-    WindowDelegate() = default;
-
     void drawWindow(StrongPtr<Platform::Window> window) override
     {
         float red = rand() % 256 / 255.0f;
@@ -23,15 +20,11 @@ public:
     {
         window->setNeedsDraw();
     }
-    
-private:
-    ~WindowDelegate() = default;
 };
 
 int main(int argc, char** argv)
 {
-    auto display = Platform::Display::defaultDisplay();
-    auto window = Platform::Window::create(display);
+    auto window = Platform::Window::create();
 
     auto windowDelegate = makeStrong<WindowDelegate>();
     window->setDelegate(windowDelegate);

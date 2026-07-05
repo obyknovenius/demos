@@ -9,8 +9,6 @@
 
 namespace Platform
 {
-    class Display;
-
     class Window : public Object
     {
     public:
@@ -22,7 +20,7 @@ namespace Platform
             virtual void windowDidReceiveEvent(StrongPtr<Platform::Window> window, Platform::Event event) {};
         };
 
-        static NonNull<StrongPtr<Window>> create(NonNull<StrongPtr<Display>> display, Gfx::Size size = { 800, 600 });
+        static NonNull<StrongPtr<Window>> create(Gfx::Size size = { 800, 600 });
 
         Gfx::Size size() const { return _size; }
 

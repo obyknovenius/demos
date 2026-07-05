@@ -5,6 +5,8 @@
 
 namespace Platform::Wayland
 {
+    NonNull<StrongPtr<Display>> Display::_defaultDisplay = Wayland::Display::connect();
+
     const wl_registry_listener Display::_wlRegistryListener = {
         .global = [](void* data, wl_registry* wlRegistry, uint32_t name, const char* interface, uint32_t version)
         {

@@ -4,7 +4,6 @@ platform_deps = [
 ]
 
 platform_sources = [
-    'Display.cpp',
     'Window.cpp',
 ]
 

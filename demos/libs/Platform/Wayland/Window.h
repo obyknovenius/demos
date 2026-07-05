@@ -15,7 +15,7 @@ namespace Platform::Wayland
     class Window : public Platform::Window
     {
     public:
-        Window(NonNull<StrongPtr<Display>> display, Gfx::Size size = { 800, 600 });
+        Window(Gfx::Size size = { 800, 600 });
 
         void setNeedsDraw() override;
 
