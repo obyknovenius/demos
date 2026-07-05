@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Event.h"
+#include <Foundation/NonNull.h>
 #include <Foundation/Object.h>
 #include <Foundation/StrongPtr.h>
 #include <Foundation/WeakPtr.h>
@@ -21,7 +22,7 @@ namespace Platform
             virtual void windowDidReceiveEvent(StrongPtr<Platform::Window> window, Platform::Event event) {};
         };
 
-        static StrongPtr<Window> create(StrongPtr<Display> display, Gfx::Size size = { 800, 600 });
+        static NonNull<StrongPtr<Window>> create(NonNull<StrongPtr<Display>> display, Gfx::Size size = { 800, 600 });
 
         Gfx::Size size() const { return _size; }
 

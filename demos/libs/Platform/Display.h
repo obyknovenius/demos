@@ -1,5 +1,6 @@
 #pragma once
 
+#include <Foundation/NonNull.h>
 #include <Foundation/Object.h>
 #include <Foundation/StrongPtr.h>
 
@@ -8,7 +9,7 @@ namespace Platform
     class Display : public Object
     {
     public:
-        static StrongPtr<Display> defaultDisplay()
+        static NonNull<StrongPtr<Display>> defaultDisplay()
         {
             return _defaultDisplay;
         }
@@ -18,6 +19,6 @@ namespace Platform
         ~Display() override = default;
 
     private:
-        static StrongPtr<Display> _defaultDisplay;
+        static NonNull<StrongPtr<Display>> _defaultDisplay;
     };
 }

@@ -2,6 +2,7 @@
 
 #include "../Window.h"
 #include <EGL/egl.h>
+#include <Foundation/NonNull.h>
 #include <Foundation/StrongPtr.h>
 #include <wayland-client.h>
 #include <wayland-egl.h>
@@ -14,7 +15,7 @@ namespace Platform::Wayland
     class Window : public Platform::Window
     {
     public:
-        Window(StrongPtr<Display> display, Gfx::Size size = { 800, 600 });
+        Window(NonNull<StrongPtr<Display>> display, Gfx::Size size = { 800, 600 });
 
         void setNeedsDraw() override;
 
@@ -30,7 +31,7 @@ namespace Platform::Wayland
         void setNeedsDrawNextFrame();
         void drawNextFrameIfNeeded();
 
-        StrongPtr<Display> _display;
+        NonNull<StrongPtr<Display>> _display;
 
         wl_surface* _wlSurface = nullptr;
         xdg_surface* _xdgSurface = nullptr;

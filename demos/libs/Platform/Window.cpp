@@ -7,9 +7,9 @@
 
 namespace Platform
 {
-    StrongPtr<Window> Window::create(StrongPtr<Display> display, Gfx::Size size)
+    NonNull<StrongPtr<Window>> Window::create(NonNull<StrongPtr<Display>> display, Gfx::Size size)
     {
-        auto waylandDisplay = dynamicDowncast<Platform::Wayland::Display>(display);
+        auto waylandDisplay = dynamicDowncast<Platform::Wayland::Display>(display.get());
         assert(waylandDisplay);
         return makeStrong<Wayland::Window>(waylandDisplay, size);
     }

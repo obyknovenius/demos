@@ -4,5 +4,5 @@
 
 namespace Platform
 {
-    StrongPtr<Display> Display::_defaultDisplay = Wayland::Display::connect();
+    NonNull<StrongPtr<Display>> Display::_defaultDisplay = Wayland::Display::connect();
 }

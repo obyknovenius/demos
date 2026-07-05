@@ -3,6 +3,7 @@
 #include "../Display.h"
 #include "Seat.h"
 #include <EGL/egl.h>
+#include <Foundation/NonNull.h>
 #include <optional>
 #include <string_view>
 #include <wayland-client.h>
@@ -24,7 +25,7 @@ namespace Platform::Wayland
         static const wl_registry_listener _wlRegistryListener;
         static const xdg_wm_base_listener _xdgWmBaseListener;
 
-        Display(wl_display* wlDisplay);
+        Display(NonNull<wl_display> wlDisplay);
         ~Display() override;
 
         void addGlobal(uint32_t name, std::string_view interface, uint32_t version);

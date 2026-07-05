@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../Event.h"
+#include <Foundation/NonNull.h>
 #include <Foundation/Object.h>
 #include <Foundation/StrongPtr.h>
 #include <Foundation/WeakPtr.h>
@@ -15,7 +16,7 @@ namespace Platform::Wayland
     class Pointer final : public Object
     {
     public:
-        Pointer(wl_pointer* wlPointer, StrongPtr<Seat> seat);
+        Pointer(NonNull<wl_pointer> wlPointer, NonNull<StrongPtr<Seat>> seat);
 
     private:
         static const wl_pointer_listener _wlPointerListener;
@@ -28,7 +29,7 @@ namespace Platform::Wayland
 
         void sendEvent();
 
-        wl_pointer* _wlPointer = nullptr;
+        NonNull<wl_pointer> _wlPointer;
 
         WeakPtr<Seat> _seat = nullptr;
 
