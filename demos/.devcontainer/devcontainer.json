@@ -13,22 +13,26 @@
 		"XDG_RUNTIME_DIR": "${localEnv:XDG_RUNTIME_DIR}",
 		"WAYLAND_DISPLAY": "${localEnv:WAYLAND_DISPLAY}"
 	},
-	 "features": {
-        "ghcr.io/devcontainers/features/common-utils:2": {
-            "username": "${localEnv:USER}",
-			"installSsl": "false",
-			"installZsh": "false",
-			"installOhMyZsh": "false",
-			"installOhMyZshConfig": "false",
-			"upgradePackages": "false"
-        }
-    },
+	"features": {
+		"ghcr.io/devcontainers/features/common-utils:2": {
+			"username": "${localEnv:USER}"
+		}
+	},
 	"customizations": {
 		"vscode": {
 			"extensions": [
 				"ms-vscode.cpptools",
 				"mesonbuild.mesonbuild"
-			]
+			],
+			"settings": {
+				"editor.rulers": [
+					120
+				],
+				"[cpp]": {
+					"editor.defaultFormatter": "ms-vscode.cpptools"
+				},
+				"editor.formatOnSave": true
+			}
 		}
 	},
 	"remoteUser": "${localEnv:USER}"
