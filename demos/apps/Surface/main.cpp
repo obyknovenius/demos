@@ -1,7 +1,11 @@
 #include <Core/EventLoop.h>
 #include <GLES3/gl3.h>
 #include <Platform/Window.h>
+#include <chrono>
+#include <cmath>
 #include <cstdlib>
+
+using namespace std::chrono;
 
 class WindowDelegate final : public Object, public Platform::Window::Delegate
 {
@@ -27,9 +31,10 @@ public:
                 "#version 300 es\n"
                 "precision mediump float;\n"
                 "out vec4 FragColor;\n"
+                "uniform vec4 ourColor;\n"
                 "void main()\n"
                 "{\n"
-                "    FragColor = vec4(1.0, 0.5, 0.2, 1.0);\n"
+                "    FragColor = ourColor;\n"
                 "}\n";
             glShaderSource(fragmentShader, 1, &fragmentShaderSource, nullptr);
             glCompileShader(fragmentShader);
@@ -69,19 +74,23 @@ public:
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
+        auto currentTime = high_resolution_clock::now();
+        duration<float> elapsed = currentTime - _startTime;
+        float greenValue = (std::sin(elapsed.count()) / 2.0f) + 0.5f;
+        int vertexColorLocation = glGetUniformLocation(_program, "ourColor");
+
         glUseProgram(_program);
+        glUniform4f(vertexColorLocation, 0.0f, greenValue, 0.0f, 1.0f);
         glBindVertexArray(_vao);
         glDrawArrays(GL_TRIANGLES, 0, 3);
-    }
 
-    void windowDidReceiveEvent(StrongPtr<Platform::Window> window, Platform::Event event) override
-    {
         window->setNeedsDraw();
     }
 
 private:
     unsigned _vao = 0;
     unsigned _program = 0;
+    time_point<high_resolution_clock> _startTime = high_resolution_clock::now();
 };
 
 int main(int argc, char** argv)

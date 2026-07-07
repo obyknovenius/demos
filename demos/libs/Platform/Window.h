@@ -66,16 +66,16 @@ namespace Platform
 
     inline void Window::layout()
     {
+        _needsLayout = false;
         if (StrongPtr delegate = _delegate)
             delegate->layoutWindow(this);
-        _needsLayout = false;
     }
 
     inline void Window::draw()
     {
+        _needsDraw = false;
         if (StrongPtr delegate = _delegate)
             delegate->drawWindow(this);
-        _needsDraw = false;
     }
 
     inline void Window::receiveEvent(Event event)
