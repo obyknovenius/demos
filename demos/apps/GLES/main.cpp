@@ -7,7 +7,7 @@
 
 using namespace std::chrono;
 
-std::string vertexShaderSource = R"(
+static const GLchar* vertexShaderSource = R"(
 #version 300 es
 
 layout(location = 0) in vec3 aPos;
@@ -18,7 +18,7 @@ void main()
 }
 )";
 
-std::string fragmentShaderSource = R"(
+static const GLchar* fragmentShaderSource = R"(
 #version 300 es
 
 precision mediump float;
@@ -38,31 +38,8 @@ class WindowDelegate final : public Object, public Platform::Window::Delegate
 public:
     void drawWindow(StrongPtr<Platform::Window> window) override
     {
-        if (!_program)
-            _program = Gfx::GLES::Program::program(vertexShaderSource.c_str(), fragmentShaderSource.c_str());
-
-        if (!_vao)
-        {
-            float vertices[] = {
-                -0.5f, -0.5f, 0.0f,
-                0.5f, -0.5f, 0.0f,
-                0.0f, 0.5f, 0.0f
-            };
-
-            glGenVertexArrays(1, &_vao);
-            glBindVertexArray(_vao);
-
-            unsigned vbo;
-            glGenBuffers(1, &vbo);
-            glBindBuffer(GL_ARRAY_BUFFER, vbo);
-            glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-            glEnableVertexAttribArray(0);
-
-            glBindBuffer(GL_ARRAY_BUFFER, 0);
-            glBindVertexArray(0);
-        }
+        ensureProgram();
+        ensureVao();
 
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
@@ -81,8 +58,37 @@ public:
     }
 
 private:
-    unsigned _vao = 0;
+    void ensureProgram()
+    {
+        if (!_program)
+            _program = Gfx::GLES::Program::program(vertexShaderSource, fragmentShaderSource);
+    }
+
+    void ensureVao()
+    {
+        float vertices[] = {
+            -0.5f, -0.5f, 0.0f,
+            0.5f, -0.5f, 0.0f,
+            0.0f, 0.5f, 0.0f
+        };
+
+        glGenVertexArrays(1, &_vao);
+        glBindVertexArray(_vao);
+
+        GLuint vbo;
+        glGenBuffers(1, &vbo);
+        glBindBuffer(GL_ARRAY_BUFFER, vbo);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+        glEnableVertexAttribArray(0);
+
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindVertexArray(0);
+    }
+
     StrongPtr<Gfx::GLES::Program> _program = nullptr;
+    GLuint _vao = 0;
     time_point<high_resolution_clock> _startTime = high_resolution_clock::now();
 };
 
