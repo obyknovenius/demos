@@ -1,5 +1,5 @@
 #include <Core/EventLoop.h>
-#include <GLES3/gl3.h>
+#include <Gfx/GLES/Program.h>
 #include <Platform/Window.h>
 #include <chrono>
 #include <cmath>
@@ -7,46 +7,39 @@
 
 using namespace std::chrono;
 
+std::string vertexShaderSource = R"(
+#version 300 es
+
+layout(location = 0) in vec3 aPos;
+
+void main()
+{
+    gl_Position = vec4(aPos, 1.0);
+}
+)";
+
+std::string fragmentShaderSource = R"(
+#version 300 es
+
+precision mediump float;
+
+out vec4 FragColor;
+
+uniform vec4 ourColor;
+
+void main()
+{
+    FragColor = ourColor;
+}
+)";
+
 class WindowDelegate final : public Object, public Platform::Window::Delegate
 {
 public:
     void drawWindow(StrongPtr<Platform::Window> window) override
     {
         if (!_program)
-        {
-            unsigned vertexShader = glCreateShader(GL_VERTEX_SHADER);
-            const char* vertexShaderSource =
-                "#version 300 es\n"
-                "layout(location = 0) in vec3 aPos;\n"
-                "void main()\n"
-                "{\n"
-                "    gl_Position = vec4(aPos, 1.0);\n"
-                "}\n";
-
-            glShaderSource(vertexShader, 1, &vertexShaderSource, nullptr);
-            glCompileShader(vertexShader);
-
-            unsigned fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-            const char* fragmentShaderSource =
-                "#version 300 es\n"
-                "precision mediump float;\n"
-                "out vec4 FragColor;\n"
-                "uniform vec4 ourColor;\n"
-                "void main()\n"
-                "{\n"
-                "    FragColor = ourColor;\n"
-                "}\n";
-            glShaderSource(fragmentShader, 1, &fragmentShaderSource, nullptr);
-            glCompileShader(fragmentShader);
-
-            _program = glCreateProgram();
-            glAttachShader(_program, vertexShader);
-            glAttachShader(_program, fragmentShader);
-            glLinkProgram(_program);
-
-            glDeleteShader(vertexShader);
-            glDeleteShader(fragmentShader);
-        }
+            _program = Gfx::GLES::Program::program(vertexShaderSource.c_str(), fragmentShaderSource.c_str());
 
         if (!_vao)
         {
@@ -77,10 +70,10 @@ public:
         auto currentTime = high_resolution_clock::now();
         duration<float> elapsed = currentTime - _startTime;
         float greenValue = (std::sin(elapsed.count()) / 2.0f) + 0.5f;
-        int vertexColorLocation = glGetUniformLocation(_program, "ourColor");
 
-        glUseProgram(_program);
-        glUniform4f(vertexColorLocation, 0.0f, greenValue, 0.0f, 1.0f);
+        _program->use();
+        _program->setUniform("ourColor", 0.0f, greenValue, 0.0f, 1.0f);
+
         glBindVertexArray(_vao);
         glDrawArrays(GL_TRIANGLES, 0, 3);
 
@@ -89,7 +82,7 @@ public:
 
 private:
     unsigned _vao = 0;
-    unsigned _program = 0;
+    StrongPtr<Gfx::GLES::Program> _program = nullptr;
     time_point<high_resolution_clock> _startTime = high_resolution_clock::now();
 };
 
