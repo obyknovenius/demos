@@ -59,6 +59,11 @@ namespace Gfx::GLES
             glUniform4f(glGetUniformLocation(_program, name), value0, value1, value2, value3);
         }
 
+        void setUniform(const GLchar* name, const GLfloat* value) const
+        {
+            glUniformMatrix4fv(glGetUniformLocation(_program, name), 1, GL_FALSE, value);
+        }
+
     private:
         Program(const GLchar* vertexShaderSource, const GLchar* fragmentShaderSource);
 

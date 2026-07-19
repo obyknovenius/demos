@@ -1,12 +1,16 @@
 #include "config.h"
+
+#include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
+#include "glm/gtc/type_ptr.hpp"
+
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
+
 #include <Core/EventLoop.h>
 #include <Gfx/GLES/Program.h>
 #include <Platform/Window.h>
 #include <chrono>
-#include <cmath>
-#include <cstdlib>
 #include <filesystem>
 #include <iostream>
 
@@ -28,9 +32,11 @@ layout (location = 1) in vec2 aTexCoord;
 
 out vec2 TexCoord;
 
+uniform mat4 transform;
+
 void main()
 {
-    gl_Position = vec4(aPos, 1.0);
+    gl_Position = transform * vec4(aPos, 1.0);
     TexCoord = aTexCoord;
 }
 )";
@@ -69,14 +75,18 @@ public:
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        auto currentTime = high_resolution_clock::now();
-        duration<float> elapsed = currentTime - _startTime;
-        float greenValue = (std::sin(elapsed.count()) / 2.0f) + 0.5f;
-
         ensureProgram();
 
         _program->use();
-        _program->setUniform("ourColor", 0.0f, greenValue, 0.0f, 1.0f);
+
+        auto currentTime = high_resolution_clock::now();
+        duration<float> elapsed = currentTime - _startTime;
+
+        glm::mat4 transform = glm::mat4(1.0f);
+        transform = glm::translate(transform, glm::vec3(0.5f, -0.5f, 1.0f));
+        transform = glm::rotate(transform, elapsed.count(), glm::vec3(0.0f, 0.0f, 1.0f));
+
+        _program->setUniform("transform", glm::value_ptr(transform));
 
         ensureTexture();
 
