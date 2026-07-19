@@ -28,10 +28,11 @@
 				"editor.rulers": [
 					120
 				],
+				"editor.formatOnSave": true,
 				"[cpp]": {
 					"editor.defaultFormatter": "ms-vscode.cpptools"
 				},
-				"editor.formatOnSave": true
+				"mesonbuild.mesonlsp.others.disableInlayHints": true
 			}
 		}
 	},
