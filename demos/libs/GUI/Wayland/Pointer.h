@@ -1,24 +1,22 @@
 #pragma once
 
-#include "Forward.h"
 #include "../Cursor.h"
 #include "../Event.h"
-#include <Core/NonNull.h>
-#include <Core/RefCounted.h>
-#include <Core/WeakPtr.h>
+#include "Forward.h"
+#include <Foundation/Foundation.h>
 #include <Gfx/Point.h>
+#include <cursor-shape-v1-client-protocol.h>
 #include <memory>
 #include <wayland-client.h>
-#include <cursor-shape-v1-client-protocol.h>
 
 namespace GUI::Wayland
 {
-    class Pointer final : public RefCounted
+    class Pointer final : public Object
     {
     public:
-        static Core::NonNull<RefPtr<Pointer>> make(Core::NonNull<wl_pointer*> wlPointer, RefPtr<Seat> seat)
+        static NonNull<StrongPtr<Pointer>> make(NonNull<wl_pointer*> wlPointer, StrongPtr<Seat> seat)
         {
-            return adopt(new Pointer(wlPointer, seat));
+            return StrongPtr<Pointer>::adopt(new Pointer(wlPointer, seat));
         }
 
         void setCursor(Cursor cursor);
@@ -28,7 +26,7 @@ namespace GUI::Wayland
     private:
         static const wl_pointer_listener _wlPointerListener;
 
-        Pointer(Core::NonNull<wl_pointer*> wlPointer, RefPtr<Seat> seat);
+        Pointer(NonNull<wl_pointer*> wlPointer, StrongPtr<Seat> seat);
         ~Pointer();
 
         void onEnter(uint32_t serial, wl_surface* surface, wl_fixed_t x, wl_fixed_t y);
@@ -41,19 +39,19 @@ namespace GUI::Wayland
         void onAxisStop(uint32_t time, uint32_t axisStop);
         void onAxisDiscrete(uint32_t axis, int32_t discrete);
 
-        Core::NonNull<wl_pointer*> _wlPointer;
+        NonNull<wl_pointer*> _wlPointer;
 
         wp_cursor_shape_device_v1* _wpCursorShapeDeviceV1;
 
         WeakPtr<Seat> _seat;
 
-        RefPtr<Window> _window;
-        Gfx::Point _position {};
-        Event::PointerButtons _pressedButtons {};
+        StrongPtr<Window> _window;
+        Gfx::Point _position{};
+        Event::PointerButtons _pressedButtons{};
 
-        std::unique_ptr<Event> _event {};
+        std::unique_ptr<Event> _event{};
 
-        uint32_t _lastSerial { 0 };
-        uint32_t _lastEnterSerial { 0 };
+        uint32_t _lastSerial{ 0 };
+        uint32_t _lastEnterSerial{ 0 };
     };
 }

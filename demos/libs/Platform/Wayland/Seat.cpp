@@ -15,7 +15,7 @@ namespace Platform::Wayland
         },
     };
 
-    Seat::Seat(NonNull<wl_seat> wlSeat, NonNull<StrongPtr<Display>> display) :
+    Seat::Seat(NonNull<wl_seat*> wlSeat, NonNull<StrongPtr<Display>> display) :
         _wlSeat(wlSeat),
         _display(display)
     {

@@ -65,13 +65,13 @@ namespace GUI::Wayland
         }
     };
 
-    Core::NonNull<RefPtr<Window>> Window::make()
+    NonNull<StrongPtr<Window>> Window::make()
     {
         auto display = Display::defaultDisplay();
-        return adopt(new Window(display));
+        return StrongPtr<Window>::adopt(new Window(display));
     }
 
-    Window::Window(RefPtr<Display> display) : _display { display }
+    Window::Window(StrongPtr<Display> display) : _display{ display }
     {
         _wlSurface = wl_compositor_create_surface(display->wlCompositor());
         wl_surface_set_user_data(_wlSurface, this);
@@ -130,7 +130,8 @@ namespace GUI::Wayland
     {
         if (auto display = _display.strong())
             if (auto seat = display->seat())
-                if (auto pointer = seat->pointer()) {
+                if (auto pointer = seat->pointer())
+                {
                     uint32_t xdgEdges = XDG_TOPLEVEL_RESIZE_EDGE_NONE;
 
                     if (edges.contains(Window::Edge::Top))
@@ -195,7 +196,8 @@ namespace GUI::Wayland
         ftruncate(fd, size);
 
         void* pixels = mmap(NULL, size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
-        if (pixels == MAP_FAILED) {
+        if (pixels == MAP_FAILED)
+        {
             std::cerr << "mmap failed" << std::endl;
             ::close(fd);
             return;
@@ -210,12 +212,11 @@ namespace GUI::Wayland
 
         auto* cairoSurface = cairo_image_surface_create_for_data(
             reinterpret_cast<unsigned char*>(pixels), CAIRO_FORMAT_RGB24,
-            _size.width * _scaleFactor, _size.height * _scaleFactor, stride
-        );
+            _size.width * _scaleFactor, _size.height * _scaleFactor, stride);
         auto* cr = cairo_create(cairoSurface);
         cairo_scale(cr, _scaleFactor, _scaleFactor);
         auto context = Gfx::Cairo::Context::make(cr);
-        redraw(context);
+        redraw(context.get());
         cairo_surface_destroy(cairoSurface);
 
         wl_surface_attach(_wlSurface, wlBuffer, 0, 0);

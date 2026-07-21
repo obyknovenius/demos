@@ -70,7 +70,32 @@ namespace Foundation
                 _weakLink->release();
         }
 
+        const StrongPtr<T> strong() const
+        {
+            return StrongPtr<T>(*this);
+        }
+
         T* get() const { return (_weakLink && _weakLink->get()) ? _ptr : nullptr; }
+
+        bool operator==(std::nullptr_t) const { return get() == nullptr; }
+
+        bool operator==(const StrongPtr<T>& strongPtr) const { return get() == strongPtr.get(); }
+
+        template <typename U>
+        requires std::convertible_to<U*, T*>
+        bool operator==(const StrongPtr<U>& strongPtr) const
+        {
+            return get() == strongPtr.get();
+        }
+
+        bool operator==(const WeakPtr& other) const { return get() == other.get(); }
+
+        template <typename U>
+        requires std::convertible_to<U*, T*>
+        bool operator==(const WeakPtr<U>& other) const
+        {
+            return get() == other.get();
+        }
 
         WeakPtr& operator=(std::nullptr_t) noexcept
         {

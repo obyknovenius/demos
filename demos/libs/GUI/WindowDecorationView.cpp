@@ -6,10 +6,10 @@
 
 namespace GUI
 {
-    Window::DecorationView::DecorationView(RefPtr<Window> window) :
-        View {},
-        _titleBar { TitleBar::make() },
-        _contentView { View::make() }
+    Window::DecorationView::DecorationView(StrongPtr<Window> window) :
+        View{},
+        _titleBar{ TitleBar::make() },
+        _contentView{ View::make() }
     {
         _window = window;
         addSubview(_titleBar);
@@ -20,18 +20,18 @@ namespace GUI
     {
         auto titleBarHeight = _titleBar->intrinsicSize().height;
         _titleBar->setFrame({
-            origin: { _borderThickness, _borderThickness },
-            size: { _frame.size.width - 2 * _borderThickness, titleBarHeight }
+            origin : { _borderThickness, _borderThickness },
+            size : { _frame.size.width - 2 * _borderThickness, titleBarHeight }
         });
         _contentView->setFrame({
-            origin: { _borderThickness, titleBarHeight },
-            size: { _frame.size.width - 2 * _borderThickness, _frame.size.height - titleBarHeight - _borderThickness }
+            origin : { _borderThickness, titleBarHeight },
+            size : { _frame.size.width - 2 * _borderThickness, _frame.size.height - titleBarHeight - _borderThickness }
         });
 
         View::layout();
     }
 
-    void Window::DecorationView::redraw(Core::NonNull<RefPtr<Gfx::Context>> context)
+    void Window::DecorationView::redraw(NonNull<StrongPtr<Gfx::Context>> context)
     {
         context->fillRect(_bounds, Gfx::Color::White);
 
@@ -39,8 +39,8 @@ namespace GUI
         auto titleBarHeight = _titleBar->intrinsicSize().height;
 
         Gfx::Rect innerBorderRect = {
-            origin: { _borderThickness, _borderThickness + titleBarHeight },
-            size: { _bounds.size.width - 2 * _borderThickness, _bounds.size.height - titleBarHeight - 2 * _borderThickness }
+            origin : { _borderThickness, _borderThickness + titleBarHeight },
+            size : { _bounds.size.width - 2 * _borderThickness, _bounds.size.height - titleBarHeight - 2 * _borderThickness }
         };
         context->strokeRect(innerBorderRect.inset(lineWidth / 2), Gfx::Color::Black, lineWidth);
 

@@ -102,6 +102,26 @@ namespace Foundation
 
         explicit operator bool() const { return get(); }
 
+        bool operator==(std::nullptr_t) const { return get() == nullptr; }
+
+        bool operator==(const WeakPtr<T>& weakPtr) const { return get() == weakPtr.get(); }
+
+        template <typename U>
+        requires std::convertible_to<U*, T*>
+        bool operator==(const WeakPtr<U>& weakPtr) const
+        {
+            return get() == weakPtr.get();
+        }
+
+        bool operator==(const StrongPtr& other) const { return get() == other.get(); }
+
+        template <typename U>
+        requires std::convertible_to<U*, T*>
+        bool operator==(const StrongPtr<U>& other) const
+        {
+            return get() == other.get();
+        }
+
         StrongPtr& operator=(std::nullptr_t) noexcept
         {
             StrongPtr tmp;
@@ -166,7 +186,7 @@ namespace Foundation
             return *this;
         }
 
-        void swap(StrongPtr<T>& other) noexcept
+        void swap(StrongPtr& other) noexcept
         {
             std::swap(_ptr, other._ptr);
             std::swap(_object, other._object);

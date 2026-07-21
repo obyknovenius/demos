@@ -7,27 +7,28 @@
 namespace Foundation
 {
     template <typename T>
-    class NonNull
+    class NonNull;
+
+    template <typename T>
+    requires std::is_pointer_v<T>
+    class NonNull<T>
     {
     public:
         NonNull(std::nullptr_t) = delete;
 
-        NonNull(T* ptr) : _ptr(ptr)
+        NonNull(T ptr) : _ptr(ptr)
         {
             assert(_ptr);
         }
 
-        T* get() { return _ptr; }
+        operator T() const { return _ptr; }
 
-        operator T*() const { return _ptr; }
-
-        T* operator->() const { return _ptr; }
-        T& operator*() const { return *_ptr; }
+        T operator->() const { return _ptr; }
 
         NonNull& operator=(std::nullptr_t) = delete;
 
     private:
-        T* _ptr;
+        T _ptr;
     };
 
     template <typename T>

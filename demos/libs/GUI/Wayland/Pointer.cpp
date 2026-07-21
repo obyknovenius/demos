@@ -1,16 +1,16 @@
 #include "Pointer.h"
 
+#include "../Cursor.h"
 #include "Display.h"
 #include "Seat.h"
 #include "Window.h"
-#include "../Cursor.h"
 #include <linux/input-event-codes.h>
 
 namespace GUI::Wayland
 {
-    Pointer::Pointer(Core::NonNull<wl_pointer*> wlPointer, RefPtr<Seat> seat) :
-        _wlPointer { wlPointer },
-        _seat { seat }
+    Pointer::Pointer(NonNull<wl_pointer*> wlPointer, StrongPtr<Seat> seat) :
+        _wlPointer{ wlPointer },
+        _seat{ seat }
     {
         wl_pointer_add_listener(_wlPointer, &_wlPointerListener, this);
 
@@ -29,35 +29,35 @@ namespace GUI::Wayland
         uint32_t shape;
         switch (cursor)
         {
-            case Cursor::Pointer:
-                shape = WP_CURSOR_SHAPE_DEVICE_V1_SHAPE_POINTER;
-                break;
-            case Cursor::NorthResize:
-                shape = WP_CURSOR_SHAPE_DEVICE_V1_SHAPE_N_RESIZE;
-                break;
-            case Cursor::EastResize:
-                shape = WP_CURSOR_SHAPE_DEVICE_V1_SHAPE_E_RESIZE;
-                break;
-            case Cursor::SouthResize:
-                shape = WP_CURSOR_SHAPE_DEVICE_V1_SHAPE_S_RESIZE;
-                break;
-            case Cursor::WestResize:
-                shape = WP_CURSOR_SHAPE_DEVICE_V1_SHAPE_W_RESIZE;
-                break;
-            case Cursor::NorthEastResize:
-                shape = WP_CURSOR_SHAPE_DEVICE_V1_SHAPE_NE_RESIZE;
-                break;
-            case Cursor::NorthWestResize:
-                shape = WP_CURSOR_SHAPE_DEVICE_V1_SHAPE_NW_RESIZE;
-                break;
-            case Cursor::SouthEastResize:
-                shape = WP_CURSOR_SHAPE_DEVICE_V1_SHAPE_SE_RESIZE;
-                break;
-            case Cursor::SouthWestResize:
-                shape = WP_CURSOR_SHAPE_DEVICE_V1_SHAPE_SW_RESIZE;
-                break;
-            default:
-                shape = WP_CURSOR_SHAPE_DEVICE_V1_SHAPE_DEFAULT;
+        case Cursor::Pointer:
+            shape = WP_CURSOR_SHAPE_DEVICE_V1_SHAPE_POINTER;
+            break;
+        case Cursor::NorthResize:
+            shape = WP_CURSOR_SHAPE_DEVICE_V1_SHAPE_N_RESIZE;
+            break;
+        case Cursor::EastResize:
+            shape = WP_CURSOR_SHAPE_DEVICE_V1_SHAPE_E_RESIZE;
+            break;
+        case Cursor::SouthResize:
+            shape = WP_CURSOR_SHAPE_DEVICE_V1_SHAPE_S_RESIZE;
+            break;
+        case Cursor::WestResize:
+            shape = WP_CURSOR_SHAPE_DEVICE_V1_SHAPE_W_RESIZE;
+            break;
+        case Cursor::NorthEastResize:
+            shape = WP_CURSOR_SHAPE_DEVICE_V1_SHAPE_NE_RESIZE;
+            break;
+        case Cursor::NorthWestResize:
+            shape = WP_CURSOR_SHAPE_DEVICE_V1_SHAPE_NW_RESIZE;
+            break;
+        case Cursor::SouthEastResize:
+            shape = WP_CURSOR_SHAPE_DEVICE_V1_SHAPE_SE_RESIZE;
+            break;
+        case Cursor::SouthWestResize:
+            shape = WP_CURSOR_SHAPE_DEVICE_V1_SHAPE_SW_RESIZE;
+            break;
+        default:
+            shape = WP_CURSOR_SHAPE_DEVICE_V1_SHAPE_DEFAULT;
         }
         wp_cursor_shape_device_v1_set_shape(_wpCursorShapeDeviceV1, _lastEnterSerial, shape);
     }

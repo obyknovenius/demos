@@ -15,7 +15,7 @@ namespace GUI::Wayland
             auto* display = reinterpret_cast<Display*>(data);
             display->onRegistryGlobal(registry, name, interface, version);
         },
-        .global_remove = [](void *data, wl_registry *registry, uint32_t name)
+        .global_remove = [](void* data, wl_registry* registry, uint32_t name)
         {
         }
     };
@@ -28,25 +28,25 @@ namespace GUI::Wayland
         }
     };
 
-    RefPtr<Display> Display::_defaultDisplay { nullptr };
+    StrongPtr<Display> Display::_defaultDisplay{ nullptr };
 
-    RefPtr<Display> Display::defaultDisplay()
+    StrongPtr<Display> Display::defaultDisplay()
     {
         static std::once_flag once;
         std::call_once(once, []
-        {
-            if (!_defaultDisplay)
-            {
-                wl_display* wlDisplay = wl_display_connect(nullptr);
-                if (!wlDisplay)
-                    return;
-                _defaultDisplay = adopt(new Display(wlDisplay));
-            }
-        });
+                       {
+                           if (!_defaultDisplay)
+                           {
+                               wl_display* wlDisplay = wl_display_connect(nullptr);
+                               if (!wlDisplay)
+                                   return;
+                               _defaultDisplay = StrongPtr<Display>::adopt(new Display(wlDisplay));
+                           }
+                       });
         return _defaultDisplay;
     }
 
-    Display::Display(Core::NonNull<wl_display*> wlDisplay) : _wlDisplay { wlDisplay }
+    Display::Display(NonNull<wl_display*> wlDisplay) : _wlDisplay{ wlDisplay }
     {
         _eglDisplay = eglGetPlatformDisplay(EGL_PLATFORM_WAYLAND_KHR, _wlDisplay, NULL);
 
@@ -70,18 +70,16 @@ namespace GUI::Wayland
         wl_registry_add_listener(_wlRegistry, &_wlRegistryListener, this);
         wl_display_roundtrip(_wlDisplay);
 
-        Core::EventLoop::mainLoop()->addSource({
-            .fd = wl_display_get_fd(_wlDisplay),
-            .events = POLLIN,
-            .prepare = [this]()
-            {
-                wl_display_flush(_wlDisplay);
-            },
-            .dispatch = [this]()
-            {
-                wl_display_dispatch(_wlDisplay);
-            }
-        });
+        Core::EventLoop::mainLoop()->addSource({ .fd = wl_display_get_fd(_wlDisplay),
+                                                 .events = POLLIN,
+                                                 .prepare = [this]()
+                                                 {
+                                                     wl_display_flush(_wlDisplay);
+                                                 },
+                                                 .dispatch = [this]()
+                                                 {
+                                                     wl_display_dispatch(_wlDisplay);
+                                                 } });
     }
 
     Display::~Display()

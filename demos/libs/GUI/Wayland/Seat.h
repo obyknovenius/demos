@@ -1,39 +1,38 @@
 #pragma once
 
 #include "Forward.h"
-#include <Core/NonNull.h>
-#include <Core/Weakable.h>
-#include <Core/WeakPtr.h>
+#include <Foundation/Foundation.h>
 #include <wayland-client.h>
 
 namespace GUI::Wayland
 {
-    class Seat final : public RefCounted, public Weakable
+    class Seat final : public Object
     {
     public:
-        static Core::NonNull<RefPtr<Seat>> make(Core::NonNull<wl_seat*> wlSeat, RefPtr<Display> display)
+        static NonNull<StrongPtr<Seat>> make(NonNull<wl_seat*> wlSeat, StrongPtr<Display> display)
         {
-            return adopt(new Seat(wlSeat, display));
+            return StrongPtr<Seat>::adopt(new Seat(wlSeat, display));
         }
 
-        RefPtr<Display> display() { return _display.strong(); }
+        // TODO: Return WeakPtr
+        StrongPtr<Display> display() { return _display; }
 
-        Core::NonNull<wl_seat*> wlSeat() { return _wlSeat; }
+        NonNull<wl_seat*> wlSeat() { return _wlSeat; }
 
-        RefPtr<Pointer> pointer();
+        StrongPtr<Pointer> pointer();
 
     private:
         static const wl_seat_listener _wlSeatListener;
 
-        Seat(Core::NonNull<wl_seat*> wlSeat, RefPtr<Display> display);
+        Seat(NonNull<wl_seat*> wlSeat, StrongPtr<Display> display);
         ~Seat();
 
         void onCapabilities(uint32_t capabilities);
 
-        Core::NonNull<wl_seat*> _wlSeat;
+        NonNull<wl_seat*> _wlSeat;
 
         WeakPtr<Display> _display;
 
-        RefPtr<Pointer> _pointer;
+        StrongPtr<Pointer> _pointer;
     };
 }

@@ -2,21 +2,22 @@
 
 #include "View.h"
 #include "Window.h"
+#include <Foundation/Foundation.h>
 
 namespace GUI
 {
     class Window::TitleBar final : public View
     {
     public:
-        static Core::NonNull<RefPtr<TitleBar>> make()
+        static NonNull<StrongPtr<TitleBar>> make()
         {
-            return adopt(new TitleBar());
+            return StrongPtr<TitleBar>::adopt(new TitleBar());
         }
 
         Gfx::Size intrinsicSize() override { return { -1, _height }; }
 
         void layout() override;
-        void redraw(Core::NonNull<RefPtr<Gfx::Context>> context) override;
+        void redraw(NonNull<StrongPtr<Gfx::Context>> context) override;
 
         void onPointerButtonPressed(Event event) override;
 
@@ -24,9 +25,9 @@ namespace GUI
         TitleBar();
         ~TitleBar();
 
-        RefPtr<CloseButton> _closeButton;
-        RefPtr<MaximizeButton> _maximizeButton;
+        StrongPtr<CloseButton> _closeButton;
+        StrongPtr<MaximizeButton> _maximizeButton;
 
-        int _height { 26 };
+        int _height{ 26 };
     };
 }

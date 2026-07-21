@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Forward.h"
 #include "../Window.h"
-#include <Core/WeakPtr.h>
+#include "Forward.h"
+#include <Foundation/Foundation.h>
 #include <wayland-client.h>
 #include <xdg-shell-client-protocol.h>
 
@@ -11,7 +11,7 @@ namespace GUI::Wayland
     class Window final : public GUI::Window
     {
     public:
-        static Core::NonNull<RefPtr<Window>> make();
+        static NonNull<StrongPtr<Window>> make();
 
         void setMaximized(bool maximized) override;
 
@@ -30,7 +30,7 @@ namespace GUI::Wayland
         static const xdg_toplevel_listener _xdgToplevelListener;
         static const wl_buffer_listener _wlBufferListener;
 
-        Window(RefPtr<Display> display);
+        Window(StrongPtr<Display> display);
         ~Window();
 
         void onSurfaceEnter(wl_surface* wlSurface, wl_output* output);
@@ -45,17 +45,17 @@ namespace GUI::Wayland
 
         WeakPtr<Display> _display;
 
-        wl_surface* _wlSurface {};
+        wl_surface* _wlSurface{};
 
-        wl_shm_pool* _wlShmPool {};
+        wl_shm_pool* _wlShmPool{};
 
-        wl_buffer* _wlBuffer {};
+        wl_buffer* _wlBuffer{};
 
-        xdg_surface* _xdgSurface {};
-        xdg_toplevel* _xdgToplevel {};
+        xdg_surface* _xdgSurface{};
+        xdg_toplevel* _xdgToplevel{};
 
-        int _scaleFactor { 1 };
+        int _scaleFactor{ 1 };
 
-        bool _closed { false };
+        bool _closed{ false };
     };
 }

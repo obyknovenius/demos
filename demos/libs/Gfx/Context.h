@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Core/RefCounted.h>
+#include <Foundation/Object.h>
 
 namespace Gfx
 {
@@ -8,7 +8,7 @@ namespace Gfx
     struct Rect;
     struct Point;
 
-    class Context : public RefCounted
+    class Context : public Object
     {
     public:
         virtual void save() = 0;

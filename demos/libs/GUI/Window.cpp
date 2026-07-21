@@ -1,9 +1,9 @@
 #include "Window.h"
 
 #include "Event.h"
+#include "Wayland/Window.h"
 #include "WindowDecorationView.h"
 #include "WindowTitleBar.h"
-#include "Wayland/Window.h"
 #include <Gfx/Color.h>
 #include <Gfx/Context.h>
 #include <Gfx/Rect.h>
@@ -11,14 +11,14 @@
 
 namespace GUI
 {
-    Core::NonNull<RefPtr<Window>> Window::make()
+    NonNull<StrongPtr<Window>> Window::make()
     {
-        return Wayland::Window::make();
+        return Wayland::Window::make().get();
     }
 
     Window::Window(Gfx::Size size) :
-        _size { size },
-        _decorationView { DecorationView::make(this) }
+        _size{ size },
+        _decorationView{ DecorationView::make(this) }
     {
     }
 
@@ -28,60 +28,60 @@ namespace GUI
     {
         switch (event->type)
         {
-            case Event::Type::PointerButtonPressed:
-            {
-                auto view = _decorationView->hitTest(*event->position);
-                view->onPointerButtonPressed(*event);
-                break;
-            }
+        case Event::Type::PointerButtonPressed:
+        {
+            auto view = _decorationView->hitTest(*event->position);
+            view->onPointerButtonPressed(*event);
+            break;
+        }
 
-            case Event::Type::PointerButtonReleased:
-            {
-                auto view = _decorationView->hitTest(*event->position);
-                view->onPointerButtonReleased(*event);
-                break;
-            }
+        case Event::Type::PointerButtonReleased:
+        {
+            auto view = _decorationView->hitTest(*event->position);
+            view->onPointerButtonReleased(*event);
+            break;
+        }
 
-            case Event::Type::PointerEntered:
-            {
-                auto view = _decorationView->hitTest(*event->position);
-                view->onPointerEntered(*event);
-                _viewUnderPointer = view;
-                break;
-            }
+        case Event::Type::PointerEntered:
+        {
+            auto view = _decorationView->hitTest(*event->position);
+            view->onPointerEntered(*event);
+            _viewUnderPointer = view;
+            break;
+        }
 
-            case Event::Type::PointerMoved:
-            {
-                auto view = _decorationView->hitTest(*event->position);
+        case Event::Type::PointerMoved:
+        {
+            auto view = _decorationView->hitTest(*event->position);
 
-                if (auto viewUnderPointer = _viewUnderPointer.strong())
-                {
-                    if (viewUnderPointer != view)
-                    {
-                        viewUnderPointer->onPointerLeft(*event);
-                        view->onPointerEntered(*event);
-                        _viewUnderPointer = view;
-                    }
-                    else
-                    {
-                        view->onPointerMoved(*event);
-                    }
-                }
-                break;
-            }
-
-            case Event::Type::PointerLeft:
+            if (auto viewUnderPointer = _viewUnderPointer.strong())
             {
-                if (auto viewUnderPointer = _viewUnderPointer.strong())
+                if (viewUnderPointer != view)
                 {
                     viewUnderPointer->onPointerLeft(*event);
-                    _viewUnderPointer = nullptr;
+                    view->onPointerEntered(*event);
+                    _viewUnderPointer = view;
                 }
-                break;
+                else
+                {
+                    view->onPointerMoved(*event);
+                }
             }
+            break;
+        }
 
-            default:
-                break;
+        case Event::Type::PointerLeft:
+        {
+            if (auto viewUnderPointer = _viewUnderPointer.strong())
+            {
+                viewUnderPointer->onPointerLeft(*event);
+                _viewUnderPointer = nullptr;
+            }
+            break;
+        }
+
+        default:
+            break;
         }
     }
 
@@ -97,7 +97,7 @@ namespace GUI
         _decorationView->layout();
     }
 
-    void Window::redraw(Core::NonNull<RefPtr<Gfx::Context>> context)
+    void Window::redraw(NonNull<StrongPtr<Gfx::Context>> context)
     {
         context->fillRect({ 0, 0, _size.width, _size.height }, Gfx::Color::White);
         _decorationView->redraw(context);

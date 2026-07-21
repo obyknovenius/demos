@@ -2,10 +2,7 @@
 
 #include "Event.h"
 #include "Forward.h"
-#include <Core/NonNull.h>
-#include <Core/RefPtr.h>
-#include <Core/WeakPtr.h>
-#include <Core/Weakable.h>
+#include <Foundation/Foundation.h>
 #include <Gfx/Color.h>
 #include <Gfx/Context.h>
 #include <Gfx/Rect.h>
@@ -14,18 +11,18 @@
 
 namespace GUI
 {
-    class View : public RefCounted, public Weakable
+    class View : public Object
     {
     public:
-        static Core::NonNull<RefPtr<View>> make()
+        static NonNull<StrongPtr<View>> make()
         {
-            return adopt(new View());
+            return StrongPtr<View>::adopt(new View());
         }
 
-        RefPtr<Window> window();
+        StrongPtr<Window> window();
 
-        RefPtr<View> superview() { return _superview.strong(); }
-        void addSubview(RefPtr<View> subview);
+        StrongPtr<View> superview() { return _superview; }
+        void addSubview(StrongPtr<View> subview);
 
         void setFrame(Gfx::Rect frame);
         Gfx::Rect frame() { return _frame; }
@@ -33,28 +30,29 @@ namespace GUI
         virtual Gfx::Size intrinsicSize() { return { -1, -1 }; }
 
         virtual void layout();
-        virtual void redraw(Core::NonNull<RefPtr<Gfx::Context>> context);
+        virtual void redraw(NonNull<StrongPtr<Gfx::Context>> context);
 
-        RefPtr<View> hitTest(Gfx::Point point);
+        StrongPtr<View> hitTest(Gfx::Point point);
 
         virtual void onPointerButtonPressed(Event event) {}
         virtual void onPointerButtonReleased(Event event) {}
         virtual void onPointerEntered(Event event) {}
         virtual void onPointerMoved(Event event) {}
         virtual void onPointerLeft(Event event) {}
+
     protected:
         View() = default;
         ~View() = default;
 
-        WeakPtr<Window> _window {};
+        WeakPtr<Window> _window{};
 
-        WeakPtr<View> _superview {};
-        std::vector<RefPtr<View>> _subviews {};
+        WeakPtr<View> _superview{};
+        std::vector<StrongPtr<View>> _subviews{};
 
-        Gfx::Rect _frame {};
-        Gfx::Rect _bounds {};
+        Gfx::Rect _frame{};
+        Gfx::Rect _bounds{};
 
     private:
-        void _willBeMovedToWindow(RefPtr<Window> window);
+        void _willBeMovedToWindow(StrongPtr<Window> window);
     };
 }

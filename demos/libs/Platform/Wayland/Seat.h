@@ -13,7 +13,7 @@ namespace Platform::Wayland
     class Seat final : public Object
     {
     public:
-        Seat(NonNull<wl_seat> wlSeat, NonNull<StrongPtr<Display>> display);
+        Seat(NonNull<wl_seat*> wlSeat, NonNull<StrongPtr<Display>> display);
 
     private:
         static const wl_seat_listener _wlSeatListener;
@@ -22,7 +22,7 @@ namespace Platform::Wayland
 
         void capabilitiesDidChange(uint32_t capabilities);
 
-        NonNull<wl_seat> _wlSeat;
+        NonNull<wl_seat*> _wlSeat;
 
         NonNull<StrongPtr<Display>> _display;
 

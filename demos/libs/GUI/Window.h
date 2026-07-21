@@ -3,10 +3,7 @@
 #include "Cursor.h"
 #include "Forward.h"
 #include "View.h"
-#include <Core/NonNull.h>
-#include <Core/OptionSet.h>
-#include <Core/Weakable.h>
-#include <Core/WeakPtr.h>
+#include <Foundation/Foundation.h>
 #include <Gfx/Forward.h>
 #include <Gfx/Size.h>
 #include <functional>
@@ -16,7 +13,7 @@
 
 namespace GUI
 {
-    class Window : public RefCounted, public Weakable
+    class Window : public Object
     {
     public:
         enum class Edge
@@ -29,7 +26,7 @@ namespace GUI
 
         using Edges = OptionSet<Edge>;
 
-        static Core::NonNull<RefPtr<Window>> make();
+        static NonNull<StrongPtr<Window>> make();
 
         virtual void setMaximized(bool maximized) { _maximized = maximized; }
         bool maximized() { return _maximized; }
@@ -48,7 +45,6 @@ namespace GUI
         void pushCursor(Cursor cursor);
         void popCursor();
 
-
     protected:
         class DecorationView;
         class TitleBar;
@@ -59,15 +55,15 @@ namespace GUI
         ~Window();
 
         void layout();
-        void redraw(Core::NonNull<RefPtr<Gfx::Context>> context);
+        void redraw(NonNull<StrongPtr<Gfx::Context>> context);
 
         Gfx::Size _size;
 
-        bool _maximized { false };
+        bool _maximized{ false };
 
-        Core::NonNull<RefPtr<DecorationView>> _decorationView;
+        NonNull<StrongPtr<DecorationView>> _decorationView;
 
-        Cursor _currentCursor { Cursor::Default };
+        Cursor _currentCursor{ Cursor::Default };
         std::vector<Cursor> _cursorStack;
 
         WeakPtr<View> _viewUnderPointer;

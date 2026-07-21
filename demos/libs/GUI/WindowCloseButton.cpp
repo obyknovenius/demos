@@ -2,7 +2,7 @@
 
 namespace GUI
 {
-    void Window::CloseButton::redraw(Core::NonNull<RefPtr<Gfx::Context>> context)
+    void Window::CloseButton::redraw(NonNull<StrongPtr<Gfx::Context>> context)
     {
         context->fillRect(_bounds, Gfx::Color::White);
 
@@ -23,7 +23,8 @@ namespace GUI
 
     void Window::CloseButton::onPointerButtonReleased(Event event)
     {
-        if (_pressed) {
+        if (_pressed)
+        {
             if (auto window = _window.strong())
                 window->close();
         }

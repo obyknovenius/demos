@@ -1,8 +1,7 @@
 #pragma once
 
 #include "Forward.h"
-#include <Core/OptionSet.h>
-#include <Core/RefPtr.h>
+#include <Foundation/Foundation.h>
 #include <Gfx/Point.h>
 #include <optional>
 
@@ -29,7 +28,7 @@ namespace GUI
         using PointerButtons = OptionSet<PointerButton>;
 
         Type type;
-        RefPtr<Window> window;
+        StrongPtr<Window> window;
         std::optional<Gfx::Point> position;
         PointerButtons pressedPointerButtons;
     };

@@ -2,18 +2,19 @@
 
 #include "View.h"
 #include "Window.h"
+#include <Foundation/Foundation.h>
 
 namespace GUI
 {
     class Window::MaximizeButton final : public View
     {
     public:
-        static Core::NonNull<RefPtr<MaximizeButton>> make()
+        static NonNull<StrongPtr<MaximizeButton>> make()
         {
-            return adopt(new MaximizeButton());
+            return StrongPtr<MaximizeButton>::adopt(new MaximizeButton());
         }
 
-        void redraw(Core::NonNull<RefPtr<Gfx::Context>> context) override;
+        void redraw(NonNull<StrongPtr<Gfx::Context>> context) override;
 
         void onPointerButtonPressed(Event event) override;
         void onPointerButtonReleased(Event event) override;
@@ -22,6 +23,6 @@ namespace GUI
         MaximizeButton() = default;
         ~MaximizeButton() = default;
 
-        bool _pressed { false };
+        bool _pressed{ false };
     };
 }

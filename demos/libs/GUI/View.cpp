@@ -4,14 +4,14 @@
 
 namespace GUI
 {
-    RefPtr<Window> View::window()
+    StrongPtr<Window> View::window()
     {
-        return _window.strong();
+        return _window;
     }
 
-    void View::addSubview(RefPtr<View> subview)
+    void View::addSubview(StrongPtr<View> subview)
     {
-        subview->_willBeMovedToWindow(_window.strong());
+        subview->_willBeMovedToWindow(_window);
         subview->_superview = this;
         _subviews.push_back(subview);
     }
@@ -28,7 +28,7 @@ namespace GUI
             subview->layout();
     }
 
-    void View::redraw(Core::NonNull<RefPtr<Gfx::Context>> context)
+    void View::redraw(NonNull<StrongPtr<Gfx::Context>> context)
     {
         for (const auto& subview : _subviews)
         {
@@ -40,7 +40,7 @@ namespace GUI
         }
     }
 
-    RefPtr<View> View::hitTest(Gfx::Point point)
+    StrongPtr<View> View::hitTest(Gfx::Point point)
     {
         for (const auto& subview : _subviews)
             if (subview->frame().contains(point))
@@ -48,7 +48,7 @@ namespace GUI
         return this;
     }
 
-    void View::_willBeMovedToWindow(RefPtr<Window> window)
+    void View::_willBeMovedToWindow(StrongPtr<Window> window)
     {
         // TODO: Compare with existing window and early return if unchanged
         _window = window;

@@ -45,7 +45,7 @@ namespace Platform::Wayland
         },
     };
 
-    Pointer::Pointer(NonNull<wl_pointer> wlPointer, NonNull<StrongPtr<Seat>> seat) :
+    Pointer::Pointer(NonNull<wl_pointer*> wlPointer, NonNull<StrongPtr<Seat>> seat) :
         _wlPointer(wlPointer),
         _seat(seat)
     {

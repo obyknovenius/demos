@@ -16,9 +16,9 @@ namespace GUI::Wayland
         }
     };
 
-    Seat::Seat(Core::NonNull<wl_seat*> wlSeat, RefPtr<Display> display) :
-        _wlSeat { wlSeat },
-        _display { display }
+    Seat::Seat(NonNull<wl_seat*> wlSeat, StrongPtr<Display> display) :
+        _wlSeat{ wlSeat },
+        _display{ display }
     {
         wl_seat_add_listener(_wlSeat, &_wlSeatListener, this);
     }
@@ -30,7 +30,7 @@ namespace GUI::Wayland
         wl_seat_release(_wlSeat);
     }
 
-    RefPtr<Pointer> Seat::pointer()
+    StrongPtr<Pointer> Seat::pointer()
     {
         return _pointer;
     }

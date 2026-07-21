@@ -9,9 +9,9 @@
 namespace GUI
 {
     Window::TitleBar::TitleBar() :
-        View {},
-        _closeButton { CloseButton::make() },
-        _maximizeButton { MaximizeButton::make() }
+        View{},
+        _closeButton{ CloseButton::make() },
+        _maximizeButton{ MaximizeButton::make() }
     {
         addSubview(_closeButton);
         addSubview(_maximizeButton);
@@ -24,17 +24,17 @@ namespace GUI
         int buttonSize = 22;
 
         _closeButton->setFrame({
-            origin: { 0, 0 },
-            size: { buttonSize, buttonSize }
+            origin : { 0, 0 },
+            size : { buttonSize, buttonSize }
         });
 
         _maximizeButton->setFrame({
-            origin: { _frame.size.width - buttonSize, 0 },
-            size: { buttonSize, buttonSize }
+            origin : { _frame.size.width - buttonSize, 0 },
+            size : { buttonSize, buttonSize }
         });
     }
 
-    void Window::TitleBar::redraw(Core::NonNull<RefPtr<Gfx::Context>> context)
+    void Window::TitleBar::redraw(NonNull<StrongPtr<Gfx::Context>> context)
     {
         context->fillRect(_bounds, Gfx::Color::White);
 
@@ -44,9 +44,9 @@ namespace GUI
 
         for (int i = 0, y = 1; i < 6; ++i, y += 4)
         {
-            Gfx::Point from { closeButtonWidth + buttonMargin, y };
-            Gfx::Point to { _bounds.size.width - maximizeButtonWidth - buttonMargin, y };
-            context->strokeLine(from, to, Gfx::Color::Black, 2.0f );
+            Gfx::Point from{ closeButtonWidth + buttonMargin, y };
+            Gfx::Point to{ _bounds.size.width - maximizeButtonWidth - buttonMargin, y };
+            context->strokeLine(from, to, Gfx::Color::Black, 2.0f);
         }
 
         View::redraw(context);

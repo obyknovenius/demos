@@ -3,17 +3,18 @@
 #include <initializer_list>
 #include <type_traits>
 
-namespace Core
+namespace Foundation
 {
-    template<typename T>
-    class OptionSet final {
+    template <typename T>
+    class OptionSet final
+    {
     public:
         using UT = std::underlying_type_t<T>;
 
         OptionSet() = default;
 
         OptionSet(T option) :
-            _value { static_cast<UT>(option) }
+            _value{ static_cast<UT>(option) }
         {
         }
 
@@ -31,23 +32,32 @@ namespace Core
         bool containsOnly(OptionSet<T> options) const { return _value == options._value; }
         bool containsAll(OptionSet<T> options) const { return (_value & options._value) == options._value; }
 
-        template<typename... Args>
-        bool containsAny(Args... optons) const { return containsAny({ optons... }); }
-        template<typename... Args>
-        bool containsOnly(Args... optons) const { return containsOnly({ optons... }); }
-        template<typename... Args>
-        bool containsAll(Args... optons) const { return containsAll({ optons... }); }
+        template <typename... Args>
+        bool containsAny(Args... optons) const
+        {
+            return containsAny({ optons... });
+        }
+        template <typename... Args>
+        bool containsOnly(Args... optons) const
+        {
+            return containsOnly({ optons... });
+        }
+        template <typename... Args>
+        bool containsAll(Args... optons) const
+        {
+            return containsAll({ optons... });
+        }
 
         operator bool() const { return _value; }
 
     private:
         OptionSet(UT value) :
-            _value { value }
+            _value{ value }
         {
         }
 
-        UT _value { 0 };
+        UT _value{ 0 };
     };
 }
 
-using Core::OptionSet;
+using Foundation::OptionSet;

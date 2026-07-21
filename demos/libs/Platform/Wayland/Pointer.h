@@ -16,7 +16,7 @@ namespace Platform::Wayland
     class Pointer final : public Object
     {
     public:
-        Pointer(NonNull<wl_pointer> wlPointer, NonNull<StrongPtr<Seat>> seat);
+        Pointer(NonNull<wl_pointer*> wlPointer, NonNull<StrongPtr<Seat>> seat);
 
     private:
         static const wl_pointer_listener _wlPointerListener;
@@ -29,7 +29,7 @@ namespace Platform::Wayland
 
         void sendEvent();
 
-        NonNull<wl_pointer> _wlPointer;
+        NonNull<wl_pointer*> _wlPointer;
 
         WeakPtr<Seat> _seat = nullptr;
 
